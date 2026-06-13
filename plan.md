@@ -6,7 +6,7 @@
 [ArkType](https://arktype.io/) is "TypeScript's 1:1 validator," optimized from editor to runtime. It is a highly performant, type-level schema validation library that parses complex TypeScript-like string definitions (e.g., `"string | number[]"`, `"email"`, `"string.numeric.parse"`) directly in TypeScript's type system. It provides instant, type-level autocomplete and diagnostics directly in the editor as you type, matching runtime validation behavior exactly without requiring any IDE plugins, custom language servers, or build-step compilers. At runtime, ArkType compiles highly optimized JIT-compiled validator functions that are up to 100x faster than Zod.
 
 ### Ecosystem Role
-ArkType serves as a high-performance runtime type-safety boundary in modern TypeScript applications. It implements the [Standard Schema](https://standardschema.dev) specification, making it natively compatible with popular libraries like tRPC, Elysia, and Mastra. 
+ArkType serves as a high-performance runtime type-safety boundary in modern TypeScript applications. It implements the [Standard Schema](https://standardschema.dev) specification, making it natively compatible with popular libraries like tRPC, Elysia, and Mastra.
 Key ecosystem companions include:
 *   **ArkEnv (`ark.env` / `arkenv`)**: A tiny, typesafe environment variable validator that utilizes ArkType's notation to validate, coerce, and type-infer `process.env` and Vite environment variables.
 *   **Vite Plugin (`@arkenv/vite-plugin`)**: Integrates environment variable validation into the Vite build pipeline, halting builds immediately if validation fails.
@@ -45,9 +45,9 @@ ArkType requires zero build steps or plugins. To initialize a non-interactive pr
     ```typescript
     // config.ts
     import { configure } from "arktype/config"
-    configure({ 
+    configure({
       exactOptionalPropertyTypes: false,
-      numberAllowsNaN: true 
+      numberAllowsNaN: true
     })
     ```
 
@@ -57,8 +57,8 @@ ArkType requires zero build steps or plugins. To initialize a non-interactive pr
 
 ### Pinned Library Versions
 *   `arktype`: **`2.2.0`** (Released May/June 2026)
-*   `@arktype/attest`: **`2.0.0`**
-*   `arkenv`: **`2.0.0`**
+*   `@arktype/attest`: **`0.56.0`**
+*   `arkenv`: **`0.12.1`**
 
 ### API Reference Table
 
@@ -97,7 +97,7 @@ const UserSchema = type({
 })
 
 // Type inference
-type User = typeof UserSchema.infer 
+type User = typeof UserSchema.infer
 /* Inferred as:
    {
      id: string;
@@ -148,7 +148,7 @@ import { scope } from "arktype"
 const orgScope = scope({
   // Private alias (indicated by importing/exporting)
   uuid: "string.uuid",
-  
+
   // Recursive Cyclic Type: Member can contain a nested array of Members
   Member: {
     id: "uuid",
@@ -156,7 +156,7 @@ const orgScope = scope({
     "manager?": "Member",
     "subordinates?": "Member[]"
   },
-  
+
   // Submodule grouping
   "db.config": {
     host: "string",
@@ -205,7 +205,7 @@ console.log(processResponse(["a", "b"])) // "Array of strings of length 2"
 const calculateTotal = type.fn(
   "number",              // Param 1
   "number = 0.1",        // Param 2 (defaults to 0.1)
-  ":", 
+  ":",
   "number"               // Return Type
 )((price, tax) => {
   return price + price * tax
@@ -265,10 +265,10 @@ const total = calculateTotal(100) // Returns 110 (100 + 100 * 0.1)
 
     it("validates types and values simultaneously", () => {
       const NumericParse = type("string.numeric.parse")
-      
+
       // Asserts that the inferred type is exactly 'number'
       attest<number>(NumericParse.infer)
-      
+
       // Asserts that parsing invalid data throws the expected type and runtime error
       // @ts-expect-error
       attest(() => type("number%0")).throwsAndHasTypeError(
