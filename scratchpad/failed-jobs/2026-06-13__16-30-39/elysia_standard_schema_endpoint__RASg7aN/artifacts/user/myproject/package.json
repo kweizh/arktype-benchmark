@@ -1,0 +1,20 @@
+{
+  "name": "elysia-arktype-endpoint",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "dependencies": {
+    "arktype": "^2.2.0",
+    "elysia": "^1.4.28"
+  },
+  "module": "index.ts",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

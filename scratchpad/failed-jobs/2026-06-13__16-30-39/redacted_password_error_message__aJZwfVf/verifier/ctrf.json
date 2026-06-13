@@ -1,0 +1,65 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 0,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781368879707,
+            "stop": 1781368879817
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_short_password_triggers_validation_error",
+                "status": "failed",
+                "duration": 35,
+                "start": 1781368879756,
+                "stop": 1781368879791,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def harness_output():\n>       assert os.path.isfile(SCHEMA_PATH), (\n            f\"Expected schema file at {SCHEMA_PATH}; agent must export PasswordSchema \"\n            f\"from this path.\"\n        )\nE       AssertionError: Expected schema file at /home/user/myproject/src/schema.ts; agent must export PasswordSchema from this path.\nE       assert False\nE        +  where False = <function isfile at 0x7f064426c220>('/home/user/myproject/src/schema.ts')\nE        +    where <function isfile at 0x7f064426c220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:55: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_short_password_error_contains_redacted_literal",
+                "status": "failed",
+                "duration": 8,
+                "start": 1781368879792,
+                "stop": 1781368879800,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def harness_output():\n>       assert os.path.isfile(SCHEMA_PATH), (\n            f\"Expected schema file at {SCHEMA_PATH}; agent must export PasswordSchema \"\n            f\"from this path.\"\n        )\nE       AssertionError: Expected schema file at /home/user/myproject/src/schema.ts; agent must export PasswordSchema from this path.\nE       assert False\nE        +  where False = <function isfile at 0x7f064426c220>('/home/user/myproject/src/schema.ts')\nE        +    where <function isfile at 0x7f064426c220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:55: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_short_password_error_does_not_reveal_actual_value",
+                "status": "failed",
+                "duration": 7,
+                "start": 1781368879800,
+                "stop": 1781368879807,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def harness_output():\n>       assert os.path.isfile(SCHEMA_PATH), (\n            f\"Expected schema file at {SCHEMA_PATH}; agent must export PasswordSchema \"\n            f\"from this path.\"\n        )\nE       AssertionError: Expected schema file at /home/user/myproject/src/schema.ts; agent must export PasswordSchema from this path.\nE       assert False\nE        +  where False = <function isfile at 0x7f064426c220>('/home/user/myproject/src/schema.ts')\nE        +    where <function isfile at 0x7f064426c220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:55: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_long_password_validates_successfully",
+                "status": "failed",
+                "duration": 10,
+                "start": 1781368879807,
+                "stop": 1781368879817,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def harness_output():\n>       assert os.path.isfile(SCHEMA_PATH), (\n            f\"Expected schema file at {SCHEMA_PATH}; agent must export PasswordSchema \"\n            f\"from this path.\"\n        )\nE       AssertionError: Expected schema file at /home/user/myproject/src/schema.ts; agent must export PasswordSchema from this path.\nE       assert False\nE        +  where False = <function isfile at 0x7f064426c220>('/home/user/myproject/src/schema.ts')\nE        +    where <function isfile at 0x7f064426c220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:55: AssertionError"
+            }
+        ]
+    }
+}

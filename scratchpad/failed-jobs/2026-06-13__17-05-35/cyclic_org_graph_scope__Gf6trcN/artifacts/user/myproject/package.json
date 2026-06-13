@@ -1,0 +1,17 @@
+{
+  "name": "cyclic-org-graph-scope",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "arktype": "2.2.0"
+  },
+  "devDependencies": {
+    "tsx": "4.19.2",
+    "typescript": "5.6.3",
+    "@types/node": "22.9.0"
+  }
+}

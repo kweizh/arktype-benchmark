@@ -1,0 +1,43 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 11 items
+
+tests/test_final_state.py ...F.......                                    [100%]
+
+=================================== FAILURES ===================================
+________________________ test_single_scope_export_chain ________________________
+
+    def test_single_scope_export_chain():
+        source = _read_source()
+        matches = _find_scope_export_block(source)
+        assert len(matches) == 1, (
+            f"Expected exactly one `scope({{...}}).export()` chain in src/scope.ts, found {len(matches)}."
+        )
+        _body, post = matches[0]
+>       assert post.lstrip().startswith(".export()"), (
+            "The single scope({...}) call must be immediately followed by `.export()`."
+        )
+E       AssertionError: The single scope({...}) call must be immediately followed by `.export()`.
+E       assert False
+E        +  where False = <built-in method startswith of str object at 0x7f652ffd38c0>('.export()')
+E        +    where <built-in method startswith of str object at 0x7f652ffd38c0> = 'const m = myScope.export()\n\n/'.startswith
+E        +      where 'const m = myScope.export()\n\n/' = <built-in method lstrip of str object at 0x7f652ffd3910>()
+E        +        where <built-in method lstrip of str object at 0x7f652ffd3910> = '\n\nconst m = myScope.export()\n\n/'.lstrip
+
+tests/test_final_state.py:133: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_project_files_exist
+PASSED tests/test_final_state.py::test_package_json_pins_arktype_2_2_0
+PASSED tests/test_final_state.py::test_tsx_available
+PASSED tests/test_final_state.py::test_scope_has_db_and_http_dot_notation_keys
+PASSED tests/test_final_state.py::test_http_server_references_db_config_alias
+PASSED tests/test_final_state.py::test_module_exposes_dot_notation_submodules
+PASSED tests/test_final_state.py::test_db_config_assert_accepts_valid_payload
+PASSED tests/test_final_state.py::test_db_config_assert_rejects_invalid_payload
+PASSED tests/test_final_state.py::test_http_server_assert_accepts_payload_with_valid_db_config
+PASSED tests/test_final_state.py::test_http_server_assert_rejects_payload_with_invalid_db_config
+FAILED tests/test_final_state.py::test_single_scope_export_chain - AssertionE...
+========================= 1 failed, 10 passed in 1.87s =========================

@@ -1,0 +1,121 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 9,
+            "passed": 4,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781367117975,
+            "stop": 1781367122687
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367118000,
+                "stop": 1781367118001,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_package_json_arktype_pinned",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 18,
+                "start": 1781367118001,
+                "stop": 1781367118019,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_package_json_arktype_pinned():\n        assert os.path.isfile(PACKAGE_JSON), f\"Expected {PACKAGE_JSON} to exist.\"\n        with open(PACKAGE_JSON) as f:\n            pkg = json.load(f)\n        deps = pkg.get(\"dependencies\", {})\n>       assert deps.get(\"arktype\") == \"2.2.0\", (\n            f\"dependencies.arktype in package.json must be exactly '2.2.0', got {deps.get('arktype')!r}.\"\n        )\nE       AssertionError: dependencies.arktype in package.json must be exactly '2.2.0', got '^2.2.0'.\nE       assert '^2.2.0' == '2.2.0'\nE         - 2.2.0\nE         + ^2.2.0\nE         ? +\n\ntests/test_final_state.py:36: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_uses_scope_and_export",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367118020,
+                "stop": 1781367118021,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_uses_optional_key_syntax",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367118021,
+                "stop": 1781367118022,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_three_level_tree_validates",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 807,
+                "start": 1781367118022,
+                "stop": 1781367118829,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_valid_three_level_tree_validates():\n        harness = textwrap.dedent(f\"\"\"\n            import {{ Member }} from \"./src/index\";\n    \n            const ceo: any = {{\n                id: \"{CEO_ID}\",\n                name: \"Satya\",\n            }};\n            const director: any = {{\n                id: \"{DIR_ID}\",\n                name: \"Phil\",\n                manager: ceo,\n            }};\n            const engineer: any = {{\n                id: \"{ENG_ID}\",\n                name: \"Alice\",\n                manager: director,\n            }};\n            director.subordinates = [engineer];\n            ceo.subordinates = [director];\n    \n            let ok = true;\n            let err: string | undefined;\n            try {{\n                Member.assert(ceo);\n            }} catch (e: any) {{\n                ok = false;\n                err = String(e && e.message ? e.message : e);\n            }}\n            console.log(\"RESULT:\" + JSON.stringify({{ ok, err }}));\n        \"\"\").strip()\n>       result = _run_harness(harness)\n\ntests/test_final_state.py:131: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nharness_code = 'import { Member } from \"./src/index\";\\n\\nconst ceo: any = {\\n    id: \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\\n    nam... = false;\\n    err = String(e && e.message ? e.message : e);\\n}\\nconsole.log(\"RESULT:\" + JSON.stringify({ ok, err }));'\n\n    def _run_harness(harness_code: str) -> dict:\n        \"\"\"\n        Write a TS harness that imports Member + findRoot from the project's\n        src/index.ts and prints a JSON result line prefixed with `RESULT:`.\n        Returns the parsed JSON object.\n        \"\"\"\n        tmp_dir = tempfile.mkdtemp(prefix=\"arktype-harness-\", dir=PROJECT_DIR)\n        harness_path = os.path.join(tmp_dir, \"harness.ts\")\n        with open(harness_path, \"w\") as f:\n            f.write(harness_code)\n        try:\n            result = subprocess.run(\n                [\"npx\", \"tsx\", harness_path],\n                capture_output=True,\n                text=True,\n                cwd=PROJECT_DIR,\n                timeout=120,\n            )\n            # Find the RESULT: line in stdout.\n            for line in result.stdout.splitlines():\n                if line.startswith(\"RESULT:\"):\n                    return json.loads(line[len(\"RESULT:\"):])\n>           raise AssertionError(\n                \"Harness did not emit a RESULT: line.\\n\"\n                f\"stdout:\\n{result.stdout}\\nstderr:\\n{result.stderr}\"\n            )\nE           AssertionError: Harness did not emit a RESULT: line.\nE           stdout:\nE           \nE           stderr:\nE           \nE           node:internal/modules/run_main:107\nE               triggerUncaughtException(\nE               ^\nE           Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/myproject/arktype-harness-_mhax07t/src/index' imported from /home/user/myproject/arktype-harness-_mhax07t/harness.ts\nE               at finalizeResolution (node:internal/modules/esm/resolve:271:11)\nE               at moduleResolve (node:internal/modules/esm/resolve:865:10)\nE               at defaultResolve (node:internal/modules/esm/resolve:992:11)\nE               at nextResolve (node:internal/modules/esm/hooks:785:28)\nE               at resolveBase (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367118639:2:3212)\nE               at async resolveDirectory (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367118639:2:3578)\nE               at async resolve (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367118639:2:4441)\nE               at async nextResolve (node:internal/modules/esm/hooks:785:22)\nE               at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)\nE               at async handleMessage (node:internal/modules/esm/worker:251:18) {\nE             code: 'ERR_MODULE_NOT_FOUND',\nE             url: 'file:///home/user/myproject/arktype-harness-_mhax07t/src/index'\nE           }\nE           \nE           Node.js v24.16.0\n\ntests/test_final_state.py:83: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_uuid_is_rejected",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 808,
+                "start": 1781367118829,
+                "stop": 1781367119637,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_invalid_uuid_is_rejected():\n        harness = textwrap.dedent(f\"\"\"\n            import {{ Member }} from \"./src/index\";\n    \n            const ceo: any = {{\n                id: \"{CEO_ID}\",\n                name: \"Satya\",\n            }};\n            const director: any = {{\n                id: \"not-a-uuid\",\n                name: \"Phil\",\n                manager: ceo,\n            }};\n            ceo.subordinates = [director];\n    \n            let threw = false;\n            try {{\n                Member.assert(ceo);\n            }} catch (_e: any) {{\n                threw = true;\n            }}\n            console.log(\"RESULT:\" + JSON.stringify({{ threw }}));\n        \"\"\").strip()\n>       result = _run_harness(harness)\n\ntests/test_final_state.py:160: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nharness_code = 'import { Member } from \"./src/index\";\\n\\nconst ceo: any = {\\n    id: \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\\n    nam...   Member.assert(ceo);\\n} catch (_e: any) {\\n    threw = true;\\n}\\nconsole.log(\"RESULT:\" + JSON.stringify({ threw }));'\n\n    def _run_harness(harness_code: str) -> dict:\n        \"\"\"\n        Write a TS harness that imports Member + findRoot from the project's\n        src/index.ts and prints a JSON result line prefixed with `RESULT:`.\n        Returns the parsed JSON object.\n        \"\"\"\n        tmp_dir = tempfile.mkdtemp(prefix=\"arktype-harness-\", dir=PROJECT_DIR)\n        harness_path = os.path.join(tmp_dir, \"harness.ts\")\n        with open(harness_path, \"w\") as f:\n            f.write(harness_code)\n        try:\n            result = subprocess.run(\n                [\"npx\", \"tsx\", harness_path],\n                capture_output=True,\n                text=True,\n                cwd=PROJECT_DIR,\n                timeout=120,\n            )\n            # Find the RESULT: line in stdout.\n            for line in result.stdout.splitlines():\n                if line.startswith(\"RESULT:\"):\n                    return json.loads(line[len(\"RESULT:\"):])\n>           raise AssertionError(\n                \"Harness did not emit a RESULT: line.\\n\"\n                f\"stdout:\\n{result.stdout}\\nstderr:\\n{result.stderr}\"\n            )\nE           AssertionError: Harness did not emit a RESULT: line.\nE           stdout:\nE           \nE           stderr:\nE           \nE           node:internal/modules/run_main:107\nE               triggerUncaughtException(\nE               ^\nE           Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/myproject/arktype-harness-lx9njayh/src/index' imported from /home/user/myproject/arktype-harness-lx9njayh/harness.ts\nE               at finalizeResolution (node:internal/modules/esm/resolve:271:11)\nE               at moduleResolve (node:internal/modules/esm/resolve:865:10)\nE               at defaultResolve (node:internal/modules/esm/resolve:992:11)\nE               at nextResolve (node:internal/modules/esm/hooks:785:28)\nE               at resolveBase (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367119448:2:3212)\nE               at async resolveDirectory (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367119448:2:3578)\nE               at async resolve (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367119448:2:4441)\nE               at async nextResolve (node:internal/modules/esm/hooks:785:22)\nE               at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)\nE               at async handleMessage (node:internal/modules/esm/worker:251:18) {\nE             code: 'ERR_MODULE_NOT_FOUND',\nE             url: 'file:///home/user/myproject/arktype-harness-lx9njayh/src/index'\nE           }\nE           \nE           Node.js v24.16.0\n\ntests/test_final_state.py:83: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_non_array_subordinates_is_rejected",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 804,
+                "start": 1781367119637,
+                "stop": 1781367120441,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_non_array_subordinates_is_rejected():\n        harness = textwrap.dedent(f\"\"\"\n            import {{ Member }} from \"./src/index\";\n    \n            const bad: any = {{\n                id: \"{CEO_ID}\",\n                name: \"Satya\",\n                subordinates: \"oops\",\n            }};\n    \n            let threw = false;\n            try {{\n                Member.assert(bad);\n            }} catch (_e: any) {{\n                threw = true;\n            }}\n            console.log(\"RESULT:\" + JSON.stringify({{ threw }}));\n        \"\"\").strip()\n>       result = _run_harness(harness)\n\ntests/test_final_state.py:184: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nharness_code = 'import { Member } from \"./src/index\";\\n\\nconst bad: any = {\\n    id: \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\\n    nam...   Member.assert(bad);\\n} catch (_e: any) {\\n    threw = true;\\n}\\nconsole.log(\"RESULT:\" + JSON.stringify({ threw }));'\n\n    def _run_harness(harness_code: str) -> dict:\n        \"\"\"\n        Write a TS harness that imports Member + findRoot from the project's\n        src/index.ts and prints a JSON result line prefixed with `RESULT:`.\n        Returns the parsed JSON object.\n        \"\"\"\n        tmp_dir = tempfile.mkdtemp(prefix=\"arktype-harness-\", dir=PROJECT_DIR)\n        harness_path = os.path.join(tmp_dir, \"harness.ts\")\n        with open(harness_path, \"w\") as f:\n            f.write(harness_code)\n        try:\n            result = subprocess.run(\n                [\"npx\", \"tsx\", harness_path],\n                capture_output=True,\n                text=True,\n                cwd=PROJECT_DIR,\n                timeout=120,\n            )\n            # Find the RESULT: line in stdout.\n            for line in result.stdout.splitlines():\n                if line.startswith(\"RESULT:\"):\n                    return json.loads(line[len(\"RESULT:\"):])\n>           raise AssertionError(\n                \"Harness did not emit a RESULT: line.\\n\"\n                f\"stdout:\\n{result.stdout}\\nstderr:\\n{result.stderr}\"\n            )\nE           AssertionError: Harness did not emit a RESULT: line.\nE           stdout:\nE           \nE           stderr:\nE           \nE           node:internal/modules/run_main:107\nE               triggerUncaughtException(\nE               ^\nE           Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/myproject/arktype-harness-ehm5hz80/src/index' imported from /home/user/myproject/arktype-harness-ehm5hz80/harness.ts\nE               at finalizeResolution (node:internal/modules/esm/resolve:271:11)\nE               at moduleResolve (node:internal/modules/esm/resolve:865:10)\nE               at defaultResolve (node:internal/modules/esm/resolve:992:11)\nE               at nextResolve (node:internal/modules/esm/hooks:785:28)\nE               at resolveBase (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367120253:2:3212)\nE               at async resolveDirectory (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367120253:2:3578)\nE               at async resolve (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367120253:2:4441)\nE               at async nextResolve (node:internal/modules/esm/hooks:785:22)\nE               at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)\nE               at async handleMessage (node:internal/modules/esm/worker:251:18) {\nE             code: 'ERR_MODULE_NOT_FOUND',\nE             url: 'file:///home/user/myproject/arktype-harness-ehm5hz80/src/index'\nE           }\nE           \nE           Node.js v24.16.0\n\ntests/test_final_state.py:83: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_find_root_walks_manager_chain",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 792,
+                "start": 1781367120442,
+                "stop": 1781367121234,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_find_root_walks_manager_chain():\n        harness = textwrap.dedent(f\"\"\"\n            import {{ Member, findRoot }} from \"./src/index\";\n    \n            const ceo: any = {{\n                id: \"{CEO_ID}\",\n                name: \"Satya\",\n            }};\n            const director: any = {{\n                id: \"{DIR_ID}\",\n                name: \"Phil\",\n                manager: ceo,\n            }};\n            const engineer: any = {{\n                id: \"{ENG_ID}\",\n                name: \"Alice\",\n                manager: director,\n            }};\n            director.subordinates = [engineer];\n            ceo.subordinates = [director];\n    \n            Member.assert(ceo);\n    \n            const rootFromEng = findRoot(engineer);\n            const rootFromDir = findRoot(director);\n            const rootFromCeo = findRoot(ceo);\n            console.log(\"RESULT:\" + JSON.stringify({{\n                rootFromEngId: rootFromEng && rootFromEng.id,\n                rootFromDirId: rootFromDir && rootFromDir.id,\n                rootFromCeoId: rootFromCeo && rootFromCeo.id,\n                expectedRootId: \"{CEO_ID}\",\n            }}));\n        \"\"\").strip()\n>       result = _run_harness(harness)\n\ntests/test_final_state.py:223: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nharness_code = 'import { Member, findRoot } from \"./src/index\";\\n\\nconst ceo: any = {\\n    id: \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\"...\\n    rootFromCeoId: rootFromCeo && rootFromCeo.id,\\n    expectedRootId: \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\\n}));'\n\n    def _run_harness(harness_code: str) -> dict:\n        \"\"\"\n        Write a TS harness that imports Member + findRoot from the project's\n        src/index.ts and prints a JSON result line prefixed with `RESULT:`.\n        Returns the parsed JSON object.\n        \"\"\"\n        tmp_dir = tempfile.mkdtemp(prefix=\"arktype-harness-\", dir=PROJECT_DIR)\n        harness_path = os.path.join(tmp_dir, \"harness.ts\")\n        with open(harness_path, \"w\") as f:\n            f.write(harness_code)\n        try:\n            result = subprocess.run(\n                [\"npx\", \"tsx\", harness_path],\n                capture_output=True,\n                text=True,\n                cwd=PROJECT_DIR,\n                timeout=120,\n            )\n            # Find the RESULT: line in stdout.\n            for line in result.stdout.splitlines():\n                if line.startswith(\"RESULT:\"):\n                    return json.loads(line[len(\"RESULT:\"):])\n>           raise AssertionError(\n                \"Harness did not emit a RESULT: line.\\n\"\n                f\"stdout:\\n{result.stdout}\\nstderr:\\n{result.stderr}\"\n            )\nE           AssertionError: Harness did not emit a RESULT: line.\nE           stdout:\nE           \nE           stderr:\nE           \nE           node:internal/modules/run_main:107\nE               triggerUncaughtException(\nE               ^\nE           Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/myproject/arktype-harness-zgl9bhky/src/index' imported from /home/user/myproject/arktype-harness-zgl9bhky/harness.ts\nE               at finalizeResolution (node:internal/modules/esm/resolve:271:11)\nE               at moduleResolve (node:internal/modules/esm/resolve:865:10)\nE               at defaultResolve (node:internal/modules/esm/resolve:992:11)\nE               at nextResolve (node:internal/modules/esm/hooks:785:28)\nE               at resolveBase (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367121039:2:3212)\nE               at async resolveDirectory (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367121039:2:3578)\nE               at async resolve (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781367121039:2:4441)\nE               at async nextResolve (node:internal/modules/esm/hooks:785:22)\nE               at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)\nE               at async handleMessage (node:internal/modules/esm/worker:251:18) {\nE             code: 'ERR_MODULE_NOT_FOUND',\nE             url: 'file:///home/user/myproject/arktype-harness-zgl9bhky/src/index'\nE           }\nE           \nE           Node.js v24.16.0\n\ntests/test_final_state.py:83: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_entry_script_runs_cleanly",
+                "status": "passed",
+                "duration": 1453,
+                "start": 1781367121234,
+                "stop": 1781367122687,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

@@ -1,0 +1,93 @@
+- Initializing MCP connections...
+You
+# ArkType: ISO-8601 Date Morph That Requires Explicit Timezone ## Goal In the project at `/home/user/myproject`, build an ArkType (v2.2.0) morph that converts an ISO-8601 date string into a JavaScript `Date`, accepting **only** strings that already include explicit timezone information (`Z` or `±HH:MM`). Expose it as `parseIsoDate(input: unknown): Date` from `src/parseIsoDate.ts`. ## Acceptance Criteria 1. `parseIsoDate("2024-01-15T10:30:00Z")` MUST morph to a valid `Date` instance whose `toISOString()` returns `"2024-01-15T10:30:00.000Z"`. 2. `parseIsoDate("2024-01-15T10:30:00+05:00")` MUST morph to a `Date` instance. 3. `parseIsoDate("2024-01-15T10:30:00")` (no timezone) MUST be rejected. 4. `parseIsoDate("not-a-date")` MUST be rejected. 5. The exported function `parseIsoDate(input: unknown): Date` MUST throw on rejection (via `.assert(...)`).   
+
+Pochi
+Let me start by exploring the project structure to understand what we're working with.   
+📂 Listing files in /home/user/myproject recursively ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+🔍 Searching for * in /home/user/myproject/src ✔ 
+Now let me explore the ArkType API to understand how morphs work in v2.2.0.   
+❯ Explore ArkType morph API (explore)
+| 📋 Updating todo list (0 items)
+| 📋 Updating todo list (5 items)
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/index.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/morph.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/morph.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/type.d.ts
+| 📋 Updating todo list (0 items)
+| 📋 Updating todo list (5 items)
+| 🔍 Searching for  in .
+| 🔍 Searching for \.morph\(|morph\( in *.{js,ts,d.ts} files in /home/user/myproject/node_modules/arktype
+| 🔍 Searching for  in .
+| 🔍 Searching for morph in *.test.* files in /home/user/myproject/node_modules/arktype
+| 🔍 Searching for  in .
+| 🔍 Searching for "=>"|\.pipe\( in *.{js,d.ts} files in /home/user/myproject/node_modules/arktype
+| 🔍 Searching for * in .
+| 🔍 Searching for **/*.test.* in /home/user/myproject/node_modules/arktype
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/parser/tupleExpressions.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/parser/tupleExpressions.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/nary.d.ts
+| 🔍 Searching for  in .
+| 🔍 Searching for pipe\(|\.pipe\b in *.js files in /home/user/myproject/node_modules/arktype/out
+| 🔍 Searching for  in .
+| 🔍 Searching for NaryPipeParser in *.d.ts files in /home/user/myproject/node_modules/arktype/out
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/attributes.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/nary.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts
+| 🔍 Searching for  in .
+| 🔍 Searching for export type Morph in *.d.ts files in /home/user/myproject/node_modules/@ark/schema/out
+| 🔍 Searching for  in .
+| 🔍 Searching for export type Predicate|export interface Traversal|mustBe|reject in *.d.ts files in /home/user/myproject/node_modules/@ark/schema/out
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/traversal.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/traversal.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/predicate.d.ts
+| 🔍 Searching for  in .
+| 🔍 Searching for morph|\.pipe\( in *.ts files in /home/user/myproject
+| 🔍 Searching for  in .
+| 🔍 Searching for string\.date|string\.numeric|\.parse in *.{js,d.ts} files in /home/user/myproject/node_modules/arktype/out
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/keywords/string.js
+| 📋 Updating todo list (0 items)
+| 📋 Updating todo list (6 items)
+| 🔍 Searching for  in .
+| 🔍 Searching for export.*rootSchema|export.*intrinsic in *.d.ts files in /home/user/myproject/node_modules/@ark/schema/out
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/index.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/scope.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/intrinsic.d.ts
+| 🔍 Searching for  in .
+| 🔍 Searching for export type RootSchema in *.d.ts files in /home/user/myproject/node_modules/@ark/schema/out
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/kinds.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/morph.d.ts
+| 📋 Updating todo list (0 items)
+| 📋 Updating todo list (6 items)
+✔ Explore ArkType morph API (explore)
+Now I have a thorough understanding of the ArkType morph API. Let me create the implementation.   
+📋 Updating todo list (2 items) ✔ 
+✏️  Writing /home/user/myproject/src/parseIsoDate.ts ✔ 
+📋 Updating todo list (2 items) ✔ 

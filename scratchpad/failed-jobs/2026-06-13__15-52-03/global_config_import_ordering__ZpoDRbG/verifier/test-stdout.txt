@@ -1,0 +1,41 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 8 items
+
+tests/test_final_state.py ....F...                                       [100%]
+
+=================================== FAILURES ===================================
+_____________ test_config_ts_calls_configure_with_required_options _____________
+
+    def test_config_ts_calls_configure_with_required_options():
+        content = _read(CONFIG_TS)
+        assert re.search(r"\bconfigure\s*\(", content), (
+            "config.ts MUST contain a `configure({...})` call."
+        )
+        # Must set numberAllowsNaN: true so { x: NaN } can be accepted globally.
+        assert re.search(r"numberAllowsNaN\s*:\s*true\b", content), (
+            "config.ts must set `numberAllowsNaN: true` inside the configure(...) call."
+        )
+        # Must also set exactOptionalPropertyTypes: false as required by the task concept.
+>       assert re.search(r"exactOptionalPropertyTypes\s*:\s*false\b", content), (
+            "config.ts must set `exactOptionalPropertyTypes: false` inside the configure(...) call."
+        )
+E       AssertionError: config.ts must set `exactOptionalPropertyTypes: false` inside the configure(...) call.
+E       assert None
+E        +  where None = <function search at 0x7fc7a040bba0>('exactOptionalPropertyTypes\\s*:\\s*false\\b', 'import { configure } from "arktype/config";\n\n// Must be imported BEFORE arktype (and any module that imports arktyp...s resolvedConfig and\n// before any type is parsed/compiled with applyConfig.\nconfigure({ numberAllowsNaN: true });\n')
+E        +    where <function search at 0x7fc7a040bba0> = re.search
+
+tests/test_final_state.py:51: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_config_ts_exists
+PASSED tests/test_final_state.py::test_index_ts_exists
+PASSED tests/test_final_state.py::test_broken_ts_exists
+PASSED tests/test_final_state.py::test_config_ts_imports_configure_from_arktype_config
+PASSED tests/test_final_state.py::test_index_and_broken_share_schema_module
+PASSED tests/test_final_state.py::test_index_ts_accepts_nan
+PASSED tests/test_final_state.py::test_broken_ts_rejects_nan
+FAILED tests/test_final_state.py::test_config_ts_calls_configure_with_required_options
+========================= 1 failed, 7 passed in 3.02s ==========================

@@ -1,0 +1,110 @@
+{
+    "reportFormat": "CTRF",
+    "specVersion": "0.0.0",
+    "timestamp": "2026-06-13T17:01:40.171281+00:00",
+    "generatedBy": "pytest",
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 9,
+            "passed": 9,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781370091266,
+            "stop": 1781370100171
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_env_module_file_exists",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781370091306,
+                "stop": 1781370091308,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_print_script_file_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781370091309,
+                "stop": 1781370091310,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_package_json_has_pinned_dependencies",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781370091310,
+                "stop": 1781370091312,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_1_all_valid_env_loads_and_coerces_types",
+                "status": "passed",
+                "duration": 1284,
+                "start": 1781370091312,
+                "stop": 1781370092596,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_2_debug_is_real_boolean_when_true",
+                "status": "passed",
+                "duration": 1256,
+                "start": 1781370092597,
+                "stop": 1781370093853,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_3_allowed_origins_is_non_empty_array",
+                "status": "passed",
+                "duration": 1216,
+                "start": 1781370093853,
+                "stop": 1781370095069,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_4_invalid_port_throws_at_startup",
+                "status": "passed",
+                "duration": 1239,
+                "start": 1781370095069,
+                "stop": 1781370096308,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_5_invalid_node_env_throws_at_startup",
+                "status": "passed",
+                "duration": 1302,
+                "start": 1781370096309,
+                "stop": 1781370097611,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_6_localhost_accepted_and_bad_ip_rejected",
+                "status": "passed",
+                "duration": 2559,
+                "start": 1781370097611,
+                "stop": 1781370100170,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

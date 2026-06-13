@@ -1,0 +1,106 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 9,
+            "passed": 9,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781365447525,
+            "stop": 1781365450990
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_compiled_entrypoint_exists",
+                "status": "passed",
+                "duration": 2717,
+                "start": 1781365447575,
+                "stop": 1781365450292,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_module_exports_both_functions",
+                "status": "passed",
+                "duration": 683,
+                "start": 1781365450293,
+                "stop": 1781365450976,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_apply_tax_default_rate",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365450976,
+                "stop": 1781365450977,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_apply_tax_explicit_rate",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781365450978,
+                "stop": 1781365450980,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_apply_tax_invalid_first_arg_throws_traversal_error",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781365450980,
+                "stop": 1781365450982,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_format_invoice_default_discount",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781365450982,
+                "stop": 1781365450984,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_format_invoice_explicit_discount",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365450985,
+                "stop": 1781365450986,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_source_uses_type_fn_signature",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365450987,
+                "stop": 1781365450988,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_package_json_pins_arktype_version",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781365450988,
+                "stop": 1781365450990,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

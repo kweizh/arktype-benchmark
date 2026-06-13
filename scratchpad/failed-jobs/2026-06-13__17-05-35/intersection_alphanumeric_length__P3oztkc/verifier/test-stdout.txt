@@ -1,0 +1,38 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 8 items
+
+tests/test_final_state.py ..F.....                                       [100%]
+
+=================================== FAILURES ===================================
+________________ test_validate_script_uses_single_arktype_chain ________________
+
+    def test_validate_script_uses_single_arktype_chain():
+        with open(VALIDATE_TS) as f:
+            source = f.read()
+        assert re.search(r"""from\s+['"]arktype['"]""", source), (
+            "validate.ts must import from 'arktype'."
+        )
+        assert ".narrow(" in source, (
+            "The first-letter rule must be expressed inside an ArkType '.narrow(...)' call."
+        )
+>       assert "string.alphanumeric" in source, (
+            "The schema must reference the built-in keyword 'string.alphanumeric'."
+        )
+E       AssertionError: The schema must reference the built-in keyword 'string.alphanumeric'.
+E       assert 'string.alphanumeric' in 'import { type } from "arktype";\n\nconst username = type("string").narrow((s, ctx) => {\n  if (s.length < 3) return c..."string") {\n  console.log("valid");\n  process.exit(0);\n} else {\n  console.log("invalid");\n  process.exit(1);\n}\n'
+
+tests/test_final_state.py:44: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_package_json_pins_arktype_2_2_0
+PASSED tests/test_final_state.py::test_validate_script_exists
+PASSED tests/test_final_state.py::test_valid_username_alice123
+PASSED tests/test_final_state.py::test_invalid_too_short_al
+PASSED tests/test_final_state.py::test_invalid_too_long
+PASSED tests/test_final_state.py::test_invalid_non_alphanumeric
+PASSED tests/test_final_state.py::test_invalid_starts_with_digit
+FAILED tests/test_final_state.py::test_validate_script_uses_single_arktype_chain
+========================= 1 failed, 7 passed in 11.11s =========================

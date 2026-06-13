@@ -1,0 +1,127 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 11,
+            "passed": 10,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781365877671,
+            "stop": 1781365879548
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_project_files_exist",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365877708,
+                "stop": 1781365877709,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_package_json_pins_arktype_2_2_0",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781365877709,
+                "stop": 1781365877711,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_tsx_available",
+                "status": "passed",
+                "duration": 574,
+                "start": 1781365877711,
+                "stop": 1781365878285,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_single_scope_export_chain",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 20,
+                "start": 1781365878286,
+                "stop": 1781365878306,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_single_scope_export_chain():\n        source = _read_source()\n        matches = _find_scope_export_block(source)\n        assert len(matches) == 1, (\n            f\"Expected exactly one `scope({{...}}).export()` chain in src/scope.ts, found {len(matches)}.\"\n        )\n        _body, post = matches[0]\n>       assert post.lstrip().startswith(\".export()\"), (\n            \"The single scope({...}) call must be immediately followed by `.export()`.\"\n        )\nE       AssertionError: The single scope({...}) call must be immediately followed by `.export()`.\nE       assert False\nE        +  where False = <built-in method startswith of str object at 0x7f652ffd38c0>('.export()')\nE        +    where <built-in method startswith of str object at 0x7f652ffd38c0> = 'const m = myScope.export()\\n\\n/'.startswith\nE        +      where 'const m = myScope.export()\\n\\n/' = <built-in method lstrip of str object at 0x7f652ffd3910>()\nE        +        where <built-in method lstrip of str object at 0x7f652ffd3910> = '\\n\\nconst m = myScope.export()\\n\\n/'.lstrip\n\ntests/test_final_state.py:133: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_scope_has_db_and_http_dot_notation_keys",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365878307,
+                "stop": 1781365878308,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_references_db_config_alias",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365878308,
+                "stop": 1781365878309,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_module_exposes_dot_notation_submodules",
+                "status": "passed",
+                "duration": 1233,
+                "start": 1781365878310,
+                "stop": 1781365879543,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_db_config_assert_accepts_valid_payload",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365879544,
+                "stop": 1781365879545,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_db_config_assert_rejects_invalid_payload",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365879545,
+                "stop": 1781365879546,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_assert_accepts_payload_with_valid_db_config",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365879546,
+                "stop": 1781365879547,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_assert_rejects_payload_with_invalid_db_config",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365879547,
+                "stop": 1781365879548,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

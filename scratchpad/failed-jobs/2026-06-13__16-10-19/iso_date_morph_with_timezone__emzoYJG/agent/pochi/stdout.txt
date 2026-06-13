@@ -1,0 +1,56 @@
+- Initializing MCP connections...
+You
+# ArkType: ISO-8601 Date Morph That Requires Explicit Timezone ## Goal In the project at `/home/user/myproject`, build an ArkType (v2.2.0) morph that converts an ISO-8601 date string into a JavaScript `Date`, accepting **only** strings that already include explicit timezone information (`Z` or `±HH:MM`). Expose it as `parseIsoDate(input: unknown): Date` from `src/parseIsoDate.ts`. ## Acceptance Criteria 1. `parseIsoDate("2024-01-15T10:30:00Z")` MUST morph to a valid `Date` instance whose `toISOString()` returns `"2024-01-15T10:30:00.000Z"`. 2. `parseIsoDate("2024-01-15T10:30:00+05:00")` MUST morph to a `Date` instance. 3. `parseIsoDate("2024-01-15T10:30:00")` (no timezone) MUST be rejected. 4. `parseIsoDate("not-a-date")` MUST be rejected. 5. The exported function `parseIsoDate(input: unknown): Date` MUST throw on rejection (via `.assert(...)`).   
+
+Pochi
+💭 Thinking for 231 characters   
+💫 Executing mkdir -p /home/user/myproject/src ✔ 
+💭 Thinking for 623 characters   
+💫 Executing cat package.json ✔ 
+💭 Thinking for 595 characters   
+💫 Executing cat << 'EOF' > test.ts
+import { type } from "arktype";
+
+const IsoDateWithTimezone = type("string")
+    .narrow((s) => {
+        const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+        if (!regex.test(s)) return false;
+        return !Number.isNaN(Date.parse(s));
+    })
+    .pipe((s) => new Date(s));
+
+export function parseIsoDate(input: unknown): Date {
+    return IsoDateWithTimezone.assert(input);
+}
+
+console.log(parseIsoDate("2024-01-15T10:30:00Z"));
+console.log(parseIsoDate("2024-01-15T10:30:00+05:00"));
+
+try {
+    parseIsoDate("2024-01-15T10:30:00");
+    console.error("Should have thrown");
+} catch (e) {
+    console.log("Threw correctly for no timezone");
+}
+
+try {
+    parseIsoDate("not-a-date");
+    console.error("Should have thrown");
+} catch (e) {
+    console.log("Threw correctly for not-a-date");
+}
+EOF
+npx tsx test.ts ✔ 
+💭 Thinking for 159 characters   
+✏️  Writing /home/user/myproject/src/parseIsoDate.ts ✔ 
+💭 Thinking for 125 characters   
+🎉 Task Completed
+I have created the `parseIsoDate` function using an ArkType morph that correctly validates and parses ISO-8601 date strings requiring explicit timezones.
+
+The implementation is located at `/home/user/myproject/src/parseIsoDate.ts`. It fulfills all the acceptance criteria:
+1. It validates the ISO-8601 format using a regex that strictly requires a timezone offset (like `Z` or `±HH:MM`).
+2. It rejects ISO dates that do not have a timezone (e.g. `"2024-01-15T10:30:00"`).
+3. It rejects invalid dates like `"not-a-date"`.
+4. It morphs valid dates into a JavaScript `Date` instance.
+5. It uses ArkType's `.assert(...)` method to throw an error on validation or parsing failure.   
+  

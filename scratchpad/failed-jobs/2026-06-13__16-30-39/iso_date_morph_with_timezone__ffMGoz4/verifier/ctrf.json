@@ -1,0 +1,79 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781368880322,
+            "stop": 1781368893839
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_module_file_exists",
+                "status": "passed",
+                "duration": 3,
+                "start": 1781368880390,
+                "stop": 1781368880393,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_package_json_pins_arktype_2_2_0",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781368880394,
+                "stop": 1781368880395,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_parse_iso_date_accepts_z_suffix",
+                "status": "passed",
+                "duration": 3391,
+                "start": 1781368880396,
+                "stop": 1781368883787,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_parse_iso_date_accepts_plus_offset",
+                "status": "passed",
+                "duration": 2910,
+                "start": 1781368883788,
+                "stop": 1781368886698,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_parse_iso_date_rejects_missing_timezone",
+                "status": "passed",
+                "duration": 3301,
+                "start": 1781368886698,
+                "stop": 1781368889999,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_parse_iso_date_rejects_non_date_string",
+                "status": "passed",
+                "duration": 3838,
+                "start": 1781368890000,
+                "stop": 1781368893838,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

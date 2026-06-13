@@ -1,0 +1,70 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781366237726,
+            "stop": 1781366241540
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_vite_config_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366237754,
+                "stop": 1781366237755,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_vite_config_registers_arkenv_plugin",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781366237756,
+                "stop": 1781366237758,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_build_succeeds_with_valid_env",
+                "status": "passed",
+                "duration": 1316,
+                "start": 1781366237759,
+                "stop": 1781366239075,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_build_fails_without_vite_api_url",
+                "status": "passed",
+                "duration": 1254,
+                "start": 1781366239076,
+                "stop": 1781366240330,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_build_fails_with_malformed_vite_api_url",
+                "status": "passed",
+                "duration": 1210,
+                "start": 1781366240330,
+                "stop": 1781366241540,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

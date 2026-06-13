@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.2
+collected 9 items
+
+tests/test_final_state.py .........                                      [100%]
+
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_env_module_file_exists
+PASSED tests/test_final_state.py::test_print_script_file_exists
+PASSED tests/test_final_state.py::test_package_json_has_pinned_dependencies
+PASSED tests/test_final_state.py::test_1_all_valid_env_loads_and_coerces_types
+PASSED tests/test_final_state.py::test_2_debug_is_real_boolean_when_true
+PASSED tests/test_final_state.py::test_3_allowed_origins_is_non_empty_array
+PASSED tests/test_final_state.py::test_4_invalid_port_throws_at_startup
+PASSED tests/test_final_state.py::test_5_invalid_node_env_throws_at_startup
+PASSED tests/test_final_state.py::test_6_localhost_accepted_and_bad_ip_rejected
+============================== 9 passed in 7.89s ===============================

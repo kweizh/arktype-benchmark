@@ -1,0 +1,63 @@
+- Initializing MCP connections...
+You
+# ArkType: Numeric String Morph with Modulo Constraint ## Background Build a small validator using ArkType (`arktype@2.2.0`) that parses a numeric string into a number and constrains the parsed number to be even. ## Requirements * Define an ArkType schema for an object with a single property `score`. * `score` must accept a numeric string as input, morph it into a number, and then constrain that number so only even integers are allowed. * Provide a CLI entrypoint that reads a single JSON payload from `argv[2]` and prints the validation result. ## Implementation Hints * Use ArkType's pipe/morph syntax to chain a string-to-number parser with a numeric divisor constraint. * Refer to the official docs: https://arktype.io/docs/primitives and https://arktype.io/docs/expressions. ## Acceptance Criteria * Project path: /home/user/myproject * Command: `npx tsx validate.ts '<json_input>'` * On valid input, exit code is `0` and stdout contains a single line with `OK: <validated_json>` where `<validated_json>` is the validated object serialized as compact JSON. * On invalid input, exit code is `1` and stdout contains a single line starting with `INVALID:`. * The schema definition for `score` must use the tuple expression `["string.numeric.parse", "|>", "number % 2"]` (the documented ArkType syntax for piping a `string.numeric.parse` morph into a `number % 2` divisor constraint). * The following inputs must produce the listed outcomes: 1. `{"score":"42"}` -> `OK: {"score":42}` (the value is a number, not a string) 2. `{"score":"43"}` -> `INVALID: ...` 3. `{"score":"abc"}` -> `INVALID: ...` 4. `{"score":42}` -> `INVALID: ...` (already a number, the morph requires a string input)   
+
+Pochi
+I'll start by exploring the project directory and understanding the setup, then implement the solution.   
+📋 Updating todo list (4 items) ✔ 
+📂 Listing files in /home/user/myproject recursively ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+📋 Updating todo list (4 items) ✔ 
+Good — the project is set up with `arktype@2.2.0`, `tsx`, and `typescript` already installed. Now let me check the ArkType API to understand the exact morph syntax and tuple expression usage before writing the implementation.   
+📖 Reading /home/user/myproject/node_modules/arktype/out/index.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/tupleExpressions.d.ts ✔ 
+The `|>` operator is confirmed as a valid infix operator for piping. Now let me look at the divisor constraint syntax and how `string.numeric.parse` works in ArkType 2.2.0:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/keywords/string.js ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/ast/divisor.js ✔ 
+Now let me look at the divisor constraint implementation and how the `%` operator works in ArkType:   
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/refinements/divisor.js ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/shift/operator/divisor.js ✔ 
+Now I have a clear picture. Let me also quickly check how `type()` is exported and how to use it:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/index.js ✔ 
+Now let me verify how `type()` works with tuple expressions and the pipe syntax by looking at a quick test or usage pattern:   
+🔍 Searching for string\.numeric.*parse.*\|> in *.{js,ts} files in /home/user/myproject/node_modules/arktype ✔ 
+🔍 Searching for "\|>" in *.{js,ts} files in /home/user/myproject/node_modules/arktype ✔ 
+I now have a thorough understanding of the API. The `|>` pipe operator chains the output of one definition into the input of another. `string.numeric.parse` is a morph that parses a numeric string to a number. `number % 2` is a divisor constraint for even numbers. Now let me also check how `type()` handles object schemas with tuple expressions for properties:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/type.js ✔ 
+Now I have all the information needed. Let me also quickly check what `type()` returns and how to access errors from it:   
+🔍 Searching for class BaseRoot in *.d.ts files in /home/user/myproject/node_modules/@ark/schema/out ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/root.d.ts ✔ 
+Now I have a thorough understanding. Let me write the implementation. The key insight is: - `type()` with a tuple expression like `["string.numeric.parse", "|>", "number % 2"]` creates a pipe: first morphs a numeric string to a number, then constrains it to be divisible by 2 (even). - For the object schema, we use `type({ score: ["string.numeric.parse", "|>", "number % 2"] })`. - `type(data)` validates and returns either the validated data or an `ArkErrors` object.   
+✏️  Writing /home/user/myproject/validate.ts ✔ 
+📋 Updating todo list (4 items) ✔ 
+Now let me test all four acceptance criteria inputs:   
+💫 Executing cd /home/user/myproject && npx tsx validate.ts '{"score":"42"}' 2>&1; echo "EXIT: $?" ✔ 
+💭 Thinking for 51 characters   
+💫 Executing cd /home/user/myproject && npx tsx validate.ts '{"score":"43"}' 2>&1; echo "EXIT: $?" ✔ 
+💫 Executing cd /home/user/myproject && npx tsx validate.ts '{"score":"abc"}' 2>&1; echo "EXIT: $?" ✔ 
+💫 Executing cd /home/user/myproject && npx tsx validate.ts '{"score":42}' 2>&1; echo "EXIT: $?" ✔ 
+All four test cases pass: 1. `{"score":"42"}` → `OK: {"score":42}` (exit 0) — numeric string parsed to number 42, which is even ✓ 2. `{"score":"43"}` → `INVALID: score must be even (was 43)` (exit 1) — parsed to 43, not even ✓ 3. `{"score":"abc"}` → `INVALID: score must be a well-formed numeric string (was "abc")` (exit 1) — not a numeric string ✓ 4. `{"score":42}` → `INVALID: score must be a string (was a number)` (exit 1) — already a number, morph requires string ✓   
+📋 Updating todo list (4 items) ✔ 
+🎉 Task Completed
+The implementation is complete. Here's what was built:
+
+**File: `/home/user/myproject/validate.ts`**
+
+The script defines an ArkType schema for an object with a `score` property using the tuple expression `["string.numeric.parse", "|>", "number % 2"]`, which:
+1. **`string.numeric.parse`** — validates the input is a well-formed numeric string and morphs it into a number
+2. **`|>`** — pipes the output of the first definition into the input of the next
+3. **`number % 2`** — constrains the number to be divisible by 2 (even integer)
+
+The CLI entrypoint reads JSON from `process.argv[2]`, validates it against the schema, and:
+- On success: prints `OK: <compact_json>` with exit code 0
+- On failure: prints `INVALID: <error_summary>` with exit code 1
+
+**Test results — all pass:**
+| Input | Output | Exit |
+|---|---|---|
+| `{"score":"42"}` | `OK: {"score":42}` | 0 |
+| `{"score":"43"}` | `INVALID: score must be even (was 43)` | 1 |
+| `{"score":"abc"}` | `INVALID: score must be a well-formed numeric string (was "abc")` | 1 |
+| `{"score":42}` | `INVALID: score must be a string (was a number)` | 1 |   
+  

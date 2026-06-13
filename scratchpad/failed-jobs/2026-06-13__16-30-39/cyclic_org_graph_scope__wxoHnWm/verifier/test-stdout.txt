@@ -1,0 +1,370 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 9 items
+
+tests/test_final_state.py ....FFFF.                                      [100%]
+
+=================================== FAILURES ===================================
+____________________ test_valid_three_level_tree_validates _____________________
+
+    def test_valid_three_level_tree_validates():
+        harness = textwrap.dedent(f"""
+            import {{ Member }} from "./src/index";
+    
+            const ceo: any = {{
+                id: "{CEO_ID}",
+                name: "Satya",
+            }};
+            const director: any = {{
+                id: "{DIR_ID}",
+                name: "Phil",
+                manager: ceo,
+            }};
+            const engineer: any = {{
+                id: "{ENG_ID}",
+                name: "Alice",
+                manager: director,
+            }};
+            director.subordinates = [engineer];
+            ceo.subordinates = [director];
+    
+            let ok = true;
+            let err: string | undefined;
+            try {{
+                Member.assert(ceo);
+            }} catch (e: any) {{
+                ok = false;
+                err = String(e && e.message ? e.message : e);
+            }}
+            console.log("RESULT:" + JSON.stringify({{ ok, err }}));
+        """).strip()
+>       result = _run_harness(harness)
+
+tests/test_final_state.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+harness_code = 'import { Member } from "./src/index";\n\nconst ceo: any = {\n    id: "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",\n    nam... = false;\n    err = String(e && e.message ? e.message : e);\n}\nconsole.log("RESULT:" + JSON.stringify({ ok, err }));'
+
+    def _run_harness(harness_code: str) -> dict:
+        """
+        Write a TS harness that imports Member + findRoot from the project's
+        src/index.ts and prints a JSON result line prefixed with `RESULT:`.
+        Returns the parsed JSON object.
+        """
+        tmp_dir = tempfile.mkdtemp(prefix="arktype-harness-", dir=PROJECT_DIR)
+        harness_path = os.path.join(tmp_dir, "harness.ts")
+        with open(harness_path, "w") as f:
+            f.write(harness_code)
+        try:
+            result = subprocess.run(
+                ["npx", "tsx", harness_path],
+                capture_output=True,
+                text=True,
+                cwd=PROJECT_DIR,
+                timeout=120,
+            )
+            # Find the RESULT: line in stdout.
+            for line in result.stdout.splitlines():
+                if line.startswith("RESULT:"):
+                    return json.loads(line[len("RESULT:"):])
+>           raise AssertionError(
+                "Harness did not emit a RESULT: line.\n"
+                f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+            )
+E           AssertionError: Harness did not emit a RESULT: line.
+E           stdout:
+E           
+E           stderr:
+E           
+E           node:internal/modules/run_main:107
+E               triggerUncaughtException(
+E               ^
+E           Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/myproject/arktype-harness-216_fu46/src/index' imported from /home/user/myproject/arktype-harness-216_fu46/harness.ts
+E               at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+E               at moduleResolve (node:internal/modules/esm/resolve:865:10)
+E               at defaultResolve (node:internal/modules/esm/resolve:992:11)
+E               at nextResolve (node:internal/modules/esm/hooks:785:28)
+E               at resolveBase (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368496068:2:3212)
+E               at async resolveDirectory (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368496068:2:3578)
+E               at async resolve (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368496068:2:4441)
+E               at async nextResolve (node:internal/modules/esm/hooks:785:22)
+E               at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)
+E               at async handleMessage (node:internal/modules/esm/worker:251:18) {
+E             code: 'ERR_MODULE_NOT_FOUND',
+E             url: 'file:///home/user/myproject/arktype-harness-216_fu46/src/index'
+E           }
+E           
+E           Node.js v24.16.0
+
+tests/test_final_state.py:83: AssertionError
+________________________ test_invalid_uuid_is_rejected _________________________
+
+    def test_invalid_uuid_is_rejected():
+        harness = textwrap.dedent(f"""
+            import {{ Member }} from "./src/index";
+    
+            const ceo: any = {{
+                id: "{CEO_ID}",
+                name: "Satya",
+            }};
+            const director: any = {{
+                id: "not-a-uuid",
+                name: "Phil",
+                manager: ceo,
+            }};
+            ceo.subordinates = [director];
+    
+            let threw = false;
+            try {{
+                Member.assert(ceo);
+            }} catch (_e: any) {{
+                threw = true;
+            }}
+            console.log("RESULT:" + JSON.stringify({{ threw }}));
+        """).strip()
+>       result = _run_harness(harness)
+
+tests/test_final_state.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+harness_code = 'import { Member } from "./src/index";\n\nconst ceo: any = {\n    id: "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",\n    nam...   Member.assert(ceo);\n} catch (_e: any) {\n    threw = true;\n}\nconsole.log("RESULT:" + JSON.stringify({ threw }));'
+
+    def _run_harness(harness_code: str) -> dict:
+        """
+        Write a TS harness that imports Member + findRoot from the project's
+        src/index.ts and prints a JSON result line prefixed with `RESULT:`.
+        Returns the parsed JSON object.
+        """
+        tmp_dir = tempfile.mkdtemp(prefix="arktype-harness-", dir=PROJECT_DIR)
+        harness_path = os.path.join(tmp_dir, "harness.ts")
+        with open(harness_path, "w") as f:
+            f.write(harness_code)
+        try:
+            result = subprocess.run(
+                ["npx", "tsx", harness_path],
+                capture_output=True,
+                text=True,
+                cwd=PROJECT_DIR,
+                timeout=120,
+            )
+            # Find the RESULT: line in stdout.
+            for line in result.stdout.splitlines():
+                if line.startswith("RESULT:"):
+                    return json.loads(line[len("RESULT:"):])
+>           raise AssertionError(
+                "Harness did not emit a RESULT: line.\n"
+                f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+            )
+E           AssertionError: Harness did not emit a RESULT: line.
+E           stdout:
+E           
+E           stderr:
+E           
+E           node:internal/modules/run_main:107
+E               triggerUncaughtException(
+E               ^
+E           Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/myproject/arktype-harness-m1fqo9st/src/index' imported from /home/user/myproject/arktype-harness-m1fqo9st/harness.ts
+E               at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+E               at moduleResolve (node:internal/modules/esm/resolve:865:10)
+E               at defaultResolve (node:internal/modules/esm/resolve:992:11)
+E               at nextResolve (node:internal/modules/esm/hooks:785:28)
+E               at resolveBase (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368496976:2:3212)
+E               at async resolveDirectory (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368496976:2:3578)
+E               at async resolve (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368496976:2:4441)
+E               at async nextResolve (node:internal/modules/esm/hooks:785:22)
+E               at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)
+E               at async handleMessage (node:internal/modules/esm/worker:251:18) {
+E             code: 'ERR_MODULE_NOT_FOUND',
+E             url: 'file:///home/user/myproject/arktype-harness-m1fqo9st/src/index'
+E           }
+E           
+E           Node.js v24.16.0
+
+tests/test_final_state.py:83: AssertionError
+___________________ test_non_array_subordinates_is_rejected ____________________
+
+    def test_non_array_subordinates_is_rejected():
+        harness = textwrap.dedent(f"""
+            import {{ Member }} from "./src/index";
+    
+            const bad: any = {{
+                id: "{CEO_ID}",
+                name: "Satya",
+                subordinates: "oops",
+            }};
+    
+            let threw = false;
+            try {{
+                Member.assert(bad);
+            }} catch (_e: any) {{
+                threw = true;
+            }}
+            console.log("RESULT:" + JSON.stringify({{ threw }}));
+        """).strip()
+>       result = _run_harness(harness)
+
+tests/test_final_state.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+harness_code = 'import { Member } from "./src/index";\n\nconst bad: any = {\n    id: "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",\n    nam...   Member.assert(bad);\n} catch (_e: any) {\n    threw = true;\n}\nconsole.log("RESULT:" + JSON.stringify({ threw }));'
+
+    def _run_harness(harness_code: str) -> dict:
+        """
+        Write a TS harness that imports Member + findRoot from the project's
+        src/index.ts and prints a JSON result line prefixed with `RESULT:`.
+        Returns the parsed JSON object.
+        """
+        tmp_dir = tempfile.mkdtemp(prefix="arktype-harness-", dir=PROJECT_DIR)
+        harness_path = os.path.join(tmp_dir, "harness.ts")
+        with open(harness_path, "w") as f:
+            f.write(harness_code)
+        try:
+            result = subprocess.run(
+                ["npx", "tsx", harness_path],
+                capture_output=True,
+                text=True,
+                cwd=PROJECT_DIR,
+                timeout=120,
+            )
+            # Find the RESULT: line in stdout.
+            for line in result.stdout.splitlines():
+                if line.startswith("RESULT:"):
+                    return json.loads(line[len("RESULT:"):])
+>           raise AssertionError(
+                "Harness did not emit a RESULT: line.\n"
+                f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+            )
+E           AssertionError: Harness did not emit a RESULT: line.
+E           stdout:
+E           
+E           stderr:
+E           
+E           node:internal/modules/run_main:107
+E               triggerUncaughtException(
+E               ^
+E           Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/myproject/arktype-harness-8m8l053h/src/index' imported from /home/user/myproject/arktype-harness-8m8l053h/harness.ts
+E               at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+E               at moduleResolve (node:internal/modules/esm/resolve:865:10)
+E               at defaultResolve (node:internal/modules/esm/resolve:992:11)
+E               at nextResolve (node:internal/modules/esm/hooks:785:28)
+E               at resolveBase (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368497945:2:3212)
+E               at async resolveDirectory (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368497945:2:3578)
+E               at async resolve (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368497945:2:4441)
+E               at async nextResolve (node:internal/modules/esm/hooks:785:22)
+E               at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)
+E               at async handleMessage (node:internal/modules/esm/worker:251:18) {
+E             code: 'ERR_MODULE_NOT_FOUND',
+E             url: 'file:///home/user/myproject/arktype-harness-8m8l053h/src/index'
+E           }
+E           
+E           Node.js v24.16.0
+
+tests/test_final_state.py:83: AssertionError
+______________________ test_find_root_walks_manager_chain ______________________
+
+    def test_find_root_walks_manager_chain():
+        harness = textwrap.dedent(f"""
+            import {{ Member, findRoot }} from "./src/index";
+    
+            const ceo: any = {{
+                id: "{CEO_ID}",
+                name: "Satya",
+            }};
+            const director: any = {{
+                id: "{DIR_ID}",
+                name: "Phil",
+                manager: ceo,
+            }};
+            const engineer: any = {{
+                id: "{ENG_ID}",
+                name: "Alice",
+                manager: director,
+            }};
+            director.subordinates = [engineer];
+            ceo.subordinates = [director];
+    
+            Member.assert(ceo);
+    
+            const rootFromEng = findRoot(engineer);
+            const rootFromDir = findRoot(director);
+            const rootFromCeo = findRoot(ceo);
+            console.log("RESULT:" + JSON.stringify({{
+                rootFromEngId: rootFromEng && rootFromEng.id,
+                rootFromDirId: rootFromDir && rootFromDir.id,
+                rootFromCeoId: rootFromCeo && rootFromCeo.id,
+                expectedRootId: "{CEO_ID}",
+            }}));
+        """).strip()
+>       result = _run_harness(harness)
+
+tests/test_final_state.py:223: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+harness_code = 'import { Member, findRoot } from "./src/index";\n\nconst ceo: any = {\n    id: "f81d4fae-7dec-11d0-a765-00a0c91e6bf6"...\n    rootFromCeoId: rootFromCeo && rootFromCeo.id,\n    expectedRootId: "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",\n}));'
+
+    def _run_harness(harness_code: str) -> dict:
+        """
+        Write a TS harness that imports Member + findRoot from the project's
+        src/index.ts and prints a JSON result line prefixed with `RESULT:`.
+        Returns the parsed JSON object.
+        """
+        tmp_dir = tempfile.mkdtemp(prefix="arktype-harness-", dir=PROJECT_DIR)
+        harness_path = os.path.join(tmp_dir, "harness.ts")
+        with open(harness_path, "w") as f:
+            f.write(harness_code)
+        try:
+            result = subprocess.run(
+                ["npx", "tsx", harness_path],
+                capture_output=True,
+                text=True,
+                cwd=PROJECT_DIR,
+                timeout=120,
+            )
+            # Find the RESULT: line in stdout.
+            for line in result.stdout.splitlines():
+                if line.startswith("RESULT:"):
+                    return json.loads(line[len("RESULT:"):])
+>           raise AssertionError(
+                "Harness did not emit a RESULT: line.\n"
+                f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+            )
+E           AssertionError: Harness did not emit a RESULT: line.
+E           stdout:
+E           
+E           stderr:
+E           
+E           node:internal/modules/run_main:107
+E               triggerUncaughtException(
+E               ^
+E           Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/myproject/arktype-harness-fvgacp5v/src/index' imported from /home/user/myproject/arktype-harness-fvgacp5v/harness.ts
+E               at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+E               at moduleResolve (node:internal/modules/esm/resolve:865:10)
+E               at defaultResolve (node:internal/modules/esm/resolve:992:11)
+E               at nextResolve (node:internal/modules/esm/hooks:785:28)
+E               at resolveBase (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368498860:2:3212)
+E               at async resolveDirectory (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368498860:2:3578)
+E               at async resolve (file:///home/user/myproject/node_modules/tsx/dist/esm/index.mjs?1781368498860:2:4441)
+E               at async nextResolve (node:internal/modules/esm/hooks:785:22)
+E               at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)
+E               at async handleMessage (node:internal/modules/esm/worker:251:18) {
+E             code: 'ERR_MODULE_NOT_FOUND',
+E             url: 'file:///home/user/myproject/arktype-harness-fvgacp5v/src/index'
+E           }
+E           
+E           Node.js v24.16.0
+
+tests/test_final_state.py:83: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_index_ts_exists
+PASSED tests/test_final_state.py::test_package_json_arktype_pinned
+PASSED tests/test_final_state.py::test_uses_scope_and_export
+PASSED tests/test_final_state.py::test_uses_optional_key_syntax
+PASSED tests/test_final_state.py::test_entry_script_runs_cleanly
+FAILED tests/test_final_state.py::test_valid_three_level_tree_validates - Ass...
+FAILED tests/test_final_state.py::test_invalid_uuid_is_rejected - AssertionEr...
+FAILED tests/test_final_state.py::test_non_array_subordinates_is_rejected - A...
+FAILED tests/test_final_state.py::test_find_root_walks_manager_chain - Assert...
+========================= 4 failed, 5 passed in 5.61s ==========================

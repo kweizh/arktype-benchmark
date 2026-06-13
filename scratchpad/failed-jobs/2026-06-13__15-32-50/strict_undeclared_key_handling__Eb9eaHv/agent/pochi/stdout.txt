@@ -1,0 +1,91 @@
+- Initializing MCP connections...
+You
+# Strict Undeclared-Key Handling with ArkType ## Goal Define three [ArkType](https://arktype.io/) `2.2.0` schemas at `/home/user/myproject/src/schemas.ts` that demonstrate the three different strategies for handling undeclared object keys. ## Acceptance Criteria - Project path: `/home/user/myproject` - Module path: `/home/user/myproject/src/schemas.ts` - The package `arktype` must be pinned to exactly `2.2.0` in `/home/user/myproject/package.json`. - The module MUST provide three named exports: `LooseUser`, `RejectUser`, and `DeleteUser`. - The following behaviors MUST all hold when the module is imported and the schemas are invoked as functions: 1. `LooseUser({ name: "a", extra: 1 })` MUST return an object where `extra === 1`. 2. `RejectUser({ name: "a", extra: 1 })` MUST return a `type.errors` instance (validation failure). 3. `DeleteUser({ name: "a", extra: 1 })` MUST return an object where `"extra" in result === false`. 4. All three schemas MUST accept `{ name: "a" }` without errors (no `type.errors` returned). 5. The schemas MUST be exported as named exports `LooseUser`, `RejectUser`, `DeleteUser` from `/home/user/myproject/src/schemas.ts`.   
+
+Pochi
+📂 Listing files in /home/user/myproject ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📂 Listing files in /home/user/myproject/src ✔ 
+💭 Thinking for 245 characters   
+🛠️ Tool webSearch ✔ 
+💭 Thinking for 734 characters   
+🛠️ Tool webSearch ✔ 
+💭 Thinking for 282 characters   
+🛠️ Tool webSearch ✔ 
+💭 Thinking for 591 characters   
+📋 Updating todo list (3 items) ✔ 
+📋 Updating todo list (3 items) ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+💭 Thinking for 305 characters   
+✏️  Writing /home/user/myproject/src/schemas.ts ✔ 
+✏️  Writing /home/user/myproject/test.ts ✔ 
+💫 Executing npx tsx test.ts ✔ 
+💭 Thinking for 239 characters   
+✏️  Writing /home/user/myproject/src/schemas.ts ✔ 
+💫 Executing npx tsx test.ts ✔ 
+💭 Thinking for 295 characters   
+💫 Executing npx tsc --noEmit ✖ "Command exited with code 2"
+💭 Thinking for 240 characters   
+✏️  Writing /home/user/myproject/test.ts ✔ 
+💫 Executing npx tsc --noEmit ✔ 
+💭 Thinking for 655 characters   
+✏️  Writing /home/user/myproject/src/schemas.ts ✔ 
+💫 Executing npx tsx test.ts && npx tsc --noEmit ✔ 
+💭 Thinking for 338 characters   
+📋 Updating todo list (3 items) ✔ 
+💭 Thinking for 624 characters   
+🎉 Task Completed
+I have successfully implemented the three ArkType `2.2.0` schemas demonstrating the three different strategies for handling undeclared object keys.
+
+### Implementation Details
+- **Loose Strategy (`LooseUser`)**: Allows and preserves undeclared keys on input and output. This is ArkType's default behavior.
+- **Reject Strategy (`RejectUser`)**: Rejects any input containing undeclared keys with an `instanceof type.errors` validation failure. Configured using `.onUndeclaredKey("reject")`.
+- **Delete Strategy (`DeleteUser`)**: Allows undeclared keys on input but clones the object and removes/deletes the extra keys from the output. Configured using `.onUndeclaredKey("delete")`.
+
+### Schema Module (`/home/user/myproject/src/schemas.ts`)
+```typescript
+import { type } from "arktype"
+
+/**
+ * Strategy 1: Loose (Ignore)
+ * 
+ * Allows undeclared keys on input and preserves them on output.
+ * This is ArkType's default behavior, mirroring TypeScript's structural typing.
+ * It can also be explicitly configured using `.onUndeclaredKey("ignore")` 
+ * or inline via the `"+": "ignore"` shorthand.
+ */
+export const LooseUser = type({
+    name: "string"
+})
+
+/**
+ * Strategy 2: Reject (Strict)
+ * 
+ * Rejects any input that contains undeclared keys with a validation failure.
+ * Configured using `.onUndeclaredKey("reject")` or inline via the `"+": "reject"` shorthand.
+ */
+export const RejectUser = type({
+    name: "string"
+}).onUndeclaredKey("reject")
+
+/**
+ * Strategy 3: Delete (Distilled/Pruned)
+ * 
+ * Allows undeclared keys on input, but clones the object and deletes/removes 
+ * any undeclared keys from the output before returning.
+ * Configured using `.onUndeclaredKey("delete")` or inline via the `"+": "delete"` shorthand.
+ */
+export const DeleteUser = type({
+    name: "string"
+}).onUndeclaredKey("delete")
+```
+
+### Verification
+I created a test file (`/home/user/myproject/test.ts`) to verify all acceptance criteria:
+1. `LooseUser({ name: "a", extra: 1 })` preserves the `extra` key.
+2. `RejectUser({ name: "a", extra: 1 })` returns `instanceof type.errors`.
+3. `DeleteUser({ name: "a", extra: 1 })` deletes the `extra` key.
+4. All three schemas accept `{ name: "a" }` successfully.
+
+Both runtime checks and static type analysis (`tsc --noEmit`) pass successfully.   
+  

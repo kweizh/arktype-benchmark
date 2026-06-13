@@ -1,0 +1,58 @@
+- Initializing MCP connections...
+You
+# ArkType: Numeric String Morph with Modulo Constraint ## Background Build a small validator using ArkType (`arktype@2.2.0`) that parses a numeric string into a number and constrains the parsed number to be even. ## Requirements * Define an ArkType schema for an object with a single property `score`. * `score` must accept a numeric string as input, morph it into a number, and then constrain that number so only even integers are allowed. * Provide a CLI entrypoint that reads a single JSON payload from `argv[2]` and prints the validation result. ## Implementation Hints * Use ArkType's pipe/morph syntax to chain a string-to-number parser with a numeric divisor constraint. * Refer to the official docs: https://arktype.io/docs/primitives and https://arktype.io/docs/expressions. ## Acceptance Criteria * Project path: /home/user/myproject * Command: `npx tsx validate.ts '<json_input>'` * On valid input, exit code is `0` and stdout contains a single line with `OK: <validated_json>` where `<validated_json>` is the validated object serialized as compact JSON. * On invalid input, exit code is `1` and stdout contains a single line starting with `INVALID:`. * The schema definition for `score` must use the tuple expression `["string.numeric.parse", "|>", "number % 2"]` (the documented ArkType syntax for piping a `string.numeric.parse` morph into a `number % 2` divisor constraint). * The following inputs must produce the listed outcomes: 1. `{"score":"42"}` -> `OK: {"score":42}` (the value is a number, not a string) 2. `{"score":"43"}` -> `INVALID: ...` 3. `{"score":"abc"}` -> `INVALID: ...` 4. `{"score":42}` -> `INVALID: ...` (already a number, the morph requires a string input)   
+
+Pochi
+💭 Thinking for 381 characters   
+📂 Listing files in /home/user/myproject ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+📋 Updating todo list (2 items) ✔ 
+✏️  Writing /home/user/myproject/validate.ts ✔ 
+📋 Updating todo list (2 items) ✔ 
+💫 Executing cd /home/user/myproject && npx tsx validate.ts '{"score":"42"}'; echo "EXIT:$?" ✔ 
+💫 Executing cd /home/user/myproject && npx tsx validate.ts '{"score":"43"}'; echo "EXIT:$?" && npx tsx validate.ts '{"score":"abc"}'; echo "EXIT:$?" && npx tsx validate.ts '{"score":42}'; echo "EXIT:$?" ✔ 
+All four cases pass. Let me mark the task complete.   
+📋 Updating todo list (2 items) ✔ 
+🎉 Task Completed
+Created `/home/user/myproject/validate.ts` with the following implementation:
+
+```ts
+import { type } from "arktype";
+
+const schema = type({
+  score: ["string.numeric.parse", "|>", "number % 2"],
+});
+
+const raw = process.argv[2];
+
+let parsed: unknown;
+try {
+  parsed = JSON.parse(raw);
+} catch {
+  console.log("INVALID: input is not valid JSON");
+  process.exit(1);
+}
+
+const result = schema(parsed);
+
+if (result instanceof type.errors) {
+  console.log(`INVALID: ${result.summary}`);
+  process.exit(1);
+}
+
+console.log(`OK: ${JSON.stringify(result)}`);
+process.exit(0);
+```
+
+The `score` property uses the exact required tuple expression `["string.numeric.parse", "|>", "number % 2"]`, which pipes the built-in numeric-string morph into a divisibility constraint.
+
+All four acceptance criteria pass:
+
+| Input | Output | Exit |
+|---|---|---|
+| `{"score":"42"}` | `OK: {"score":42}` | 0 |
+| `{"score":"43"}` | `INVALID: score must be even (was 43)` | 1 |
+| `{"score":"abc"}` | `INVALID: score must be a well-formed numeric string (was "abc")` | 1 |
+| `{"score":42}` | `INVALID: score must be a string (was a number)` | 1 |   
+  

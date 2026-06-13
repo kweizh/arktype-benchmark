@@ -1,0 +1,135 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 11,
+            "passed": 4,
+            "failed": 7,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781370318547,
+            "stop": 1781370320297
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_project_files_exist",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781370318587,
+                "stop": 1781370318589,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_package_json_pins_arktype_2_2_0",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781370318589,
+                "stop": 1781370318590,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_tsx_available",
+                "status": "passed",
+                "duration": 658,
+                "start": 1781370318590,
+                "stop": 1781370319248,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_single_scope_export_chain",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 25,
+                "start": 1781370319248,
+                "stop": 1781370319273,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_single_scope_export_chain():\n        source = _read_source()\n        matches = _find_scope_export_block(source)\n>       assert len(matches) == 1, (\n            f\"Expected exactly one `scope({{...}}).export()` chain in src/scope.ts, found {len(matches)}.\"\n        )\nE       AssertionError: Expected exactly one `scope({...}).export()` chain in src/scope.ts, found 6.\nE       assert 6 == 1\nE        +  where 6 = len([('\\n    \"db.config\": {\\n      host: \"string\",\\n      port: \"number\",\\n    },\\n    \"http.server\": {\\n      port: \"numb...rt();\\n  \\n  const mod3 = sc'), ('\\n    db: dbModule,\\n    http: httpModule,\\n  ', '.export();\\n  console.log(\"Test ')])\n\ntests/test_final_state.py:129: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_scope_has_db_and_http_dot_notation_keys",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 8,
+                "start": 1781370319273,
+                "stop": 1781370319281,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_scope_has_db_and_http_dot_notation_keys():\n        source = _read_source()\n        matches = _find_scope_export_block(source)\n>       assert len(matches) == 1, \"Expected exactly one scope({...}).export() chain.\"\nE       AssertionError: Expected exactly one scope({...}).export() chain.\nE       assert 6 == 1\nE        +  where 6 = len([('\\n    \"db.config\": {\\n      host: \"string\",\\n      port: \"number\",\\n    },\\n    \"http.server\": {\\n      port: \"numb...rt();\\n  \\n  const mod3 = sc'), ('\\n    db: dbModule,\\n    http: httpModule,\\n  ', '.export();\\n  console.log(\"Test ')])\n\ntests/test_final_state.py:141: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_references_db_config_alias",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781370319282,
+                "stop": 1781370319283,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_module_exposes_dot_notation_submodules",
+                "status": "failed",
+                "duration": 981,
+                "start": 1781370319284,
+                "stop": 1781370320265,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def runtime_results():\n        _write_verify_script()\n        try:\n            result = subprocess.run(\n                [\"npx\", \"--no-install\", \"tsx\", VERIFY_SCRIPT],\n                cwd=PROJECT_DIR,\n                capture_output=True,\n                text=True,\n                timeout=120,\n            )\n        finally:\n            pass\n>       assert result.returncode == 0, (\n            f\"Verifier tsx script failed.\\nstdout={result.stdout!r}\\nstderr={result.stderr!r}\"\n        )\nE       AssertionError: Verifier tsx script failed.\nE         stdout=''\nE         stderr='file:///home/user/myproject/.verify-module.mjs:2\\nimport scopeModule from \"./src/scope.ts\";\\n       ^^^^^^^^^^^\\nSyntaxError: The requested module \\'./src/scope.ts\\' does not provide an export named \\'default\\'\\n    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)\\n    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)\\n    at async node:internal/modules/esm/loader:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', '/home/user/myproject/.verify-module.mjs'], returncode=1, stdout=...der:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n').returncode\n\ntests/test_final_state.py:289: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_db_config_assert_accepts_valid_payload",
+                "status": "failed",
+                "duration": 8,
+                "start": 1781370320265,
+                "stop": 1781370320273,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def runtime_results():\n        _write_verify_script()\n        try:\n            result = subprocess.run(\n                [\"npx\", \"--no-install\", \"tsx\", VERIFY_SCRIPT],\n                cwd=PROJECT_DIR,\n                capture_output=True,\n                text=True,\n                timeout=120,\n            )\n        finally:\n            pass\n>       assert result.returncode == 0, (\n            f\"Verifier tsx script failed.\\nstdout={result.stdout!r}\\nstderr={result.stderr!r}\"\n        )\nE       AssertionError: Verifier tsx script failed.\nE         stdout=''\nE         stderr='file:///home/user/myproject/.verify-module.mjs:2\\nimport scopeModule from \"./src/scope.ts\";\\n       ^^^^^^^^^^^\\nSyntaxError: The requested module \\'./src/scope.ts\\' does not provide an export named \\'default\\'\\n    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)\\n    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)\\n    at async node:internal/modules/esm/loader:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', '/home/user/myproject/.verify-module.mjs'], returncode=1, stdout=...der:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n').returncode\n\ntests/test_final_state.py:289: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_db_config_assert_rejects_invalid_payload",
+                "status": "failed",
+                "duration": 7,
+                "start": 1781370320274,
+                "stop": 1781370320281,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def runtime_results():\n        _write_verify_script()\n        try:\n            result = subprocess.run(\n                [\"npx\", \"--no-install\", \"tsx\", VERIFY_SCRIPT],\n                cwd=PROJECT_DIR,\n                capture_output=True,\n                text=True,\n                timeout=120,\n            )\n        finally:\n            pass\n>       assert result.returncode == 0, (\n            f\"Verifier tsx script failed.\\nstdout={result.stdout!r}\\nstderr={result.stderr!r}\"\n        )\nE       AssertionError: Verifier tsx script failed.\nE         stdout=''\nE         stderr='file:///home/user/myproject/.verify-module.mjs:2\\nimport scopeModule from \"./src/scope.ts\";\\n       ^^^^^^^^^^^\\nSyntaxError: The requested module \\'./src/scope.ts\\' does not provide an export named \\'default\\'\\n    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)\\n    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)\\n    at async node:internal/modules/esm/loader:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', '/home/user/myproject/.verify-module.mjs'], returncode=1, stdout=...der:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n').returncode\n\ntests/test_final_state.py:289: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_assert_accepts_payload_with_valid_db_config",
+                "status": "failed",
+                "duration": 8,
+                "start": 1781370320281,
+                "stop": 1781370320289,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def runtime_results():\n        _write_verify_script()\n        try:\n            result = subprocess.run(\n                [\"npx\", \"--no-install\", \"tsx\", VERIFY_SCRIPT],\n                cwd=PROJECT_DIR,\n                capture_output=True,\n                text=True,\n                timeout=120,\n            )\n        finally:\n            pass\n>       assert result.returncode == 0, (\n            f\"Verifier tsx script failed.\\nstdout={result.stdout!r}\\nstderr={result.stderr!r}\"\n        )\nE       AssertionError: Verifier tsx script failed.\nE         stdout=''\nE         stderr='file:///home/user/myproject/.verify-module.mjs:2\\nimport scopeModule from \"./src/scope.ts\";\\n       ^^^^^^^^^^^\\nSyntaxError: The requested module \\'./src/scope.ts\\' does not provide an export named \\'default\\'\\n    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)\\n    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)\\n    at async node:internal/modules/esm/loader:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', '/home/user/myproject/.verify-module.mjs'], returncode=1, stdout=...der:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n').returncode\n\ntests/test_final_state.py:289: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_assert_rejects_payload_with_invalid_db_config",
+                "status": "failed",
+                "duration": 7,
+                "start": 1781370320289,
+                "stop": 1781370320296,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def runtime_results():\n        _write_verify_script()\n        try:\n            result = subprocess.run(\n                [\"npx\", \"--no-install\", \"tsx\", VERIFY_SCRIPT],\n                cwd=PROJECT_DIR,\n                capture_output=True,\n                text=True,\n                timeout=120,\n            )\n        finally:\n            pass\n>       assert result.returncode == 0, (\n            f\"Verifier tsx script failed.\\nstdout={result.stdout!r}\\nstderr={result.stderr!r}\"\n        )\nE       AssertionError: Verifier tsx script failed.\nE         stdout=''\nE         stderr='file:///home/user/myproject/.verify-module.mjs:2\\nimport scopeModule from \"./src/scope.ts\";\\n       ^^^^^^^^^^^\\nSyntaxError: The requested module \\'./src/scope.ts\\' does not provide an export named \\'default\\'\\n    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)\\n    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)\\n    at async node:internal/modules/esm/loader:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', '/home/user/myproject/.verify-module.mjs'], returncode=1, stdout=...der:633:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.16.0\\n').returncode\n\ntests/test_final_state.py:289: AssertionError"
+            }
+        ]
+    }
+}

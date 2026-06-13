@@ -1,0 +1,100 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 8,
+            "passed": 7,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781367736818,
+            "stop": 1781367744759
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_package_json_pins_arktype_2_2_0",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781367736850,
+                "stop": 1781367736852,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validate_script_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367736852,
+                "stop": 1781367736853,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validate_script_uses_single_arktype_chain",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 17,
+                "start": 1781367736853,
+                "stop": 1781367736870,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_validate_script_uses_single_arktype_chain():\n        with open(VALIDATE_TS) as f:\n            source = f.read()\n        assert re.search(r\"\"\"from\\s+['\"]arktype['\"]\"\"\", source), (\n            \"validate.ts must import from 'arktype'.\"\n        )\n>       assert \".narrow(\" in source, (\n            \"The first-letter rule must be expressed inside an ArkType '.narrow(...)' call.\"\n        )\nE       AssertionError: The first-letter rule must be expressed inside an ArkType '.narrow(...)' call.\nE       assert '.narrow(' in 'import { type } from \"arktype\";\\n\\nconst usernameSchema = type(\"/^[a-zA-Z][a-zA-Z0-9]{2,18}$/\");\\n\\nconst input = pro...) {\\n    console.log(\"invalid\");\\n    process.exit(1);\\n} else {\\n    console.log(\"valid\");\\n    process.exit(0);\\n}\\n'\n\ntests/test_final_state.py:41: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_valid_username_alice123",
+                "status": "passed",
+                "duration": 1650,
+                "start": 1781367736871,
+                "stop": 1781367738521,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_too_short_al",
+                "status": "passed",
+                "duration": 1522,
+                "start": 1781367738522,
+                "stop": 1781367740044,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_too_long",
+                "status": "passed",
+                "duration": 1521,
+                "start": 1781367740045,
+                "stop": 1781367741566,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_non_alphanumeric",
+                "status": "passed",
+                "duration": 1632,
+                "start": 1781367741566,
+                "stop": 1781367743198,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_starts_with_digit",
+                "status": "passed",
+                "duration": 1561,
+                "start": 1781367743198,
+                "stop": 1781367744759,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

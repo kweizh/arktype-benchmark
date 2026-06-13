@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 8 items
+
+tests/test_final_state.py ........                                       [100%]
+
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_arktype_version_pinned
+PASSED tests/test_final_state.py::test_schemas_module_exists
+PASSED tests/test_final_state.py::test_loose_user_preserves_extra_keys
+PASSED tests/test_final_state.py::test_reject_user_rejects_extra_keys
+PASSED tests/test_final_state.py::test_delete_user_strips_extra_keys
+PASSED tests/test_final_state.py::test_loose_user_accepts_only_declared
+PASSED tests/test_final_state.py::test_reject_user_accepts_only_declared
+PASSED tests/test_final_state.py::test_delete_user_accepts_only_declared
+============================== 8 passed in 2.09s ===============================

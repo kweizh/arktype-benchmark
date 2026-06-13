@@ -1,0 +1,79 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781365576779,
+            "stop": 1781365582963
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_validate_ts_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781365576808,
+                "stop": 1781365576809,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validate_ts_uses_required_tuple_expression",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781365576809,
+                "stop": 1781365576811,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_even_numeric_string_parses_to_number",
+                "status": "passed",
+                "duration": 1554,
+                "start": 1781365576811,
+                "stop": 1781365578365,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_odd_numeric_string_is_rejected",
+                "status": "passed",
+                "duration": 1488,
+                "start": 1781365578366,
+                "stop": 1781365579854,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_non_numeric_string_is_rejected",
+                "status": "passed",
+                "duration": 1540,
+                "start": 1781365579855,
+                "stop": 1781365581395,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_already_number_is_rejected",
+                "status": "passed",
+                "duration": 1567,
+                "start": 1781365581395,
+                "stop": 1781365582962,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

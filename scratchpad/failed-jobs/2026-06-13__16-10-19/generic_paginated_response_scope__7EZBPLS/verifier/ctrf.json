@@ -1,0 +1,115 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 9,
+            "passed": 6,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781367686174,
+            "stop": 1781367697268
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_validate_script_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367686208,
+                "stop": 1781367686209,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_criterion_1_page_of_user_accepts_valid_user",
+                "status": "passed",
+                "duration": 1592,
+                "start": 1781367686210,
+                "stop": 1781367687802,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_criterion_2_page_of_user_rejects_invalid_user",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1582,
+                "start": 1781367687802,
+                "stop": 1781367689384,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_criterion_2_page_of_user_rejects_invalid_user():\n        \"\"\"PageOfUser.assert({ items: [{...invalid user}], total: 1, cursor: null }) MUST throw.\"\"\"\n        payload = {\"items\": [INVALID_USER], \"total\": 1, \"cursor\": None}\n        result = _run_validate(\"PageOfUser\", payload)\n>       assert result.returncode != 0, (\n            \"PageOfUser MUST reject a page whose items contain an invalid User \"\n            \"(email is not a valid email). \"\n            f\"exit={result.returncode}, stdout={result.stdout!r}, stderr={result.stderr!r}\"\n        )\nE       AssertionError: PageOfUser MUST reject a page whose items contain an invalid User (email is not a valid email). exit=0, stdout='OK\\n', stderr=''\nE       assert 0 != 0\nE        +  where 0 = CompletedProcess(args=['npx', 'tsx', 'validate.ts', 'PageOfUser'], returncode=0, stdout='OK\\n', stderr='').returncode\n\ntests/test_final_state.py:70: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_criterion_3_page_of_product_validates_product_items",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1676,
+                "start": 1781367689384,
+                "stop": 1781367691060,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_criterion_3_page_of_product_validates_product_items():\n        \"\"\"PageOfProduct.assert(...) MUST validate Product items.\"\"\"\n        payload = {\"items\": [VALID_PRODUCT], \"total\": 1, \"cursor\": None}\n        result = _run_validate(\"PageOfProduct\", payload)\n>       assert result.returncode == 0, (\n            \"PageOfProduct MUST accept a page containing a valid Product. \"\n            f\"exit={result.returncode}, stdout={result.stdout!r}, stderr={result.stderr!r}\"\n        )\nE       AssertionError: PageOfProduct MUST accept a page containing a valid Product. exit=1, stdout='', stderr='items[0].id must be a string (was missing)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'validate.ts', 'PageOfProduct'], returncode=1, stdout='', stderr='items[0].id must be a string (was missing)\\n').returncode\n\ntests/test_final_state.py:85: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_criterion_4_page_of_product_rejects_user_object",
+                "status": "passed",
+                "duration": 3166,
+                "start": 1781367691060,
+                "stop": 1781367694226,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_criterion_5_generic_defined_with_scoped_syntax",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781367694226,
+                "stop": 1781367694228,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cursor_accepts_string",
+                "status": "passed",
+                "duration": 1509,
+                "start": 1781367694229,
+                "stop": 1781367695738,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cursor_rejects_number",
+                "status": "passed",
+                "duration": 1462,
+                "start": 1781367695738,
+                "stop": 1781367697200,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_arktype_version_pinned",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 68,
+                "start": 1781367697200,
+                "stop": 1781367697268,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_arktype_version_pinned():\n        \"\"\"The installed arktype version reported by node must be exactly 2.2.0.\"\"\"\n        result = subprocess.run(\n            [\n                \"node\",\n                \"-e\",\n                \"process.stdout.write(require('arktype/package.json').version)\",\n            ],\n            cwd=PROJECT_DIR,\n            capture_output=True,\n            text=True,\n            timeout=30,\n        )\n>       assert result.returncode == 0, (\n            f\"Failed to read arktype's installed version: stderr={result.stderr!r}\"\n        )\nE       AssertionError: Failed to read arktype's installed version: stderr='node:internal/modules/cjs/loader:714\\n      throw e;\\n      ^\\n\\nError [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath \\'./package.json\\' is not defined by \"exports\" in /home/user/arktype-pagination/node_modules/arktype/package.json\\n    at exportsNotFound (node:internal/modules/esm/resolve:314:10)\\n    at packageExportsResolve (node:internal/modules/esm/resolve:662:9)\\n    at resolveExports (node:internal/modules/cjs/loader:707:36)\\n    at Module._findPath (node:internal/modules/cjs/loader:774:31)\\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1485:27)\\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)\\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)\\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1116:12)\\n    at Module._load (node:internal/modules/cjs/loader:1285:25)\\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {\\n  code: \\'ERR_PACKAGE_PATH_NOT_EXPORTED\\'\\n}\\n\\nNode.js v24.16.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['node', '-e', \"process.stdout.write(require('arktype/package.json').version)\"], returncode=1, s...eLoad (node:internal/modules/cjs/loader:255:19) {\\n  code: \\'ERR_PACKAGE_PATH_NOT_EXPORTED\\'\\n}\\n\\nNode.js v24.16.0\\n').returncode\n\ntests/test_final_state.py:235: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

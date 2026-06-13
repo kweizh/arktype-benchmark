@@ -1,0 +1,136 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 11,
+            "passed": 7,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781367003580,
+            "stop": 1781367005377
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_project_files_exist",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367003623,
+                "stop": 1781367003624,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_package_json_pins_arktype_2_2_0",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367003625,
+                "stop": 1781367003626,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_tsx_available",
+                "status": "passed",
+                "duration": 545,
+                "start": 1781367003626,
+                "stop": 1781367004171,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_single_scope_export_chain",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 21,
+                "start": 1781367004171,
+                "stop": 1781367004192,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_single_scope_export_chain():\n        source = _read_source()\n        matches = _find_scope_export_block(source)\n>       assert len(matches) == 1, (\n            f\"Expected exactly one `scope({{...}}).export()` chain in src/scope.ts, found {len(matches)}.\"\n        )\nE       AssertionError: Expected exactly one `scope({...}).export()` chain in src/scope.ts, found 2.\nE       assert 2 == 1\nE        +  where 2 = len([('\\n  /** Sub-module key 1 \u2013 database configuration */\\n  \"db.config\": {\\n    host: \"string\",\\n    port: \"number\",\\n ...,\\n', '.export();\\n\\n// ----------------'), (' \"db.config\": \u2026, \"http.server\": \u2026 ', '.export()` stores types under\\n/')])\n\ntests/test_final_state.py:129: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_scope_has_db_and_http_dot_notation_keys",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 7,
+                "start": 1781367004192,
+                "stop": 1781367004199,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_scope_has_db_and_http_dot_notation_keys():\n        source = _read_source()\n        matches = _find_scope_export_block(source)\n>       assert len(matches) == 1, \"Expected exactly one scope({...}).export() chain.\"\nE       AssertionError: Expected exactly one scope({...}).export() chain.\nE       assert 2 == 1\nE        +  where 2 = len([('\\n  /** Sub-module key 1 \u2013 database configuration */\\n  \"db.config\": {\\n    host: \"string\",\\n    port: \"number\",\\n ...,\\n', '.export();\\n\\n// ----------------'), (' \"db.config\": \u2026, \"http.server\": \u2026 ', '.export()` stores types under\\n/')])\n\ntests/test_final_state.py:141: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_references_db_config_alias",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781367004199,
+                "stop": 1781367004201,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_module_exposes_dot_notation_submodules",
+                "status": "passed",
+                "duration": 1158,
+                "start": 1781367004201,
+                "stop": 1781367005359,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_db_config_assert_accepts_valid_payload",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367005360,
+                "stop": 1781367005361,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_db_config_assert_rejects_invalid_payload",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367005361,
+                "stop": 1781367005362,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_assert_accepts_payload_with_valid_db_config",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 8,
+                "start": 1781367005362,
+                "stop": 1781367005370,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "runtime_results = {'db_config_accepts_valid': True, 'db_config_rejects_invalid': True, 'has_db_config': True, 'has_http_server': True, ...}\n\n    def test_http_server_assert_accepts_payload_with_valid_db_config(runtime_results):\n>       assert runtime_results.get(\"http_server_accepts_valid\") is True, (\n            \"module.http.server.assert must accept a payload whose nested db-config \"\n            \"property (commonly named `db`, `database`, `dbConfig`, or `config`) is a \"\n            \"valid db.config payload.\"\n        )\nE       AssertionError: module.http.server.assert must accept a payload whose nested db-config property (commonly named `db`, `database`, `dbConfig`, or `config`) is a valid db.config payload.\nE       assert False is True\nE        +  where False = <built-in method get of dict object at 0x7fc1edeffb00>('http_server_accepts_valid')\nE        +    where <built-in method get of dict object at 0x7fc1edeffb00> = {'db_config_accepts_valid': True, 'db_config_rejects_invalid': True, 'has_db_config': True, 'has_http_server': True, ...}.get\n\ntests/test_final_state.py:326: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_assert_rejects_payload_with_invalid_db_config",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 7,
+                "start": 1781367005370,
+                "stop": 1781367005377,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "runtime_results = {'db_config_accepts_valid': True, 'db_config_rejects_invalid': True, 'has_db_config': True, 'has_http_server': True, ...}\n\n    def test_http_server_assert_rejects_payload_with_invalid_db_config(runtime_results):\n>       assert runtime_results.get(\"http_server_rejects_invalid\") is True, (\n            \"module.http.server.assert must reject a payload whose nested db-config \"\n            \"property is an invalid db.config payload (e.g., wrong port type).\"\n        )\nE       AssertionError: module.http.server.assert must reject a payload whose nested db-config property is an invalid db.config payload (e.g., wrong port type).\nE       assert False is True\nE        +  where False = <built-in method get of dict object at 0x7fc1edeffb00>('http_server_rejects_invalid')\nE        +    where <built-in method get of dict object at 0x7fc1edeffb00> = {'db_config_accepts_valid': True, 'db_config_rejects_invalid': True, 'has_db_config': True, 'has_http_server': True, ...}.get\n\ntests/test_final_state.py:334: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

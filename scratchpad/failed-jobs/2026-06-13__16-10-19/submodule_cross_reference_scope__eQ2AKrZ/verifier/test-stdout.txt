@@ -1,0 +1,83 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 11 items
+
+tests/test_final_state.py ......FF.FF                                    [100%]
+
+=================================== FAILURES ===================================
+_________________ test_module_exposes_dot_notation_submodules __________________
+
+runtime_results = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': "Cannot read properties of undefined (reading 'config')", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}
+
+    def test_module_exposes_dot_notation_submodules(runtime_results):
+>       assert runtime_results.get("has_db_config") is True, (
+            "Expected `module.db.config.assert` to be a function on the exported module."
+        )
+E       AssertionError: Expected `module.db.config.assert` to be a function on the exported module.
+E       assert False is True
+E        +  where False = <built-in method get of dict object at 0x7fb7aa90d700>('has_db_config')
+E        +    where <built-in method get of dict object at 0x7fb7aa90d700> = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': "Cannot read properties of undefined (reading 'config')", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}.get
+
+tests/test_final_state.py:304: AssertionError
+_________________ test_db_config_assert_accepts_valid_payload __________________
+
+runtime_results = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': "Cannot read properties of undefined (reading 'config')", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}
+
+    def test_db_config_assert_accepts_valid_payload(runtime_results):
+>       assert runtime_results.get("db_config_accepts_valid") is True, (
+            "module.db.config.assert({host: '127.0.0.1', port: 5432}) must succeed. "
+            f"Error: {runtime_results.get('db_config_accepts_valid_error')!r}"
+        )
+E       AssertionError: module.db.config.assert({host: '127.0.0.1', port: 5432}) must succeed. Error: "Cannot read properties of undefined (reading 'config')"
+E       assert False is True
+E        +  where False = <built-in method get of dict object at 0x7fb7aa90d700>('db_config_accepts_valid')
+E        +    where <built-in method get of dict object at 0x7fb7aa90d700> = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': "Cannot read properties of undefined (reading 'config')", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}.get
+
+tests/test_final_state.py:313: AssertionError
+_________ test_http_server_assert_accepts_payload_with_valid_db_config _________
+
+runtime_results = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': "Cannot read properties of undefined (reading 'config')", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}
+
+    def test_http_server_assert_accepts_payload_with_valid_db_config(runtime_results):
+>       assert runtime_results.get("http_server_accepts_valid") is True, (
+            "module.http.server.assert must accept a payload whose nested db-config "
+            "property (commonly named `db`, `database`, `dbConfig`, or `config`) is a "
+            "valid db.config payload."
+        )
+E       AssertionError: module.http.server.assert must accept a payload whose nested db-config property (commonly named `db`, `database`, `dbConfig`, or `config`) is a valid db.config payload.
+E       assert False is True
+E        +  where False = <built-in method get of dict object at 0x7fb7aa90d700>('http_server_accepts_valid')
+E        +    where <built-in method get of dict object at 0x7fb7aa90d700> = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': "Cannot read properties of undefined (reading 'config')", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}.get
+
+tests/test_final_state.py:326: AssertionError
+________ test_http_server_assert_rejects_payload_with_invalid_db_config ________
+
+runtime_results = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': "Cannot read properties of undefined (reading 'config')", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}
+
+    def test_http_server_assert_rejects_payload_with_invalid_db_config(runtime_results):
+>       assert runtime_results.get("http_server_rejects_invalid") is True, (
+            "module.http.server.assert must reject a payload whose nested db-config "
+            "property is an invalid db.config payload (e.g., wrong port type)."
+        )
+E       AssertionError: module.http.server.assert must reject a payload whose nested db-config property is an invalid db.config payload (e.g., wrong port type).
+E       assert False is True
+E        +  where False = <built-in method get of dict object at 0x7fb7aa90d700>('http_server_rejects_invalid')
+E        +    where <built-in method get of dict object at 0x7fb7aa90d700> = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': "Cannot read properties of undefined (reading 'config')", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}.get
+
+tests/test_final_state.py:334: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_project_files_exist
+PASSED tests/test_final_state.py::test_package_json_pins_arktype_2_2_0
+PASSED tests/test_final_state.py::test_tsx_available
+PASSED tests/test_final_state.py::test_single_scope_export_chain
+PASSED tests/test_final_state.py::test_scope_has_db_and_http_dot_notation_keys
+PASSED tests/test_final_state.py::test_http_server_references_db_config_alias
+PASSED tests/test_final_state.py::test_db_config_assert_rejects_invalid_payload
+FAILED tests/test_final_state.py::test_module_exposes_dot_notation_submodules
+FAILED tests/test_final_state.py::test_db_config_assert_accepts_valid_payload
+FAILED tests/test_final_state.py::test_http_server_assert_accepts_payload_with_valid_db_config
+FAILED tests/test_final_state.py::test_http_server_assert_rejects_payload_with_invalid_db_config
+========================= 4 failed, 7 passed in 2.00s ==========================

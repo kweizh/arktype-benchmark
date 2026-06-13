@@ -1,0 +1,131 @@
+- Initializing MCP connections...
+You
+# ArkType: ISO-8601 Date Morph That Requires Explicit Timezone ## Goal In the project at `/home/user/myproject`, build an ArkType (v2.2.0) morph that converts an ISO-8601 date string into a JavaScript `Date`, accepting **only** strings that already include explicit timezone information (`Z` or `±HH:MM`). Expose it as `parseIsoDate(input: unknown): Date` from `src/parseIsoDate.ts`. ## Acceptance Criteria 1. `parseIsoDate("2024-01-15T10:30:00Z")` MUST morph to a valid `Date` instance whose `toISOString()` returns `"2024-01-15T10:30:00.000Z"`. 2. `parseIsoDate("2024-01-15T10:30:00+05:00")` MUST morph to a `Date` instance. 3. `parseIsoDate("2024-01-15T10:30:00")` (no timezone) MUST be rejected. 4. `parseIsoDate("not-a-date")` MUST be rejected. 5. The exported function `parseIsoDate(input: unknown): Date` MUST throw on rejection (via `.assert(...)`).   
+
+Pochi
+💭 Thinking for 81 characters   
+📂 Listing files in /home/user/myproject ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+📂 Listing files in /home/user/myproject/src ✔ 
+Let me quickly check ArkType's API surface for morphs and the `pipe`/`narrow` patterns in v2.2.0:   
+🔍 Searching for *.d.ts in /home/user/myproject/node_modules/arktype ✔ 
+📂 Listing files in /home/user/myproject/node_modules/arktype ✔ 
+📂 Listing files in /home/user/myproject/node_modules/arktype/out ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/index.d.ts ✔ 
+📂 Listing files in /home/user/myproject/node_modules/arktype/out/keywords ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/keywords/string.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/type.d.ts ✔ 
+Now I have a clear picture of the ArkType v2.2.0 API. I can see: - `type("string", "=>", morph)` for tuple expression morphs - `type.pipe(...)` for piping - `string.date.iso` as a built-in ISO validator - The `"=>"` infix operator for morphs Let me check the `iso8601Matcher` regex exported from the string module to understand what it matches:   
+🔍 Searching for iso8601Matcher|iso8601|isoDate in /home/user/myproject/node_modules/arktype/out/keywords ✔ 
+I can see the `iso8601Matcher` regex — it accepts strings **with or without** timezone. Now I need to craft a stricter regex that requires the timezone suffix (`Z` or `±HH:MM`). Let me now write the implementation:   
+✏️  Writing /home/user/myproject/src/parseIsoDate.ts ✔ 
+Now let's verify the implementation compiles and all acceptance criteria pass:   
+💫 Executing cd /home/user/myproject && node --import tsx/esm -e "
+import { parseIsoDate } from './src/parseIsoDate.ts'
+
+let passed = 0
+let failed = 0
+
+function assert(label, fn) {
+  try {
+    fn()
+    console.log('  PASS:', label)
+    passed++
+  } catch (e) {
+    console.log('  FAIL:', label)
+    console.log('       ', e.message ?? e)
+    failed++
+  }
+}
+
+// AC1: UTC suffix → valid Date with correct ISO string
+assert('AC1: Z suffix morphs to Date', () => {
+  const d = parseIsoDate('2024-01-15T10:30:00Z')
+  if (!(d instanceof Date)) throw new Error('not a Date')
+  if (d.toISOString() !== '2024-01-15T10:30:00.000Z') throw new Error('wrong ISO string: ' + d.toISOString())
+})
+
+// AC2: numeric offset → Date instance
+assert('AC2: +05:00 offset morphs to Date', () => {
+  const d = parseIsoDate('2024-01-15T10:30:00+05:00')
+  if (!(d instanceof Date)) throw new Error('not a Date')
+})
+
+// AC3: no timezone → rejected
+assert('AC3: no timezone is rejected', () => {
+  try {
+    parseIsoDate('2024-01-15T10:30:00')
+    throw new Error('should have thrown')
+  } catch (e) {
+    if (e.message === 'should have thrown') throw e
+    // rejection is correct
+  }
+})
+
+// AC4: non-date string → rejected
+assert('AC4: non-date string is rejected', () => {
+  try {
+    parseIsoDate('not-a-date')
+    throw new Error('should have thrown')
+  } catch (e) {
+    if (e.message === 'should have thrown') throw e
+  }
+})
+
+// AC5: non-string → rejected (throws)
+assert('AC5: non-string input throws', () => {
+  try {
+    parseIsoDate(12345)
+    throw new Error('should have thrown')
+  } catch (e) {
+    if (e.message === 'should have thrown') throw e
+  }
+})
+
+console.log()
+console.log(passed + ' passed, ' + failed + ' failed')
+process.exit(failed > 0 ? 1 : 0)
+"
+ ✔ 
+All 5 checks pass. Let's also do a quick TypeScript type-check to confirm no TS errors:   
+💫 Executing cd /home/user/myproject && npx tsc --noEmit 2>&1 ✔ 
+Zero TypeScript errors.   
+🎉 Task Completed
+
+`src/parseIsoDate.ts` is implemented and passes all five acceptance criteria with zero TypeScript errors.
+
+### How it works
+
+```
+string  ──narrow──►  string matching ISO_8601_WITH_TZ  ──pipe──►  new Date(s)
+```
+
+Three ArkType steps are chained on a single `Type`:
+
+| Step | ArkType API | Purpose |
+|---|---|---|
+| `type("string")` | primitive keyword | Rejects anything that isn't a string |
+| `.narrow(s, ctx => …)` | narrowing predicate | Runs the strict regex; calls `ctx.reject(…)` (returning the error object to signal failure) when the string has no timezone |
+| `.pipe(s => new Date(s))` | morph | Converts the validated string to a `Date` |
+
+### The timezone-mandatory regex
+
+```
+/^\d{4}-(0[1-9]|1[0-2])-([12]\d|0[1-9]|3[01])
+ T([01]\d|2[0-3]):[0-5]\d
+ (:[0-5]\d(\.\d+)?)?
+ (Z|[+-]([01]\d|2[0-3]):[0-5]\d)$/i
+```
+
+The final group `(Z|[+-]([01]\d|2[0-3]):[0-5]\d)` is **required** (not `?`), so strings without a trailing `Z` or `±HH:MM` are rejected at the `narrow` step before the `pipe` ever runs.
+
+### Exported API
+
+```ts
+export const parseIsoDate = (input: unknown): Date => isoDateWithTz.assert(input)
+```
+
+`assert` throws an `ArkError` (with a human-readable summary) on any invalid input, satisfying AC3–AC5.
+   
+  

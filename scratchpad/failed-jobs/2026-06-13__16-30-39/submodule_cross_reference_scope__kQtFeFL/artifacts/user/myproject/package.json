@@ -1,0 +1,15 @@
+{
+  "name": "myproject",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/scope.ts"
+  },
+  "dependencies": {
+    "arktype": "2.2.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

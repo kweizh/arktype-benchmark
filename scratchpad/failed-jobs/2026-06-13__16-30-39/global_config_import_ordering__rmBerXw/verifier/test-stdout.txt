@@ -1,0 +1,61 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 8 items
+
+tests/test_final_state.py ....F.F.                                       [100%]
+
+=================================== FAILURES ===================================
+_____________ test_config_ts_calls_configure_with_required_options _____________
+
+    def test_config_ts_calls_configure_with_required_options():
+        content = _read(CONFIG_TS)
+        assert re.search(r"\bconfigure\s*\(", content), (
+            "config.ts MUST contain a `configure({...})` call."
+        )
+        # Must set numberAllowsNaN: true so { x: NaN } can be accepted globally.
+        assert re.search(r"numberAllowsNaN\s*:\s*true\b", content), (
+            "config.ts must set `numberAllowsNaN: true` inside the configure(...) call."
+        )
+        # Must also set exactOptionalPropertyTypes: false as required by the task concept.
+>       assert re.search(r"exactOptionalPropertyTypes\s*:\s*false\b", content), (
+            "config.ts must set `exactOptionalPropertyTypes: false` inside the configure(...) call."
+        )
+E       AssertionError: config.ts must set `exactOptionalPropertyTypes: false` inside the configure(...) call.
+E       assert None
+E        +  where None = <function search at 0x7ffa23fbfba0>('exactOptionalPropertyTypes\\s*:\\s*false\\b', 'import { configure } from "arktype/config"\n\nconfigure({ numberAllowsNaN: true })')
+E        +    where <function search at 0x7ffa23fbfba0> = re.search
+
+tests/test_final_state.py:51: AssertionError
+__________________________ test_index_ts_accepts_nan ___________________________
+
+    def test_index_ts_accepts_nan():
+        """`tsx index.ts` must validate { x: NaN } successfully (numberAllowsNaN: true takes effect)."""
+        result = subprocess.run(
+            ["npx", "--no-install", "tsx", "index.ts"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+>       assert result.returncode == 0, (
+            f"`tsx index.ts` exited with code {result.returncode}. "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: `tsx index.ts` exited with code 1. stdout='', stderr='UNEXPECTED rejection: x must be a number (was NaN)\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='UNEXPECTED rejection: x must be a number (was NaN)\n').returncode
+
+tests/test_final_state.py:126: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_config_ts_exists
+PASSED tests/test_final_state.py::test_index_ts_exists
+PASSED tests/test_final_state.py::test_broken_ts_exists
+PASSED tests/test_final_state.py::test_config_ts_imports_configure_from_arktype_config
+PASSED tests/test_final_state.py::test_index_and_broken_share_schema_module
+PASSED tests/test_final_state.py::test_broken_ts_rejects_nan
+FAILED tests/test_final_state.py::test_config_ts_calls_configure_with_required_options
+FAILED tests/test_final_state.py::test_index_ts_accepts_nan - AssertionError:...
+========================= 2 failed, 6 passed in 3.43s ==========================

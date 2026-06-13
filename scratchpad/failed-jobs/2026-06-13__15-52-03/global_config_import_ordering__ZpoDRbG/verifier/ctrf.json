@@ -1,0 +1,100 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 8,
+            "passed": 7,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781366552678,
+            "stop": 1781366555697
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_config_ts_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366552709,
+                "stop": 1781366552710,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366552710,
+                "stop": 1781366552711,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_broken_ts_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366552712,
+                "stop": 1781366552713,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_config_ts_imports_configure_from_arktype_config",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781366552713,
+                "stop": 1781366552715,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_config_ts_calls_configure_with_required_options",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 20,
+                "start": 1781366552715,
+                "stop": 1781366552735,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_config_ts_calls_configure_with_required_options():\n        content = _read(CONFIG_TS)\n        assert re.search(r\"\\bconfigure\\s*\\(\", content), (\n            \"config.ts MUST contain a `configure({...})` call.\"\n        )\n        # Must set numberAllowsNaN: true so { x: NaN } can be accepted globally.\n        assert re.search(r\"numberAllowsNaN\\s*:\\s*true\\b\", content), (\n            \"config.ts must set `numberAllowsNaN: true` inside the configure(...) call.\"\n        )\n        # Must also set exactOptionalPropertyTypes: false as required by the task concept.\n>       assert re.search(r\"exactOptionalPropertyTypes\\s*:\\s*false\\b\", content), (\n            \"config.ts must set `exactOptionalPropertyTypes: false` inside the configure(...) call.\"\n        )\nE       AssertionError: config.ts must set `exactOptionalPropertyTypes: false` inside the configure(...) call.\nE       assert None\nE        +  where None = <function search at 0x7fc7a040bba0>('exactOptionalPropertyTypes\\\\s*:\\\\s*false\\\\b', 'import { configure } from \"arktype/config\";\\n\\n// Must be imported BEFORE arktype (and any module that imports arktyp...s resolvedConfig and\\n// before any type is parsed/compiled with applyConfig.\\nconfigure({ numberAllowsNaN: true });\\n')\nE        +    where <function search at 0x7fc7a040bba0> = re.search\n\ntests/test_final_state.py:51: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_index_and_broken_share_schema_module",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781366552735,
+                "stop": 1781366552737,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_accepts_nan",
+                "status": "passed",
+                "duration": 1451,
+                "start": 1781366552737,
+                "stop": 1781366554188,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_broken_ts_rejects_nan",
+                "status": "passed",
+                "duration": 1508,
+                "start": 1781366554188,
+                "stop": 1781366555696,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 0,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781366205820,
+            "stop": 1781366207505
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_short_password_triggers_validation_error",
+                "status": "failed",
+                "duration": 1645,
+                "start": 1781366205842,
+                "stop": 1781366207487,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def harness_output():\n        assert os.path.isfile(SCHEMA_PATH), (\n            f\"Expected schema file at {SCHEMA_PATH}; agent must export PasswordSchema \"\n            f\"from this path.\"\n        )\n    \n        if os.path.exists(HARNESS_PATH):\n            os.remove(HARNESS_PATH)\n    \n        schema_module = SCHEMA_PATH[:-3] if SCHEMA_PATH.endswith(\".ts\") else SCHEMA_PATH\n        source = (\n            HARNESS_SOURCE.replace(\"__SCHEMA_PATH__\", schema_module)\n            .replace(\"__SHORT_PWD__\", SHORT_PASSWORD)\n            .replace(\"__LONG_PWD__\", LONG_PASSWORD)\n        )\n    \n        with open(HARNESS_PATH, \"w\") as f:\n            f.write(source)\n    \n        result = subprocess.run(\n            [\"npx\", \"--yes\", \"tsx\", HARNESS_PATH],\n            capture_output=True,\n            text=True,\n            cwd=PROJECT_DIR,\n            timeout=180,\n        )\n>       assert result.returncode == 0, (\n            f\"Verifier harness failed to run (exit={result.returncode}). \"\n            f\"stdout={result.stdout!r}, stderr={result.stderr!r}.\"\n        )\nE       AssertionError: Verifier harness failed to run (exit=1). stdout='', stderr=\"node:internal/modules/cjs/loader:1500\\n  const err = new Error(message);\\n              ^\\n\\nError: Cannot find module 'arktype'\\nRequire stack:\\n- /tmp/verify-password.ts\\n    at node:internal/modules/cjs/loader:1500:15\\n    at nextResolveSimple (/home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:942)\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:2:2550\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:2:1624\\n    at resolveTsPaths (/home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:760)\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:1038\\n    at m._resolveFilename (file:///home/user/myproject/node_modules/tsx/dist/register-RyGUjI6j.mjs:1:789)\\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)\\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)\\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1116:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/verify-password.ts' ]\\n}\\n\\nNode.js v24.16.0\\n\".\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--yes', 'tsx', '/tmp/verify-password.ts'], returncode=1, stdout='', stderr=\"node:intern...oader:1116:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/verify-password.ts' ]\\n}\\n\\nNode.js v24.16.0\\n\").returncode\n\ntests/test_final_state.py:80: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_short_password_error_contains_redacted_literal",
+                "status": "failed",
+                "duration": 5,
+                "start": 1781366207487,
+                "stop": 1781366207492,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def harness_output():\n        assert os.path.isfile(SCHEMA_PATH), (\n            f\"Expected schema file at {SCHEMA_PATH}; agent must export PasswordSchema \"\n            f\"from this path.\"\n        )\n    \n        if os.path.exists(HARNESS_PATH):\n            os.remove(HARNESS_PATH)\n    \n        schema_module = SCHEMA_PATH[:-3] if SCHEMA_PATH.endswith(\".ts\") else SCHEMA_PATH\n        source = (\n            HARNESS_SOURCE.replace(\"__SCHEMA_PATH__\", schema_module)\n            .replace(\"__SHORT_PWD__\", SHORT_PASSWORD)\n            .replace(\"__LONG_PWD__\", LONG_PASSWORD)\n        )\n    \n        with open(HARNESS_PATH, \"w\") as f:\n            f.write(source)\n    \n        result = subprocess.run(\n            [\"npx\", \"--yes\", \"tsx\", HARNESS_PATH],\n            capture_output=True,\n            text=True,\n            cwd=PROJECT_DIR,\n            timeout=180,\n        )\n>       assert result.returncode == 0, (\n            f\"Verifier harness failed to run (exit={result.returncode}). \"\n            f\"stdout={result.stdout!r}, stderr={result.stderr!r}.\"\n        )\nE       AssertionError: Verifier harness failed to run (exit=1). stdout='', stderr=\"node:internal/modules/cjs/loader:1500\\n  const err = new Error(message);\\n              ^\\n\\nError: Cannot find module 'arktype'\\nRequire stack:\\n- /tmp/verify-password.ts\\n    at node:internal/modules/cjs/loader:1500:15\\n    at nextResolveSimple (/home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:942)\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:2:2550\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:2:1624\\n    at resolveTsPaths (/home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:760)\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:1038\\n    at m._resolveFilename (file:///home/user/myproject/node_modules/tsx/dist/register-RyGUjI6j.mjs:1:789)\\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)\\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)\\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1116:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/verify-password.ts' ]\\n}\\n\\nNode.js v24.16.0\\n\".\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--yes', 'tsx', '/tmp/verify-password.ts'], returncode=1, stdout='', stderr=\"node:intern...oader:1116:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/verify-password.ts' ]\\n}\\n\\nNode.js v24.16.0\\n\").returncode\n\ntests/test_final_state.py:80: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_short_password_error_does_not_reveal_actual_value",
+                "status": "failed",
+                "duration": 6,
+                "start": 1781366207492,
+                "stop": 1781366207498,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def harness_output():\n        assert os.path.isfile(SCHEMA_PATH), (\n            f\"Expected schema file at {SCHEMA_PATH}; agent must export PasswordSchema \"\n            f\"from this path.\"\n        )\n    \n        if os.path.exists(HARNESS_PATH):\n            os.remove(HARNESS_PATH)\n    \n        schema_module = SCHEMA_PATH[:-3] if SCHEMA_PATH.endswith(\".ts\") else SCHEMA_PATH\n        source = (\n            HARNESS_SOURCE.replace(\"__SCHEMA_PATH__\", schema_module)\n            .replace(\"__SHORT_PWD__\", SHORT_PASSWORD)\n            .replace(\"__LONG_PWD__\", LONG_PASSWORD)\n        )\n    \n        with open(HARNESS_PATH, \"w\") as f:\n            f.write(source)\n    \n        result = subprocess.run(\n            [\"npx\", \"--yes\", \"tsx\", HARNESS_PATH],\n            capture_output=True,\n            text=True,\n            cwd=PROJECT_DIR,\n            timeout=180,\n        )\n>       assert result.returncode == 0, (\n            f\"Verifier harness failed to run (exit={result.returncode}). \"\n            f\"stdout={result.stdout!r}, stderr={result.stderr!r}.\"\n        )\nE       AssertionError: Verifier harness failed to run (exit=1). stdout='', stderr=\"node:internal/modules/cjs/loader:1500\\n  const err = new Error(message);\\n              ^\\n\\nError: Cannot find module 'arktype'\\nRequire stack:\\n- /tmp/verify-password.ts\\n    at node:internal/modules/cjs/loader:1500:15\\n    at nextResolveSimple (/home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:942)\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:2:2550\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:2:1624\\n    at resolveTsPaths (/home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:760)\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:1038\\n    at m._resolveFilename (file:///home/user/myproject/node_modules/tsx/dist/register-RyGUjI6j.mjs:1:789)\\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)\\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)\\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1116:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/verify-password.ts' ]\\n}\\n\\nNode.js v24.16.0\\n\".\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--yes', 'tsx', '/tmp/verify-password.ts'], returncode=1, stdout='', stderr=\"node:intern...oader:1116:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/verify-password.ts' ]\\n}\\n\\nNode.js v24.16.0\\n\").returncode\n\ntests/test_final_state.py:80: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_long_password_validates_successfully",
+                "status": "failed",
+                "duration": 6,
+                "start": 1781366207499,
+                "stop": 1781366207505,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def harness_output():\n        assert os.path.isfile(SCHEMA_PATH), (\n            f\"Expected schema file at {SCHEMA_PATH}; agent must export PasswordSchema \"\n            f\"from this path.\"\n        )\n    \n        if os.path.exists(HARNESS_PATH):\n            os.remove(HARNESS_PATH)\n    \n        schema_module = SCHEMA_PATH[:-3] if SCHEMA_PATH.endswith(\".ts\") else SCHEMA_PATH\n        source = (\n            HARNESS_SOURCE.replace(\"__SCHEMA_PATH__\", schema_module)\n            .replace(\"__SHORT_PWD__\", SHORT_PASSWORD)\n            .replace(\"__LONG_PWD__\", LONG_PASSWORD)\n        )\n    \n        with open(HARNESS_PATH, \"w\") as f:\n            f.write(source)\n    \n        result = subprocess.run(\n            [\"npx\", \"--yes\", \"tsx\", HARNESS_PATH],\n            capture_output=True,\n            text=True,\n            cwd=PROJECT_DIR,\n            timeout=180,\n        )\n>       assert result.returncode == 0, (\n            f\"Verifier harness failed to run (exit={result.returncode}). \"\n            f\"stdout={result.stdout!r}, stderr={result.stderr!r}.\"\n        )\nE       AssertionError: Verifier harness failed to run (exit=1). stdout='', stderr=\"node:internal/modules/cjs/loader:1500\\n  const err = new Error(message);\\n              ^\\n\\nError: Cannot find module 'arktype'\\nRequire stack:\\n- /tmp/verify-password.ts\\n    at node:internal/modules/cjs/loader:1500:15\\n    at nextResolveSimple (/home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:942)\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:2:2550\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:2:1624\\n    at resolveTsPaths (/home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:760)\\n    at /home/user/myproject/node_modules/tsx/dist/register-DCnOAxY2.cjs:3:1038\\n    at m._resolveFilename (file:///home/user/myproject/node_modules/tsx/dist/register-RyGUjI6j.mjs:1:789)\\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)\\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)\\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1116:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/verify-password.ts' ]\\n}\\n\\nNode.js v24.16.0\\n\".\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--yes', 'tsx', '/tmp/verify-password.ts'], returncode=1, stdout='', stderr=\"node:intern...oader:1116:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/verify-password.ts' ]\\n}\\n\\nNode.js v24.16.0\\n\").returncode\n\ntests/test_final_state.py:80: AssertionError"
+            }
+        ]
+    }
+}

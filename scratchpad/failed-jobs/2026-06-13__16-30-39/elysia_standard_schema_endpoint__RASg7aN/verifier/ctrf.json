@@ -1,0 +1,83 @@
+{
+    "reportFormat": "CTRF",
+    "specVersion": "0.0.0",
+    "timestamp": "2026-06-13T16:35:02.307535+00:00",
+    "generatedBy": "pytest",
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781368501247,
+            "stop": 1781368502307
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_server_reachable",
+                "status": "passed",
+                "duration": 615,
+                "start": 1781368501624,
+                "stop": 1781368502239,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_body_returns_200_with_username",
+                "status": "passed",
+                "duration": 25,
+                "start": 1781368502240,
+                "stop": 1781368502265,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_underage_returns_422",
+                "status": "passed",
+                "duration": 9,
+                "start": 1781368502265,
+                "stop": 1781368502274,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_email_returns_422",
+                "status": "passed",
+                "duration": 5,
+                "start": 1781368502275,
+                "stop": 1781368502280,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_extra_unknown_fields_succeed",
+                "status": "passed",
+                "duration": 6,
+                "start": 1781368502281,
+                "stop": 1781368502287,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_body_validator_is_arktype_type_not_t_object",
+                "status": "passed",
+                "duration": 19,
+                "start": 1781368502287,
+                "stop": 1781368502306,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

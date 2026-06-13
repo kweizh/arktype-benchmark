@@ -1,0 +1,96 @@
+- Initializing MCP connections...
+You
+# Strict Undeclared-Key Handling with ArkType ## Goal Define three [ArkType](https://arktype.io/) `2.2.0` schemas at `/home/user/myproject/src/schemas.ts` that demonstrate the three different strategies for handling undeclared object keys. ## Acceptance Criteria - Project path: `/home/user/myproject` - Module path: `/home/user/myproject/src/schemas.ts` - The package `arktype` must be pinned to exactly `2.2.0` in `/home/user/myproject/package.json`. - The module MUST provide three named exports: `LooseUser`, `RejectUser`, and `DeleteUser`. - The following behaviors MUST all hold when the module is imported and the schemas are invoked as functions: 1. `LooseUser({ name: "a", extra: 1 })` MUST return an object where `extra === 1`. 2. `RejectUser({ name: "a", extra: 1 })` MUST return a `type.errors` instance (validation failure). 3. `DeleteUser({ name: "a", extra: 1 })` MUST return an object where `"extra" in result === false`. 4. All three schemas MUST accept `{ name: "a" }` without errors (no `type.errors` returned). 5. The schemas MUST be exported as named exports `LooseUser`, `RejectUser`, `DeleteUser` from `/home/user/myproject/src/schemas.ts`.   
+
+Pochi
+💭 Thinking for 102 characters   
+📂 Listing files in /home/user/myproject ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+Now let me check the ArkType 2.2.0 docs/API for handling undeclared keys to use the correct API:   
+🛠️ Tool webFetch ✔ 
+🔍 Searching for **/*.d.ts in /home/user/myproject/node_modules/arktype ✔ 
+The docs page rendered without code examples for the undeclared key syntax. Let me look at the ArkType source/tests directly to find the exact syntax:   
+💫 Executing find /home/user/myproject/node_modules/arktype -name "*.test.*" 2>/dev/null | head -20; grep -r "undeclared\|onUndeclaredKey\|\+\|reject\|delete" /home/user/myproject/node_modules/arktype/out/parser/objectLiteral.d.ts 2>/dev/null | head -40 ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/objectLiteral.d.ts ✔ 
+I can see the `"+"` key is the undeclared key handler. Now let me find what values it accepts ("ignore", "reject", "delete"):   
+💫 Executing grep -r "reject\|delete\|ignore\|undeclared" /home/user/myproject/node_modules/arktype/out/config.d.ts 2>/dev/null; grep -r "UndeclaredKeyBehavior\|onUndeclaredKey\|\"reject\"\|\"delete\"\|\"ignore\"" /home/user/myproject/node_modules/@ark/schema/out -l 2>/dev/null | head -5 ✔ 
+💫 Executing grep -n "UndeclaredKeyBehavior\|onUndeclaredKey\|\"reject\"\|\"delete\"\|\"ignore\"" /home/user/myproject/node_modules/@ark/schema/out/shared/traversal.d.ts 2>/dev/null | head -20 ✔ 
+💫 Executing grep -rn "UndeclaredKeyBehavior\|\"reject\"\|\"delete\"\|\"ignore\"" /home/user/myproject/node_modules/@ark/schema/out/roots/intersection.d.ts 2>/dev/null | head -20 ✔ 
+💫 Executing grep -rn "UndeclaredKeyBehavior" /home/user/myproject/node_modules/@ark/schema/out/structure/structure.d.ts 2>/dev/null | head -20 ✔ 
+💫 Executing grep -n "UndeclaredKeyHandling\|\"reject\"\|\"delete\"" /home/user/myproject/node_modules/@ark/schema/out/structure/structure.d.ts 2>/dev/null | head -20 ✔ 
+Now I have everything I need. The `"+"` key in an object literal sets the undeclared key behavior with values `"ignore"`, `"reject"`, or `"delete"`. Let me write the schemas:   
+✏️  Writing /home/user/myproject/src/schemas.ts ✔ 
+Now let me verify the schemas behave correctly by running them:   
+💫 Executing cd /home/user/myproject && node --import tsx/esm -e "
+import { LooseUser, RejectUser, DeleteUser } from './src/schemas.ts';
+
+const input = { name: 'a', extra: 1 };
+const valid = { name: 'a' };
+
+// 1. LooseUser passes extra through
+const looseResult = LooseUser(input);
+console.log('LooseUser({ name: \"a\", extra: 1 }):', looseResult);
+console.assert(looseResult.extra === 1, 'FAIL: LooseUser should preserve extra');
+
+// 2. RejectUser returns type.errors
+const rejectResult = RejectUser(input);
+console.log('RejectUser({ name: \"a\", extra: 1 }):', rejectResult);
+console.assert(rejectResult instanceof type.errors, 'FAIL: RejectUser should return type.errors');
+
+// 3. DeleteUser strips extra
+const deleteResult = DeleteUser(input);
+console.log('DeleteUser({ name: \"a\", extra: 1 }):', deleteResult);
+console.assert(!('extra' in deleteResult), 'FAIL: DeleteUser should strip extra');
+
+// 4. All accept { name: 'a' }
+const looseValid = LooseUser(valid);
+const rejectValid = RejectUser(valid);
+const deleteValid = DeleteUser(valid);
+console.assert(!(looseValid instanceof type.errors), 'FAIL: LooseUser should accept { name: \"a\" }');
+console.assert(!(rejectValid instanceof type.errors), 'FAIL: RejectUser should accept { name: \"a\" }');
+console.assert(!(deleteValid instanceof type.errors), 'FAIL: DeleteUser should accept { name: \"a\" }');
+
+console.log('All assertions passed!');
+" 2>&1 ✖ "Command exited with code 1"
+The `type` import isn't available in the inline eval scope. Let me write a proper test file instead:   
+✏️  Writing /home/user/myproject/verify.ts ✔ 
+💫 Executing cd /home/user/myproject && node --import tsx/esm verify.ts 2>&1 ✔ 
+All checks pass. Let me clean up the verification file:   
+💫 Executing rm /home/user/myproject/verify.ts ✔ 
+🎉 Task Completed
+Created `/home/user/myproject/src/schemas.ts` with three named exports using ArkType 2.2.0's `"+"` special key to control undeclared-key handling:
+
+```ts
+import { type } from "arktype"
+
+export const LooseUser = type({
+    name: "string",
+    "+": "ignore"   // pass-through (ArkType's default behavior)
+})
+
+export const RejectUser = type({
+    name: "string",
+    "+": "reject"   // undeclared keys → type.errors
+})
+
+export const DeleteUser = type({
+    name: "string",
+    "+": "delete"   // undeclared keys stripped from output
+})
+```
+
+**How it works:** ArkType 2.2.0 reserves the `"+"` key in object literals as a special directive — its value must be one of the three `UndeclaredKeyBehavior` strings:
+
+| Value | Behavior |
+|---|---|
+| `"ignore"` | Extra keys pass through untouched (structural, TypeScript-compatible default) |
+| `"reject"` | Extra keys cause a `type.errors` validation failure |
+| `"delete"` | Extra keys are cloned away; output only contains declared properties |
+
+**Verified behavior:**
+- `LooseUser({ name: "a", extra: 1 })` → `{ name: "a", extra: 1 }` (`extra === 1` ✓)
+- `RejectUser({ name: "a", extra: 1 })` → `ArkErrors` instance (`instanceof type.errors` ✓)
+- `DeleteUser({ name: "a", extra: 1 })` → `{ name: "a" }` (`"extra" in result === false` ✓)
+- All three accept `{ name: "a" }` without errors ✓   
+  

@@ -1,0 +1,75 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 9 items
+
+tests/test_final_state.py ..FF....F                                      [100%]
+
+=================================== FAILURES ===================================
+______________ test_criterion_2_page_of_user_rejects_invalid_user ______________
+
+    def test_criterion_2_page_of_user_rejects_invalid_user():
+        """PageOfUser.assert({ items: [{...invalid user}], total: 1, cursor: null }) MUST throw."""
+        payload = {"items": [INVALID_USER], "total": 1, "cursor": None}
+        result = _run_validate("PageOfUser", payload)
+>       assert result.returncode != 0, (
+            "PageOfUser MUST reject a page whose items contain an invalid User "
+            "(email is not a valid email). "
+            f"exit={result.returncode}, stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: PageOfUser MUST reject a page whose items contain an invalid User (email is not a valid email). exit=0, stdout='OK\n', stderr=''
+E       assert 0 != 0
+E        +  where 0 = CompletedProcess(args=['npx', 'tsx', 'validate.ts', 'PageOfUser'], returncode=0, stdout='OK\n', stderr='').returncode
+
+tests/test_final_state.py:70: AssertionError
+___________ test_criterion_3_page_of_product_validates_product_items ___________
+
+    def test_criterion_3_page_of_product_validates_product_items():
+        """PageOfProduct.assert(...) MUST validate Product items."""
+        payload = {"items": [VALID_PRODUCT], "total": 1, "cursor": None}
+        result = _run_validate("PageOfProduct", payload)
+>       assert result.returncode == 0, (
+            "PageOfProduct MUST accept a page containing a valid Product. "
+            f"exit={result.returncode}, stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: PageOfProduct MUST accept a page containing a valid Product. exit=1, stdout='', stderr='items[0].id must be a string (was missing)\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'validate.ts', 'PageOfProduct'], returncode=1, stdout='', stderr='items[0].id must be a string (was missing)\n').returncode
+
+tests/test_final_state.py:85: AssertionError
+_________________________ test_arktype_version_pinned __________________________
+
+    def test_arktype_version_pinned():
+        """The installed arktype version reported by node must be exactly 2.2.0."""
+        result = subprocess.run(
+            [
+                "node",
+                "-e",
+                "process.stdout.write(require('arktype/package.json').version)",
+            ],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+>       assert result.returncode == 0, (
+            f"Failed to read arktype's installed version: stderr={result.stderr!r}"
+        )
+E       AssertionError: Failed to read arktype's installed version: stderr='node:internal/modules/cjs/loader:714\n      throw e;\n      ^\n\nError [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath \'./package.json\' is not defined by "exports" in /home/user/arktype-pagination/node_modules/arktype/package.json\n    at exportsNotFound (node:internal/modules/esm/resolve:314:10)\n    at packageExportsResolve (node:internal/modules/esm/resolve:662:9)\n    at resolveExports (node:internal/modules/cjs/loader:707:36)\n    at Module._findPath (node:internal/modules/cjs/loader:774:31)\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1485:27)\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1116:12)\n    at Module._load (node:internal/modules/cjs/loader:1285:25)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {\n  code: \'ERR_PACKAGE_PATH_NOT_EXPORTED\'\n}\n\nNode.js v24.16.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['node', '-e', "process.stdout.write(require('arktype/package.json').version)"], returncode=1, s...eLoad (node:internal/modules/cjs/loader:255:19) {\n  code: \'ERR_PACKAGE_PATH_NOT_EXPORTED\'\n}\n\nNode.js v24.16.0\n').returncode
+
+tests/test_final_state.py:235: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_validate_script_exists
+PASSED tests/test_final_state.py::test_criterion_1_page_of_user_accepts_valid_user
+PASSED tests/test_final_state.py::test_criterion_4_page_of_product_rejects_user_object
+PASSED tests/test_final_state.py::test_criterion_5_generic_defined_with_scoped_syntax
+PASSED tests/test_final_state.py::test_cursor_accepts_string
+PASSED tests/test_final_state.py::test_cursor_rejects_number
+FAILED tests/test_final_state.py::test_criterion_2_page_of_user_rejects_invalid_user
+FAILED tests/test_final_state.py::test_criterion_3_page_of_product_validates_product_items
+FAILED tests/test_final_state.py::test_arktype_version_pinned - AssertionErro...
+========================= 3 failed, 6 passed in 11.09s =========================

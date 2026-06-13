@@ -1,0 +1,106 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 8,
+            "passed": 5,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781367587309,
+            "stop": 1781367590613
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_config_ts_exists",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781367587339,
+                "stop": 1781367587341,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_exists",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781367587341,
+                "stop": 1781367587343,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_broken_ts_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781367587343,
+                "stop": 1781367587344,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_config_ts_imports_configure_from_arktype_config",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781367587345,
+                "stop": 1781367587347,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_config_ts_calls_configure_with_required_options",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 23,
+                "start": 1781367587347,
+                "stop": 1781367587370,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_config_ts_calls_configure_with_required_options():\n        content = _read(CONFIG_TS)\n        assert re.search(r\"\\bconfigure\\s*\\(\", content), (\n            \"config.ts MUST contain a `configure({...})` call.\"\n        )\n        # Must set numberAllowsNaN: true so { x: NaN } can be accepted globally.\n        assert re.search(r\"numberAllowsNaN\\s*:\\s*true\\b\", content), (\n            \"config.ts must set `numberAllowsNaN: true` inside the configure(...) call.\"\n        )\n        # Must also set exactOptionalPropertyTypes: false as required by the task concept.\n>       assert re.search(r\"exactOptionalPropertyTypes\\s*:\\s*false\\b\", content), (\n            \"config.ts must set `exactOptionalPropertyTypes: false` inside the configure(...) call.\"\n        )\nE       AssertionError: config.ts must set `exactOptionalPropertyTypes: false` inside the configure(...) call.\nE       assert None\nE        +  where None = <function search at 0x7fe9bac67ba0>('exactOptionalPropertyTypes\\\\s*:\\\\s*false\\\\b', 'import { configure } from \"arktype/config\";\\n\\nconfigure({\\n    numberAllowsNaN: true\\n});\\n')\nE        +    where <function search at 0x7fe9bac67ba0> = re.search\n\ntests/test_final_state.py:51: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_index_and_broken_share_schema_module",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 10,
+                "start": 1781367587371,
+                "stop": 1781367587381,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_index_and_broken_share_schema_module():\n        \"\"\"Both scripts must reference the same shared schema module (no inline duplication).\"\"\"\n        index_src = _read(INDEX_TS)\n        broken_src = _read(BROKEN_TS)\n    \n        # Identify all local (relative) imports in each file, excluding the config import.\n        local_import_re = re.compile(\n            r\"\"\"import\\s+(?:[^\"';]+?\\s+from\\s+)?[\"'](\\.\\.?/[^\"']+)[\"']\"\"\",\n        )\n        index_locals = {\n            m.group(1)\n            for m in local_import_re.finditer(index_src)\n            if \"config\" not in m.group(1).lower()\n        }\n        broken_locals = {\n            m.group(1)\n            for m in local_import_re.finditer(broken_src)\n            if \"config\" not in m.group(1).lower()\n        }\n    \n        shared = index_locals & broken_locals\n        assert shared, (\n            \"index.ts and broken.ts MUST both import the schema from the same shared local module. \"\n            f\"index.ts local imports: {sorted(index_locals)}, broken.ts local imports: {sorted(broken_locals)}.\"\n        )\n    \n        # Sanity check: the shared module file should actually exist on disk (after resolving\n        # common TypeScript extensions).\n        found_existing = False\n        for spec in shared:\n            # Normalize path relative to PROJECT_DIR\n            base = os.path.normpath(os.path.join(PROJECT_DIR, spec))\n            candidates = [\n                base,\n                base + \".ts\",\n                base + \".tsx\",\n                base + \".js\",\n                os.path.join(base, \"index.ts\"),\n                os.path.join(base, \"index.tsx\"),\n                os.path.join(base, \"index.js\"),\n            ]\n            if any(os.path.isfile(c) for c in candidates):\n                found_existing = True\n                break\n>       assert found_existing, (\n            f\"The shared module(s) {sorted(shared)} referenced by both index.ts and broken.ts \"\n            \"must resolve to an existing file under the project directory.\"\n        )\nE       AssertionError: The shared module(s) ['./schema.js'] referenced by both index.ts and broken.ts must resolve to an existing file under the project directory.\nE       assert False\n\ntests/test_final_state.py:100: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_accepts_nan",
+                "status": "passed",
+                "duration": 1544,
+                "start": 1781367587381,
+                "stop": 1781367588925,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_broken_ts_rejects_nan",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1686,
+                "start": 1781367588926,
+                "stop": 1781367590612,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_broken_ts_rejects_nan():\n        \"\"\"`tsx broken.ts` must reject { x: NaN } because the config was applied too late.\"\"\"\n        result = subprocess.run(\n            [\"npx\", \"--no-install\", \"tsx\", \"broken.ts\"],\n            cwd=PROJECT_DIR,\n            capture_output=True,\n            text=True,\n            timeout=120,\n        )\n>       assert result.returncode == 0, (\n            f\"`tsx broken.ts` must exit cleanly (exit 0) and print a rejection marker, \"\n            f\"not crash. Got exit {result.returncode}. \"\n            f\"stdout={result.stdout!r}, stderr={result.stderr!r}\"\n        )\nE       AssertionError: `tsx broken.ts` must exit cleanly (exit 0) and print a rejection marker, not crash. Got exit 1. stdout='', stderr='broken.ts failed: x must be a number (was NaN)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'broken.ts'], returncode=1, stdout='', stderr='broken.ts failed: x must be a number (was NaN)\\n').returncode\n\ntests/test_final_state.py:157: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

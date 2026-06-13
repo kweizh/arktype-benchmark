@@ -1,0 +1,97 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 8,
+            "passed": 8,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781366340488,
+            "stop": 1781366342583
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_arktype_version_pinned",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781366340527,
+                "stop": 1781366340529,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_schemas_module_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366340529,
+                "stop": 1781366340530,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_loose_user_preserves_extra_keys",
+                "status": "passed",
+                "duration": 2047,
+                "start": 1781366340530,
+                "stop": 1781366342577,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_reject_user_rejects_extra_keys",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366342578,
+                "stop": 1781366342579,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_delete_user_strips_extra_keys",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366342579,
+                "stop": 1781366342580,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_loose_user_accepts_only_declared",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366342580,
+                "stop": 1781366342581,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_reject_user_accepts_only_declared",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366342581,
+                "stop": 1781366342582,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_delete_user_accepts_only_declared",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781366342582,
+                "stop": 1781366342583,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

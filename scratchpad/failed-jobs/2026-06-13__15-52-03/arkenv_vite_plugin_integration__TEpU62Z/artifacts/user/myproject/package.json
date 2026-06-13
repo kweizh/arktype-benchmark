@@ -1,0 +1,19 @@
+{
+  "name": "arkenv-vite-task",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "arktype": "2.2.0",
+    "arkenv": "0.12.1",
+    "@arkenv/vite-plugin": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}

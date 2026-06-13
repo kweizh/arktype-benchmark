@@ -1,0 +1,136 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 11,
+            "passed": 7,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781368223260,
+            "stop": 1781368225260
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_project_files_exist",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781368223298,
+                "stop": 1781368223300,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_package_json_pins_arktype_2_2_0",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781368223300,
+                "stop": 1781368223301,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_tsx_available",
+                "status": "passed",
+                "duration": 614,
+                "start": 1781368223302,
+                "stop": 1781368223916,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_single_scope_export_chain",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781368223916,
+                "stop": 1781368223918,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_scope_has_db_and_http_dot_notation_keys",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781368223918,
+                "stop": 1781368223920,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_references_db_config_alias",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781368223920,
+                "stop": 1781368223921,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_module_exposes_dot_notation_submodules",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1315,
+                "start": 1781368223921,
+                "stop": 1781368225236,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "runtime_results = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': \"Cannot read properties of undefined (reading 'config')\", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}\n\n    def test_module_exposes_dot_notation_submodules(runtime_results):\n>       assert runtime_results.get(\"has_db_config\") is True, (\n            \"Expected `module.db.config.assert` to be a function on the exported module.\"\n        )\nE       AssertionError: Expected `module.db.config.assert` to be a function on the exported module.\nE       assert False is True\nE        +  where False = <built-in method get of dict object at 0x7fb7aa90d700>('has_db_config')\nE        +    where <built-in method get of dict object at 0x7fb7aa90d700> = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': \"Cannot read properties of undefined (reading 'config')\", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}.get\n\ntests/test_final_state.py:304: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_db_config_assert_accepts_valid_payload",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 8,
+                "start": 1781368225236,
+                "stop": 1781368225244,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "runtime_results = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': \"Cannot read properties of undefined (reading 'config')\", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}\n\n    def test_db_config_assert_accepts_valid_payload(runtime_results):\n>       assert runtime_results.get(\"db_config_accepts_valid\") is True, (\n            \"module.db.config.assert({host: '127.0.0.1', port: 5432}) must succeed. \"\n            f\"Error: {runtime_results.get('db_config_accepts_valid_error')!r}\"\n        )\nE       AssertionError: module.db.config.assert({host: '127.0.0.1', port: 5432}) must succeed. Error: \"Cannot read properties of undefined (reading 'config')\"\nE       assert False is True\nE        +  where False = <built-in method get of dict object at 0x7fb7aa90d700>('db_config_accepts_valid')\nE        +    where <built-in method get of dict object at 0x7fb7aa90d700> = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': \"Cannot read properties of undefined (reading 'config')\", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}.get\n\ntests/test_final_state.py:313: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_db_config_assert_rejects_invalid_payload",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781368225244,
+                "stop": 1781368225245,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_assert_accepts_payload_with_valid_db_config",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 7,
+                "start": 1781368225245,
+                "stop": 1781368225252,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "runtime_results = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': \"Cannot read properties of undefined (reading 'config')\", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}\n\n    def test_http_server_assert_accepts_payload_with_valid_db_config(runtime_results):\n>       assert runtime_results.get(\"http_server_accepts_valid\") is True, (\n            \"module.http.server.assert must accept a payload whose nested db-config \"\n            \"property (commonly named `db`, `database`, `dbConfig`, or `config`) is a \"\n            \"valid db.config payload.\"\n        )\nE       AssertionError: module.http.server.assert must accept a payload whose nested db-config property (commonly named `db`, `database`, `dbConfig`, or `config`) is a valid db.config payload.\nE       assert False is True\nE        +  where False = <built-in method get of dict object at 0x7fb7aa90d700>('http_server_accepts_valid')\nE        +    where <built-in method get of dict object at 0x7fb7aa90d700> = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': \"Cannot read properties of undefined (reading 'config')\", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}.get\n\ntests/test_final_state.py:326: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_http_server_assert_rejects_payload_with_invalid_db_config",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 7,
+                "start": 1781368225253,
+                "stop": 1781368225260,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "runtime_results = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': \"Cannot read properties of undefined (reading 'config')\", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}\n\n    def test_http_server_assert_rejects_payload_with_invalid_db_config(runtime_results):\n>       assert runtime_results.get(\"http_server_rejects_invalid\") is True, (\n            \"module.http.server.assert must reject a payload whose nested db-config \"\n            \"property is an invalid db.config payload (e.g., wrong port type).\"\n        )\nE       AssertionError: module.http.server.assert must reject a payload whose nested db-config property is an invalid db.config payload (e.g., wrong port type).\nE       assert False is True\nE        +  where False = <built-in method get of dict object at 0x7fb7aa90d700>('http_server_rejects_invalid')\nE        +    where <built-in method get of dict object at 0x7fb7aa90d700> = {'db_config_accepts_valid': False, 'db_config_accepts_valid_error': \"Cannot read properties of undefined (reading 'config')\", 'db_config_rejects_invalid': True, 'has_db_config': False, ...}.get\n\ntests/test_final_state.py:334: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}
