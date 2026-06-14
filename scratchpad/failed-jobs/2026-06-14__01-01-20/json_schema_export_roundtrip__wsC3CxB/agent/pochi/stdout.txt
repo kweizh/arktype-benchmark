@@ -1,0 +1,380 @@
+- Initializing MCP connections...
+You
+# ArkType ↔ JSON Schema Export & Round-Trip ## Background You are extending a TypeScript project that uses ArkType (`arktype@2.2.0`) to validate complex User documents. The team needs the same User schema to be (a) exportable as a JSON Schema draft-2020-12 document for OpenAPI consumers and (b) re-parsable back into an ArkType `Type` via `@ark/json-schema` so the API gateway can validate against either definition and prove they agree on the same documents. ## Requirements Build a TypeScript module under `/home/user/myproject` that defines a complex User schema and provides three pieces of functionality: 1. An **original ArkType schema** for a User document that includes: * `id`: UUID * `email`: email-formatted string * `username`: an intersected string constraint combining the built-in alphanumeric keyword with a length bound of 3..20 * `score`: a morph that accepts a numeric string and produces a number * `address`: nested object `{ street, city, zip }` where `zip` matches the pattern `^\d{5}(-\d{4})?$` * `posts`: array of `Post`, where each Post has: * `title`: string with length between 1 and 120 (inclusive) * `tags`: array of strings with length between 1 and 10 (inclusive) * `comments`: array of `Comment` * `Comment` is a **recursive** type with: * `id`: UUID * `body`: non-empty string * optional `replies`: array of `Comment` The schema MUST be defined through a cyclic ArkType `scope({ ... }).export()` (not a single inline `type({...})`). 2. A **JSON Schema export** that writes the User definition to `/home/user/myproject/out/user.schema.json`. The exported document MUST include `$schema` set to the JSON Schema draft-2020-12 dialect URL (`https://json-schema.org/draft/2020-12/schema`). 3. A **round-tripped ArkType schema** rebuilt from that JSON Schema using `@ark/json-schema`. The round-tripped schema MUST behave identically to the original on all fixtures the CLI is asked to validate. 4. A **CLI** that reads a single JSON User payload from stdin, runs it through both schemas, and prints exactly two lines to stdout (no other output on stdout, and exit code 0 in all cases): * Line 1: `VALID` if the original ArkType schema accepts the payload, otherwise `INVALID`. * Line 2: a JSON object of the exact shape `{"original":<bool>,"roundtrip":<bool>}` where each boolean reflects whether the respective schema accepts the payload. ## Implementation Hints * The project skeleton already declares `arktype@2.2.0`, `@ark/json-schema@0.0.4`, `tsx`, and `typescript` in `package.json`, and pre-installs `node_modules`. * The CLI is invoked from the project root as `npx --no-install tsx cli.ts`. `cli.ts` should read all of stdin, parse it as JSON, then run both schemas. * `@ark/json-schema@0.0.4` does not implement `$ref`/`$defs`, so re-parsing a cyclic JSON Schema directly will fail. You will need to handle the cycle yourself before handing the document to `jsonSchemaToType`. * `toJsonSchema()` rejects unjsonifiable constructs (such as morphs) unless you configure a `fallback` entry for the offending code. Pick a fallback that keeps the validator behaviour aligned with the original schema's input shape. * The first line of stdout MUST be the literal token `VALID` or `INVALID`; no leading/trailing whitespace, no extra characters. The second line MUST parse with `JSON.parse` and contain exactly the keys `original` and `roundtrip`, each a boolean. * Both schemas MUST agree on accept/reject for every fixture exercised by the verifier; otherwise verification fails. ## Test Criteria The verifier executes the following numbered assertions. The agent's solution MUST satisfy every one: 1. A valid User payload with a depth-3 recursive `comments → replies → replies` chain MUST produce stdout line 1 `VALID` and line 2 `{"original": true, "roundtrip": true}`. 2. A valid User payload with a single post and no comments MUST produce stdout line 1 `VALID` and line 2 `{"original": true, "roundtrip": true}`. 3. A payload identical to (1) except with `email = "not-an-email"` MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`. 4. A payload identical to (1) except with `address.zip = "abcde"` MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`. 5. A payload identical to (1) except with `username = "ab"` (length < 3) MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`. 6. A payload identical to (1) except with the first post's `title` replaced by `"x"` repeated 200 times MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`. 7. A payload identical to (1) except with the first post's `tags` set to a length-11 string array MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`. 8. After the CLI has been invoked, `/home/user/myproject/out/user.schema.json` MUST exist, MUST be valid JSON, and its top-level `$schema` field MUST equal `https://json-schema.org/draft/2020-12/schema`. 9. `/home/user/myproject/src/schema.ts` MUST contain `export` declarations (or re-exports) for `userSchema`, `roundTrippedUserSchema`, and `exportUserJsonSchema`; MUST construct the original schema via `scope({...}).export()`; MUST import from both `arktype` and `@ark/json-schema`; and `/home/user/myproject/cli.ts` MUST exist. 10. For every fixture above, the CLI MUST exit with code 0. ## Acceptance Criteria * Project path: /home/user/myproject * Command: `npx --no-install tsx cli.ts` * Input: a single JSON object describing one User payload, supplied via stdin. * Output (stdout): * Line 1: exactly `VALID` (original schema accepted the payload) or exactly `INVALID` (original schema rejected the payload). * Line 2: a JSON object of the form `{"original":<bool>,"roundtrip":<bool>}`. * Exit code: 0 in both accept and reject cases (the output on stdout decides the outcome). * Artifact: `/home/user/myproject/out/user.schema.json` MUST exist after the CLI has been invoked at least once. The file MUST be a JSON document whose `$schema` field equals `https://json-schema.org/draft/2020-12/schema`. * Implementation file `/home/user/myproject/src/schema.ts` MUST export at least: `userSchema` (the original ArkType `Type`), `roundTrippedUserSchema` (the ArkType `Type` rebuilt from the exported JSON Schema), and `exportUserJsonSchema(): object` (writes/returns the JSON Schema document used for the round trip). * The ArkType schema MUST be built through `scope({ ... }).export()` (a single inline `type({...})` definition is not acceptable). * `arktype@2.2.0`, `@ark/json-schema@0.0.4`, and `tsx` are preinstalled. `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.   
+
+Pochi
+I'll start by examining the existing project structure and understanding the dependencies.   
+📂 Listing files in /home/user/myproject recursively ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+Now let me explore the key library APIs to understand how `scope`, `toJsonSchema`, and `jsonSchemaToType` work:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/index.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/json-schema/out/index.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/scope.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/json-schema/out/json.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/json-schema/out/json.js ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/toJsonSchema.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/json-schema/out/scope.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/json-schema/out/scope.js ✔ 
+Now let me look at how `toJsonSchema` is called on a Type:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/type.d.ts ✔ 
+Now let me look at how `toJsonSchema` is accessed on a Type and examine the `@ark/schema` shared toJsonSchema:   
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/toJsonSchema.js ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/jsonSchema.d.ts ✔ 
+Now let me look at how `toJsonSchema` is called on a Type instance - I need to check the Type class:   
+🔍 Searching for toJsonSchema in *.js files in /home/user/myproject/node_modules/arktype/out ✔ 
+🔍 Searching for toJsonSchema in *.d.ts files in /home/user/myproject/node_modules/arktype/out ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts ✔ 
+Now I have a solid understanding of the APIs. Let me also check how `@ark/json-schema` handles re-parsing - specifically whether `jsonSchemaToType` handles `$ref`/`$defs`:   
+📖 Reading /home/user/myproject/node_modules/@ark/json-schema/out/object.js ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/json-schema/out/array.js ✔ 
+Now I have a thorough understanding of all the APIs. Let me also check how `toJsonSchema` handles morphs and the fallback mechanism:   
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/jsonSchema.js ✔ 
+🔍 Searching for toJsonSchema in *.js files in /home/user/myproject/node_modules/@ark/schema/out ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/root.js ✔ 
+Now let me look at the morph toJsonSchema handling:   
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/morph.js ✔ 
+Now I have everything I need. Let me create the todo list and implement the solution.   
+📋 Updating todo list (3 items) ✔ 
+📋 Updating todo list (3 items) ✔ 
+Now, let me think through the design carefully: 1. **Cyclic/Recursive schema**: `Comment` has an optional `replies: Comment[]`. This requires `scope({...}).export()` because `scope` allows forward references. I'll define `Comment` and `Post` inside the scope, then `User` references them. 2. **Morph for `score`**: `score` is a morph that accepts a numeric string and produces a number. `toJsonSchema()` rejects morphs by default. I need to configure a `fallback` for `morph` that returns the input schema (the string), so the round-trip schema validates the same input shape. 3. **`@ark/json-schema@0.0.4` doesn't support `$ref`/`$defs`**: When exporting to JSON Schema, the cyclic Comment type will produce `$ref`/`$defs`. When re-parsing, `jsonSchemaToType` will fail on `$ref`. I need to resolve the `$defs` references inline before passing to `jsonSchemaToType`. 4. **CLI output**: Exactly two lines, exit code 0 always. Let me now create the schema:   
+✏️  Writing /home/user/myproject/src/schema.ts ✔ 
+📋 Updating todo list (3 items) ✔ 
+✏️  Writing /home/user/myproject/cli.ts ✔ 
+📋 Updating todo list (3 items) ✔ 
+Let me first test if the basic schema compiles and works:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx cli.ts <<< '{"id": "550e8400-e29b-41d4-a716-446655440000", "email": "test@example.com", "username": "testuser", "score": "42", "address": {"street": "123 Main St", "city": "Springfield", "zip": "12345"}, "posts": []}' 2>&1 ✖ "Command exited with code 1"
+The `resolveRefs` function isn't fully resolving the nested `$ref`s. The issue is that the `$ref` appears at a deeper level (not at the top level), and my resolution approach isn't working correctly. Let me debug what the JSON Schema looks like:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { userSchema } from "./src/schema.ts";
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+  fallback: { morph: (ctx) => ctx.base },
+});
+console.log(JSON.stringify(js, null, 2));
+' 2>&1 ✖ "Command exited with code 1"
+The error is happening during `toJsonSchema` itself, not during the round-trip. The morph fallback is being called but the schema is still cyclic and `useRefs: false` doesn't prevent refs from being generated for cyclic types. Let me check what happens with `useRefs: true`:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { userSchema } from "./src/schema.ts";
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: true,
+  fallback: { morph: (ctx) => ctx.base },
+});
+console.log(JSON.stringify(js, null, 2));
+' 2>&1 ✖ "Command exited with code 1"
+Wait, the error is happening during `toJsonSchema` call itself, not during `jsonSchemaToType`. The morph fallback is being invoked, but it seems like the morph's `base` (which is the raw input) is itself cyclic and contains `$ref`. Let me look more carefully at the error stack - it's happening in `jsonSchemaToType` which is called from `buildRoundTrippedSchema`. Let me isolate:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { userSchema } from "./src/schema.ts";
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+  fallback: { morph: (ctx) => ctx.base },
+});
+console.log("Success! Top-level keys:", Object.keys(js));
+' 2>&1 ✖ "Command exited with code 1"
+The error is happening in `buildRoundTrippedSchema` which calls `jsonSchemaToType`. But the error message is about `$ref` - it says it can't process a `$ref` schema. Wait, looking again at the stack trace - it shows `jsonSchemaToType` at the bottom but `toJsonSchema` is not in the stack. Let me check - the error is from `buildRoundTrippedSchema` being called at module load time in `schema.ts`. But the stack shows `jsonSchemaToType` → `MorphNode.assert` → `MorphNode.contextFreeMorph` → ... → `throwParseError`. This is confusing. Actually, looking more carefully, `toJsonSchema` internally calls `jsonSchemaToType`? No, that doesn't make sense. Let me re-read... The error is actually coming from the `toJsonSchema` call itself - no wait, the stack shows `jsonSchemaToType` at the bottom. That means this is happening during `buildRoundTrippedSchema` → `jsonSchemaToType`. The issue is that `exportUserJsonSchema()` produces a JSON Schema with `$ref` entries (because the `Comment` type is cyclic), and then `jsonSchemaToType` receives a schema containing `$ref` which it can't handle. But I thought I was using `useRefs: false`. Let me check if `useRefs: false` actually prevents `$ref` from being generated. Looking at the root.js code: ```js toJsonSchemaRecurse(ctx) { if (ctx.useRefs && !this.alwaysExpandJsonSchema) return { $ref: `#/$defs/${this.id}` }; return this.toResolvedJsonSchema(ctx); } ``` So when `useRefs: false`, it should call `toResolvedJsonSchema` instead, which should inline everything. But the error still mentions `$ref`. Let me check if `useRefs` is being overridden somewhere: ```js toJsonSchema(opts = {}) { const ctx = mergeToJsonSchemaConfigs(this.$.resolvedConfig.toJsonSchema, opts); ctx.useRefs ||= this.isCyclic; ... } ``` The key line: `ctx.useRefs ||= this.isCyclic;` — if the schema is cyclic, `useRefs` is forced to `true`! So even with `useRefs: false`, cyclic types will always use `$ref`. That's the problem. This means I need to handle the `$ref`/`$defs` that are generated. The approach should be: 1. Export with `useRefs: true` (or let it auto-detect) 2. Resolve all `$ref` references by inlining `$defs` 3. Pass the resolved (non-cyclic) schema to `jsonSchemaToType` But wait, if the schema is truly cyclic (Comment → Comment[]), then resolving `$ref` by inlining will create infinite recursion. Let me think about this differently. The `Comment` type has `replies?: Comment[]`. When exported to JSON Schema with `$defs`, the `Comment` definition references itself. When I inline, I'd get infinite recursion. The trick is: I need to break the cycle. Since `@ark/json-schema@0.0.4` doesn't support `$ref`, I need to inline the `$defs` but break the cycle at some point. Since `Comment` has `replies?: Comment[]` (which is optional), I can replace the self-reference with `{}` (an empty schema that accepts anything) at the point where the cycle would recurse. This effectively makes `replies` accept any array, which is a slight loosening but since the test fixtures have valid nested comments, both schemas should still agree. Actually, wait. Let me re-read the hint: "`@ark/json-schema@0.0.4` does not implement `$ref`/`$defs`, so re-parsing a cyclic JSON Schema directly will fail. You will need to handle the cycle yourself before handing the document to `jsonSchemaToType`." The approach should be: resolve `$ref` by inlining `$defs`, but when a `$ref` points to a definition that would create a cycle, replace it with `{}` (or `true` in JSON Schema terms, meaning "accept anything"). Since the cycle is through `replies` (which is optional), the round-trip schema will accept any nested replies but the original will still validate them strictly. However, the test fixtures have valid nested comments, so both should accept. Actually, let me reconsider. The test says "both schemas MUST agree on accept/reject for every fixture." If I break the cycle with `{}`, then the round-trip schema would accept invalid nested comments that the original would reject. But the test only checks specific fixtures. Let me think about this more carefully... The test fixtures are: 1. Valid with depth-3 recursive comments → both should accept 2. Valid with single post, no comments → both should accept 3-7. Various invalid cases → both should reject For the valid cases, the comments are valid, so even if I break the cycle, both schemas accept. For the invalid cases (bad email, bad zip, short username, long title, too many tags), the invalidity is at the top level or in non-recursive parts, so both schemas reject. So breaking the cycle with `true` (accept anything) should work for all test fixtures. But wait, there's an even better approach. I can resolve `$ref`s by inlining from `$defs`, and when I encounter a `$ref` that points to a definition I'm already in the process of resolving (i.e., a cycle), I replace it with `true`. This is the standard approach for handling JSON Schema cycles. Let me also verify that the `toJsonSchema` call actually works and produces something:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { userSchema } from "./src/schema.ts";
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+  fallback: { morph: (ctx) => ctx.base },
+});
+// Just check if it produces output - it should, the error was from buildRoundTrippedSchema
+console.log("Keys:", Object.keys(js).join(", "));
+console.log("Has defs:", "$defs" in js);
+' 2>&1 ✖ "Command exited with code 1"
+Wait, the error IS from `toJsonSchema`! The stack trace shows `jsonSchemaToType` at the bottom but that's the entry point of the `jsonSchemaToType` call within the morph fallback. Let me look more carefully... Actually, the morph fallback is called during `toJsonSchema`. The morph fallback receives `ctx.base` which is the JSON Schema of the input type. But the input type for the morph (`string.numeric.parse`) is just a string, so that shouldn't be cyclic. Wait, I'm confused. Let me look at the stack trace again: ``` at jsonSchemaToType (file:///.../json.js:61:70) at MorphNode.contextFreeMorph (file:///.../node.js:124:32) at MorphNode.BaseNode.attach (file:///.../node.js:33:25) at MorphNode.assert (file:///.../node.js:166:38) at jsonSchemaToType (file:///.../json.js:61:70) ``` This is `jsonSchemaToType` → `MorphNode.assert` → `MorphNode.attach` → `MorphNode.contextFreeMorph` → `jsonSchemaToType`. That means `jsonSchemaToType` is being called recursively! This is from `buildRoundTrippedSchema`, not from `toJsonSchema`. The issue is that `buildRoundTrippedSchema` is being called at module load time (line `export const roundTrippedUserSchema: Type = buildRoundTrippedSchema();`), and it calls `exportUserJsonSchema()` which calls `toJsonSchema()`, and then `jsonSchemaToType()`. But the error is from `jsonSchemaToType`. Wait, no. Looking at the stack more carefully - `jsonSchemaToType` is called twice in the stack. The inner call is the one throwing. This means during `jsonSchemaToType(resolved)`, the parser encounters a `$ref` and calls `jsonSchemaToType` again on the `$ref` value, which fails. So the `resolveRefs` function is NOT fully resolving nested `$ref`s. The `$ref` appears nested inside a property somewhere. Let me trace through more carefully. Let me first see what the JSON Schema actually looks like:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { userSchema } from "./src/schema.ts";
+try {
+  const js = userSchema.toJsonSchema({
+    dialect: "https://json-schema.org/draft/2020-12/schema",
+    useRefs: false,
+    fallback: { morph: (ctx) => ctx.base },
+  });
+  console.log(JSON.stringify(js, null, 2));
+} catch(e) {
+  console.log("Error:", e.message);
+}
+' 2>&1 ✖ "Command exited with code 1"
+This is crashing during `toJsonSchema` itself, not during `jsonSchemaToType`. The error is thrown from `json.js:57` which is inside `jsonSchemaToType`. But the call chain is: `toJsonSchema` → ... → `jsonSchemaToType`. Wait, that doesn't make sense. `toJsonSchema` should not call `jsonSchemaToType`. Let me check if the morph fallback is somehow triggering this... Actually, looking at the morph's `innerToJsonSchema`: ```js innerToJsonSchema(ctx) { return ctx.fallback.morph({ code: "morph", base: this.rawIn.toJsonSchemaRecurse(ctx), out: this.introspectableOut?.toJsonSchemaRecurse(ctx) ?? null }); } ``` My fallback is `morph: (ctx) => ctx.base`. The `ctx.base` is the JSON Schema of the input (string). That should be fine. But wait - the error is happening during the `toJsonSchema` call, and the stack trace shows `jsonSchemaToType` being called. Is there something in the configuration that triggers `jsonSchemaToType`? Let me try without the morph fallback to see if `toJsonSchema` itself works:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { userSchema } from "./src/schema.ts";
+try {
+  const js = userSchema.toJsonSchema({
+    dialect: "https://json-schema.org/draft/2020-12/schema",
+    useRefs: false,
+  });
+  console.log("Success:", Object.keys(js).join(", "));
+} catch(e) {
+  console.log("Error:", e.message);
+}
+' 2>&1 ✖ "Command exited with code 1"
+Same error even without the morph fallback. This means the error is NOT from `toJsonSchema` at all — it's from `buildRoundTrippedSchema` which calls `jsonSchemaToType`. But I'm calling `exportUserJsonSchema()` inside `buildRoundTrippedSchema`, which calls `toJsonSchema`. But the error is from `jsonSchemaToType`... Wait, I'm confused by the stack trace. Let me look at this differently. The `buildRoundTrippedSchema` function calls `exportUserJsonSchema()` which calls `toJsonSchema`. If `toJsonSchema` succeeds, it returns a JSON object. Then `resolveRefs` processes it, and `jsonSchemaToType` is called. But the error says `jsonSchemaToType` at the bottom of the stack. Let me check if maybe `toJsonSchema` internally calls `jsonSchemaToType` for some reason... Actually, I think the issue might be with how `arktype` resolves the morph. The morph `["string.numeric.parse", "=>", (s: string) => Number(s)]` — when `toJsonSchema` is called, it needs to convert the morph. The morph's `rawIn` is the input type. But maybe the morph's `rawIn` contains a reference to something that triggers `jsonSchemaToType`? Let me try a simpler approach — test if a non-morph, non-cyclic schema works with `toJsonSchema`:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { type } from "arktype";
+
+const Simple = type({
+  id: "string.uuid",
+  email: "string.email",
+  username: "string.alphanumeric & 3 <= string <= 20",
+  score: "string.numeric.parse",
+  address: {
+    street: "string",
+    city: "string",
+    zip: /^\d{5}(-\d{4})?$/,
+  },
+  posts: {
+    title: "1 <= string <= 120",
+    tags: "1 <= string[] <= 10",
+    comments: "never[]",
+  }[],
+});
+
+const js = Simple.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+  fallback: { morph: (ctx) => ctx.base },
+});
+console.log("Success:", Object.keys(js).join(", "));
+' 2>&1 ✖ "Command exited with code 1"
+OK that's a syntax error with the inline eval. Let me just focus on the schema.ts file and test it properly. Let me first check if the `toJsonSchema` call succeeds when not followed by `jsonSchemaToType`:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { userSchema } from "./src/schema.ts";
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+  fallback: { morph: (ctx) => ctx.base },
+});
+console.log("OK:", Object.keys(js).join(", "));
+' 2>&1 ✖ "Command exited with code 1"
+But this is the `toJsonSchema` call only — I'm not calling `jsonSchemaToType`! The error is coming from within `toJsonSchema` itself. Let me look at what happens in `toJsonSchema` more carefully. Looking at the stack: `jsonSchemaToType` → `MorphNode.assert` → `MorphNode.attach` → `MorphNode.contextFreeMorph` → `jsonSchemaToType`. This is bizarre. `toJsonSchema` is calling `jsonSchemaToType` internally? That seems wrong. Unless... the morph is somehow triggering a re-parse. Wait, I need to look at this from a different angle. The `toJsonSchema` method is on the Type. But the Type wraps a morph. When `toJsonSchema` is called on a Type with a morph, it calls `innerToJsonSchema` on the morph node, which calls the fallback. The fallback returns `ctx.base`, which is the JSON Schema of the input type. But maybe the issue is that the input type (the `string.numeric.parse`) itself has some structure that causes issues? Let me try a completely different approach. Let me strip the morph from the schema and see if `toJsonSchema` works:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { scope } from "arktype";
+
+const $ = scope({
+  Comment: {
+    id: "string.uuid",
+    body: "string > 0",
+    "replies?": "Comment[]",
+  },
+  Post: {
+    title: "1 <= string <= 120",
+    tags: "1 <= string[] <= 10",
+    comments: "Comment[]",
+  },
+  User: {
+    id: "string.uuid",
+    email: "string.email",
+    username: "string.alphanumeric & 3 <= string <= 20",
+    score: "string",
+    address: {
+      street: "string",
+      city: "string",
+      zip: /^\d{5}(-\d{4})?$/,
+    },
+    posts: "Post[]",
+  },
+});
+
+const mod = $.export();
+const userSchema = mod.User;
+
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+});
+console.log("OK:", Object.keys(js).join(", "));
+console.log("Has defs:", "$defs" in js);
+' 2>&1 ✔ 
+So `toJsonSchema` works without the morph. The issue is the morph. Even with `useRefs: false`, the morph fallback is somehow triggering `jsonSchemaToType`. Wait, I see `$ref` in the output even with `useRefs: false`. That's because `ctx.useRefs ||= this.isCyclic` forces it to true for cyclic types. So the output has `$ref` and `$defs`. Now, the morph issue: when `toJsonSchema` processes the morph, it calls `this.rawIn.toJsonSchemaRecurse(ctx)`. The `rawIn` is `string.numeric.parse` which is itself a morph type (string → parsed number). When this inner morph's `toJsonSchemaRecurse` is called, it tries to call the fallback, but the default fallback throws. With my custom fallback `morph: (ctx) => ctx.base`, it should return the base (string schema). But somehow `jsonSchemaToType` is being called... Let me look at the morph's `toJsonSchemaRecurse` more carefully. Actually, wait — the issue might be that `string.numeric.parse` is a keyword morph, not a regular morph. Let me check if keyword morphs have special handling. Let me look at what `string.numeric.parse` is:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { type } from "arktype";
+const t = type("string.numeric.parse");
+console.log("expression:", t.expression);
+console.log("kind:", (t as any).internal?.kind);
+' 2>&1 ✔ 
+OK so it IS a morph. Let me check if the morph's `rawIn` has a `toJsonSchemaRecurse` that works:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { type } from "arktype";
+const t = type("string.numeric.parse");
+const rawIn = (t as any).internal.rawIn;
+console.log("rawIn kind:", rawIn.kind);
+console.log("rawIn expression:", rawIn.expression);
+// Try toJsonSchema on the rawIn
+const js = rawIn.toJsonSchema({ useRefs: false });
+console.log("rawIn schema:", JSON.stringify(js));
+' 2>&1 ✔ 
+OK so the rawIn's `toJsonSchema` works fine. The issue must be something else. Let me test the actual `toJsonSchema` with the morph fallback on a simple standalone type:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { type } from "arktype";
+const t = type({
+  score: ["string.numeric.parse", "=>", (s: string) => Number(s)],
+});
+const js = t.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+  fallback: { morph: (ctx: any) => ctx.base },
+});
+console.log("OK:", JSON.stringify(js, null, 2));
+' 2>&1 ✔ 
+That works. So the issue is specifically with the combination of morph + cyclic scope-based type. Let me test with the scope-based User but with a simpler score:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { scope } from "arktype";
+
+const $ = scope({
+  Comment: {
+    id: "string.uuid",
+    body: "string > 0",
+    "replies?": "Comment[]",
+  },
+  Post: {
+    title: "1 <= string <= 120",
+    tags: "1 <= string[] <= 10",
+    comments: "Comment[]",
+  },
+  User: {
+    id: "string.uuid",
+    email: "string.email",
+    username: "string.alphanumeric & 3 <= string <= 20",
+    score: "string",
+    address: {
+      street: "string",
+      city: "string",
+      zip: /^\d{5}(-\d{4})?$/,
+    },
+    posts: "Post[]",
+  },
+});
+
+const mod = $.export();
+const userSchema = mod.User;
+
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+});
+console.log("OK:", Object.keys(js).join(", "));
+' 2>&1 ✔ 
+So without the morph, `toJsonSchema` works (even though it generates `$ref`/`$defs` due to cyclic detection). The morph is the problem. Now let me test with the morph but on the scope-based User:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { scope } from "arktype";
+
+const $ = scope({
+  Comment: {
+    id: "string.uuid",
+    body: "string > 0",
+    "replies?": "Comment[]",
+  },
+  Post: {
+    title: "1 <= string <= 120",
+    tags: "1 <= string[] <= 10",
+    comments: "Comment[]",
+  },
+  User: {
+    id: "string.uuid",
+    email: "string.email",
+    username: "string.alphanumeric & 3 <= string <= 20",
+    score: ["string.numeric.parse", "=>", (s: string) => Number(s)],
+    address: {
+      street: "string",
+      city: "string",
+      zip: /^\d{5}(-\d{4})?$/,
+    },
+    posts: "Post[]",
+  },
+});
+
+const mod = $.export();
+const userSchema = mod.User;
+
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+  fallback: { morph: (ctx: any) => ctx.base },
+});
+console.log("OK:", Object.keys(js).join(", "));
+' 2>&1 ✔ 
+Wait, that works! But the same code in `schema.ts` fails? Let me check if there's something different about how I'm importing or using things. Let me look at my schema.ts again:   
+📖 Reading /home/user/myproject/src/schema.ts ✔ 
+The problem is that `buildRoundTrippedSchema()` is called at module load time (line `export const roundTrippedUserSchema: Type = buildRoundTrippedSchema();`). This means when the module is imported, `exportUserJsonSchema()` → `toJsonSchema()` is called, and then `jsonSchemaToType()` is called. But the error was happening during `toJsonSchema` — let me check if maybe the error is actually from `jsonSchemaToType` (after `toJsonSchema` succeeds). Let me add some debug logging:   
+💫 Executing cd /home/user/myproject && npx --no-install tsx -e '
+import { scope } from "arktype";
+import { jsonSchemaToType } from "@ark/json-schema";
+
+const $ = scope({
+  Comment: {
+    id: "string.uuid",
+    body: "string > 0",
+    "replies?": "Comment[]",
+  },
+  Post: {
+    title: "1 <= string <= 120",
+    tags: "1 <= string[] <= 10",
+    comments: "Comment[]",
+  },
+  User: {
+    id: "string.uuid",
+    email: "string.email",
+    username: "string.alphanumeric & 3 <= string <= 20",
+    score: ["string.numeric.parse", "=>", (s: string) => Number(s)],
+    address: {
+      street: "string",
+      city: "string",
+      zip: /^\d{5}(-\d{4})?$/,
+    },
+    posts: "Post[]",
+  },
+});
+
+const mod = $.export();
+const userSchema = mod.User;
+
+console.log("Step 1: toJsonSchema");
+const js = userSchema.toJsonSchema({
+  dialect: "https://json-schema.org/draft/2020-12/schema",
+  useRefs: false,
+  fallback: { morph: (ctx: any) => ctx.base },
+});
+console.log("Step 1 done. Keys:", Object.keys(js).join(", "));
+
+console.log("Step 2: resolveRefs");
+// Simple resolve
+function resolveRefs(schema: any, defs?: any, stack: Set<string> = new Set()): any {
+  if (typeof schema !== "object" || schema === null) return schema;
+  if (Array.isArray(schema)) return schema.map((s: any) => resolveRefs(s, defs, stack));
+  
+  const d = defs || schema.$defs;
+  const resolved: any = {};
+  for (const [key, value] of Object.entries(schema)) {
+    if (key === "$defs") continue;
+    if (key === "$ref" && d && typeof value === "string" && value.startsWith("#/$defs/")) {
+      const defName = value.slice("#/$defs/".length);
+      if (stack.has(defName)) {
+        // Cycle detected - return true (accept anything)
+        return true;
+      }
+      const defSchema = d[defName];
+      if (defSchema) {
+        stack.add(defName);
+        const resolvedDef = resolveRefs(defSchema, d, stack);
+        stack.delete(defName);
+        Object.assign(resolved, resolvedDef);
+        continue;
+      }
+    }
+    resolved[key] = resolveRefs(value, d, stack);
+  }
+  return resolved;
+}
+
+const resolved = resolveRefs(js);
+console.log("Step 2 done. Keys:", Object.keys(resolved).join(", "));
+
+console.log("Step 3: jsonSchemaToType");
+const rt = jsonSchemaToType(resolved);
+console.log("Step 3 done. expression:", (rt as any).expression);
+' 2>&1 ✔ 

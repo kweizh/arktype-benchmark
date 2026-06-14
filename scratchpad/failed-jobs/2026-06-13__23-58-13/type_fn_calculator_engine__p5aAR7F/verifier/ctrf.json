@@ -1,0 +1,115 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 10,
+            "passed": 10,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781395317005,
+            "stop": 1781395343853
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_cli_entrypoint_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781395317049,
+                "stop": 1781395317050,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_divide_produces_correct_result",
+                "status": "passed",
+                "duration": 1609,
+                "start": 1781395317050,
+                "stop": 1781395318659,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_add_produces_correct_result",
+                "status": "passed",
+                "duration": 1651,
+                "start": 1781395318659,
+                "stop": 1781395320310,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_multiply_produces_correct_result",
+                "status": "passed",
+                "duration": 1737,
+                "start": 1781395320311,
+                "stop": 1781395322048,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_divide_by_zero_is_rejected_as_traversal_error",
+                "status": "passed",
+                "duration": 1520,
+                "start": 1781395322048,
+                "stop": 1781395323568,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_non_numeric_b_is_rejected_at_dispatcher_boundary",
+                "status": "passed",
+                "duration": 1532,
+                "start": 1781395323568,
+                "stop": 1781395325100,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_unknown_op_is_rejected_at_dispatcher_boundary",
+                "status": "passed",
+                "duration": 1463,
+                "start": 1781395325100,
+                "stop": 1781395326563,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_modulo_by_non_integer_is_rejected",
+                "status": "passed",
+                "duration": 1484,
+                "start": 1781395326563,
+                "stop": 1781395328047,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_modulo_by_zero_is_rejected",
+                "status": "passed",
+                "duration": 1652,
+                "start": 1781395328047,
+                "stop": 1781395329699,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_output_lines_match_strict_format_for_success_and_failure",
+                "status": "passed",
+                "duration": 14152,
+                "start": 1781395329700,
+                "stop": 1781395343852,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

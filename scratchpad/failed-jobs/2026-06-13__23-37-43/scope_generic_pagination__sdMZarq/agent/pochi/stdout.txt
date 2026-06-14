@@ -1,0 +1,84 @@
+- Initializing MCP connections...
+You
+# Generic Paginated Response Validator (ArkType Scope) ## Goal Build a TypeScript module under `/home/user/myproject` that validates paginated API responses for two resource kinds using `arktype@2.2.0`. The schema MUST be built with `scope(...).export()` and MUST declare a single generic page wrapper named `Page<T>` that is then instantiated for both `User` and `Post` payloads. ## Domain Schema The generic `Page<T>` wrapper describes a page envelope around any item kind `T`: - `items`: an array of `T` values. - `total`: integer, `>= 0` (total number of records across all pages). - `page`: integer, `>= 1` (current page, 1-indexed). - `perPage`: integer in the closed interval `[1, 100]`. - `hasNext`: boolean. The two underlying item kinds are: - `User`: - `id`: UUID string. - `name`: string, length in `[1, 50]`. - `Post`: - `id`: UUID string. - `title`: string, length in `[1, 120]`. - `authorId`: UUID string. The scope export MUST expose ready-to-use `Page<User>` and `Page<Post>` instantiations. ## Test Criteria 1. A well-formed `Page<User>` payload MUST validate successfully and the validated object MUST be echoed back as JSON. 2. A well-formed `Page<Post>` payload MUST validate successfully and the validated object MUST be echoed back as JSON. 3. A `Page<User>` payload whose first `items[0]` is malformed (e.g. `id` is not a UUID, or `name` is empty) MUST be rejected. 4. A `Page<User>` (or `Page<Post>`) payload whose `perPage` is outside the `[1, 100]` range MUST be rejected. 5. A payload whose `hasNext` is not a boolean (e.g. the string `"true"`) MUST be rejected. 6. A payload whose `total` is a negative integer MUST be rejected. 7. The validator source MUST construct the schema using ArkType's `scope` API and MUST declare a generic alias (i.e. an alias whose name contains an angle-bracketed type parameter such as `Page<T>` or `Page<t>`). ## Acceptance Criteria - Project path: `/home/user/myproject` - Command: `npx tsx cli.ts` - Input: a single JSON object delivered via stdin of shape `{"kind": "User" | "Post", "page": <PageObject>}`. - Output (stdout): - If validation succeeds: print exactly the line `VALID` followed by a newline and the JSON-stringified validated page object on the next line. - If validation fails (including unknown `kind`): print exactly one line starting with `INVALID:` followed by a space and an error description. - The CLI MUST exit with code 0 regardless of the validation outcome (stdout decides the outcome). - The TypeScript module file `src/validator.ts` MUST export a `validatePage(kind: "User" | "Post", page: unknown)` function that returns the validated page or throws via ArkType's assertion API. - The schema MUST be constructed via `scope({...}).export()`. Inline single `type({...})` definitions of the page envelope are NOT acceptable. - The scope MUST contain a generic declaration for the `Page` envelope (e.g. an alias key like `"Page<T>"`). Defining `Page<User>` and `Page<Post>` by duplicating the envelope per kind is NOT acceptable. - `arktype@2.2.0` and `tsx` are preinstalled. `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.   
+
+Pochi
+💭 Thinking for 83 characters   
+📂 Listing files in /home/user/myproject recursively ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/index.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/scope.d.ts ✔ 
+Now I have a clear picture of the ArkType 2.2.0 API. Let me look at how generics work in scope definitions and check the generic.d.ts file.   
+📖 Reading /home/user/myproject/node_modules/arktype/out/generic.d.ts ✔ 
+Now I have a thorough understanding of the ArkType 2.2.0 API. The scope uses the `"Page<T>"` key pattern to declare generics inline. Let me build the solution.   
+📋 Updating todo list (3 items) ✔ 
+💫 Executing mkdir -p /home/user/myproject/src ✔ 
+✏️  Writing /home/user/myproject/src/validator.ts ✔ 
+📋 Updating todo list (3 items) ✔ 
+✏️  Writing /home/user/myproject/cli.ts ✔ 
+📋 Updating todo list (3 items) ✔ 
+Now let's run through all the test criteria:   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice"}],"total":1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✔ 
+Test 1 (valid User page) ✅   
+💫 Executing cd /home/user/myproject && echo '{"kind":"Post","page":{"items":[{"id":"550e8400-e29b-41d4-a716-446655440001","title":"Hello World","authorId":"550e8400-e29b-41d4-a716-446655440000"}],"total":5,"page":2,"perPage":20,"hasNext":true}}' | npx tsx cli.ts ✔ 
+Test 2 (valid Post page) ✅   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[{"id":"not-a-uuid","name":""}],"total":1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✔ 
+Test 3 (malformed User item) ✅   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[],"total":0,"page":1,"perPage":0,"hasNext":false}}' | npx tsx cli.ts && echo '{"kind":"Post","page":{"items":[],"total":0,"page":1,"perPage":101,"hasNext":false}}' | npx tsx cli.ts ✔ 
+Test 4 (perPage out of range) ✅   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[],"total":0,"page":1,"perPage":10,"hasNext":"true"}}' | npx tsx cli.ts ✔ 
+Test 5 (hasNext is a string) ✅   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[],"total":-1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✔ 
+Test 6 (negative total) ✅   
+💫 Executing cd /home/user/myproject && echo '{"kind":"unknown"}' | npx tsx cli.ts ✔ 
+Unknown kind ✅. All tests pass. Let me also verify the constraint on `number.integer` for `page` (must be ≥ 1) and that the scope correctly uses a generic:   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[],"total":0,"page":0,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[],"total":0,"page":1,"perPage":100,"hasNext":false}}' | npx tsx cli.ts && echo '{"kind":"User","page":{"items":[],"total":0,"page":1,"perPage":1,"hasNext":false}}' | npx tsx cli.ts ✔ 
+Boundary values `perPage=1` and `perPage=100` both pass ✅.   
+📋 Updating todo list (3 items) ✔ 
+🎉 Task Completed
+The module is complete. Here is a summary of what was built under `/home/user/myproject`:
+
+---
+
+### `src/validator.ts`
+Builds the schema with `scope(...).export()` and declares a **single generic** `"Page<T>"` alias in the scope definition object:
+
+```
+"Page<T>": {
+  items: "T[]",
+  total: "number.integer >= 0",
+  page:  "number.integer >= 1",
+  perPage: "number.integer >= 1 & number.integer <= 100",
+  hasNext: "boolean",
+}
+```
+
+The scope also contains `User`, `Post`, and two named aliases that instantiate the generic:
+- `UserPage = "Page<User>"`
+- `PostPage = "Page<Post>"`
+
+`validatePage(kind, page)` uses `types.UserPage.assert(page)` / `types.PostPage.assert(page)` — ArkType's assertion API — and throws `ArkErrors` on failure.
+
+---
+
+### `cli.ts`
+Reads a single JSON object from stdin of shape `{"kind": "User"|"Post", "page": {...}}`, calls `validatePage`, then:
+- On success: prints `VALID` followed by the JSON-stringified validated object.
+- On failure (including unknown kind): prints `INVALID: <error description>`.
+- Always exits with code 0.
+
+---
+
+### All 7 test criteria verified:
+| # | Scenario | Result |
+|---|----------|--------|
+| 1 | Valid `Page<User>` | `VALID` + echoed JSON |
+| 2 | Valid `Page<Post>` | `VALID` + echoed JSON |
+| 3 | Malformed `items[0]` (bad UUID / empty name) | `INVALID: …` |
+| 4 | `perPage` outside `[1, 100]` (0 and 101) | `INVALID: …` |
+| 5 | `hasNext` is string `"true"` | `INVALID: …` |
+| 6 | `total` is negative | `INVALID: …` |
+| 7 | Schema uses `scope` API with a `"Page<T>"` generic declaration | ✅ (structural requirement met) |   
+  

@@ -1,0 +1,79 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781396984616,
+            "stop": 1781396994528
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_ignore_mode_preserves_extra_key",
+                "status": "passed",
+                "duration": 1635,
+                "start": 1781396984659,
+                "stop": 1781396986294,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_reject_mode_rejects_extra_key_and_names_it",
+                "status": "passed",
+                "duration": 1625,
+                "start": 1781396986295,
+                "stop": 1781396987920,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_delete_mode_strips_extra_keys",
+                "status": "passed",
+                "duration": 1766,
+                "start": 1781396987920,
+                "stop": 1781396989686,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_missing_required_field_is_rejected_in_every_mode",
+                "status": "passed",
+                "duration": 4837,
+                "start": 1781396989687,
+                "stop": 1781396994524,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validator_uses_plus_reject_and_plus_delete_syntax",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781396994525,
+                "stop": 1781396994527,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cli_entrypoint_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781396994527,
+                "stop": 1781396994528,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

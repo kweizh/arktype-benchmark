@@ -1,0 +1,117 @@
+- Initializing MCP connections...
+You
+# Strict Undeclared Keys Modes (ArkType) ## Background By default, `arktype@2.2.0` mirrors TypeScript's structural typing and silently accepts extra (undeclared) properties on objects. For real-world inputs such as JSON request bodies, two stricter behaviors are often required: rejecting payloads that contain unknown keys, or stripping them from the validated output. ArkType exposes both via the `+` syntax inside object definitions. Your task is to build a TypeScript CLI under `/home/user/myproject` that demonstrates all three undeclared-key behaviors against the same logical schema. ## Requirements * Define **one logical user shape**: `{ id: 'string.uuid', name: 'string', email: 'string.email' }`. * Build **three distinct ArkType `Type` instances** from this shape, each with a different undeclared-key strategy: 1. an `ignoreSchema` that uses ArkType's default behavior (extras are kept on output). 2. a `rejectSchema` that REJECTS objects containing any undeclared key. 3. a `deleteSchema` that DELETES undeclared keys from the validated output. * Implement a CLI that reads a single JSON document from stdin with shape `{"mode": "ignore" | "reject" | "delete", "payload": <object>}` and dispatches the payload to the matching schema. * The CLI must always exit with status code 0. Success or failure is reported through stdout. ## Implementation Hints * Both per-schema syntax and a global configuration setting can control undeclared-key behavior — for this task, the per-schema control must be expressed inside the object definitions themselves so that the three schemas have different runtime behavior in a single process. * Read the relevant section of the ArkType objects documentation if you are unsure which value to pass. * A successful validation should print exactly two lines: the literal `VALID` on the first line, followed by `JSON.stringify(validated)` on the second line. The validated object is the value returned by the schema (which for the `delete` strategy will not contain the stripped keys). * A failed validation should print exactly one line starting with `INVALID:` followed by a human-readable error message. The error message must mention the offending undeclared key by name when that is the cause. * An unknown `mode` should also be reported via `INVALID:`. ## Acceptance Criteria * Project path: /home/user/myproject * Command: `npx tsx cli.ts` * Input: a single JSON document on stdin of the form `{"mode": "ignore" | "reject" | "delete", "payload": <object>}`. * Output (stdout): * On success: line 1 is exactly `VALID`; line 2 is the JSON-stringified validated payload returned by ArkType. * On failure: a single line beginning with `INVALID:` followed by an error message. * The CLI MUST exit with code 0 in all cases (success and failure). * `arktype@2.2.0` and `tsx` are preinstalled. `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.   
+
+Pochi
+💭 Thinking for 2019 characters   
+📋 Updating todo list (4 items) ✔ 
+💭 Thinking for 59 characters   
+📂 Listing files in /home/user/myproject recursively ✔ 
+💫 Executing ls /home/user/myproject/ 2>/dev/null || echo "Directory does not exist" ✔ 
+💭 Thinking for 175 characters   
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/variants/object.d.ts ✔ 
+💭 Thinking for 258 characters   
+🔍 Searching for undeclared in *.{js,d.ts} files in /home/user/myproject/node_modules/arktype ✔ 
+💭 Thinking for 207 characters   
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/objectLiteral.js ✔ 
+🔍 Searching for undeclared in *.{js,d.ts} files in /home/user/myproject/node_modules/@ark/schema ✔ 
+💭 Thinking for 291 characters   
+🔍 Searching for UndeclaredKeyBehavior in *.d.ts files in /home/user/myproject/node_modules/@ark/schema ✔ 
+💭 Thinking for 45 characters   
+🔍 Searching for UndeclaredKeyHandling in *.d.ts files in /home/user/myproject/node_modules/@ark/schema ✔ 
+💭 Thinking for 801 characters   
+📋 Updating todo list (4 items) ✔ 
+💭 Thinking for 157 characters   
+📖 Reading /home/user/myproject/node_modules/arktype/out/index.d.ts ✔ 
+💭 Thinking for 145 characters   
+📖 Reading /home/user/myproject/node_modules/arktype/out/type.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts ✔ 
+💭 Thinking for 202 characters   
+🔍 Searching for class ArkErrors in *.{d.ts,js} files in /home/user/myproject/node_modules/@ark/schema/out/shared ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/errors.d.ts ✔ 
+💭 Thinking for 492 characters   
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/objectLiteral.js ✔ 
+💭 Thinking for 1488 characters   
+📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts ✔ 
+💭 Thinking for 4889 characters   
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/objectLiteral.d.ts ✔ 
+💭 Thinking for 879 characters   
+🔍 Searching for undeclared.*must|must.*undeclared|undeclaredKey|writeUndeclared in *.{js,d.ts} files in /home/user/myproject/node_modules/@ark/schema ✔ 
+🔍 Searching for undeclared|extra.*key|unknown.*key in *.js files in /home/user/myproject/node_modules/@ark/schema ✔ 
+💭 Thinking for 129 characters   
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/structure/structure.js ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/structure/structure.js ✔ 
+💭 Thinking for 300 characters   
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/errors.js ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/errors.js ✔ 
+💭 Thinking for 90 characters   
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/errors.js ✔ 
+💭 Thinking for 156 characters   
+🔍 Searching for predicate.*problem|predicate.*message|must.*removed|must.*be.*removed in *.{js,d.ts} files in /home/user/myproject/node_modules/@ark/schema/out ✔ 
+🔍 Searching for predicate in kinds.js files in /home/user/myproject/node_modules/@ark/schema/out ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/predicate.js ✔ 
+💭 Thinking for 409 characters   
+🔍 Searching for problem.*predicate|predicate.*problem|must.*be|defaultProblem|defaultMessage in *.{js,d.ts} files in /home/user/myproject/node_modules/@ark/schema/out ✔ 
+💭 Thinking for 5619 characters   
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/property.d.ts ✔ 
+💭 Thinking for 1367 characters   
+🔍 Searching for defaults\.message|defaults\.problem in implement.js files in /home/user/myproject/node_modules/@ark/schema/out/shared ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/shared/implement.js ✔ 
+💭 Thinking for 11461 characters   
+Now I have a thorough understanding of the ArkType API. Let me create the CLI.   
+✏️  Writing /home/user/myproject/cli.ts ✔ 
+💭 Thinking for 76 characters   
+📋 Updating todo list (4 items) ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"ignore","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com"}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 91 characters   
+💫 Executing cd /home/user/myproject && echo '{"mode":"ignore","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com","role":"admin"}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 86 characters   
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com","role":"admin"}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 147 characters   
+💫 Executing cd /home/user/myproject && echo '{"mode":"delete","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com","role":"admin"}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 216 characters   
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com"}}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"ignore","payload":{"id":"not-a-uuid","name":"Alice","email":"alice@example.com"}}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"unknown","payload":{}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 294 characters   
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com","role":"admin","age":30}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 246 characters   
+💫 Executing cd /home/user/myproject && echo '{"mode":"delete","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com","role":"admin","age":30}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 67 characters   
+💫 Executing cd /home/user/myproject && echo '{"mode":"ignore","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com"}}' | npx tsx cli.ts; echo "EXIT CODE: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"alice@example.com","role":"admin"}}' | npx tsx cli.ts; echo "EXIT CODE: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"unknown","payload":{}}' | npx tsx cli.ts; echo "EXIT CODE: $?" ✔ 
+💭 Thinking for 119 characters   
+💫 Executing cd /home/user/myproject && echo '{"mode":"ignore","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"not-an-email"}}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"delete","payload":{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","name":"Alice","email":"not-an-email","extra":"key"}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 346 characters   
+📋 Updating todo list (4 items) ✔ 
+🎉 Task Completed
+Created `/home/user/myproject/cli.ts` — a TypeScript CLI that demonstrates all three ArkType undeclared-key behaviors using the per-schema `+` syntax inside object definitions.
+
+**Three schemas defined:**
+1. `ignoreSchema` — default behavior (no `+` key); extra properties are kept on output
+2. `rejectSchema` — `{ ..., "+": "reject" }`; objects with undeclared keys are rejected
+3. `deleteSchema` — `{ ..., "+": "delete" }`; undeclared keys are stripped from the validated output
+
+**All share the same logical shape:** `{ id: "string.uuid", name: "string", email: "string.email" }`
+
+**CLI behavior:**
+- Reads `{"mode": "ignore"|"reject"|"delete", "payload": <object>}` from stdin
+- Dispatches `payload` to the matching schema
+- Success: prints `VALID` on line 1, then `JSON.stringify(validated)` on line 2
+- Failure: prints `INVALID:` followed by a human-readable error (mentions undeclared key names when applicable)
+- Unknown mode: prints `INVALID: unknown mode "..."`
+- Always exits with code 0
+
+**Verified test results:**
+- `ignore` + extra key → `VALID` with extra key preserved in output
+- `reject` + extra key → `INVALID: role must be removed`
+- `delete` + extra key → `VALID` with extra key stripped from output
+- Invalid data (bad UUID/email) → `INVALID:` with descriptive error
+- Unknown mode → `INVALID: unknown mode "..."`
+- All cases exit with code 0   
+  

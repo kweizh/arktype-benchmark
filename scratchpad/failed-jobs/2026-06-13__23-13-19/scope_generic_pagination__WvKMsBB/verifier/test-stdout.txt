@@ -1,0 +1,21 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 10 items
+
+tests/test_final_state.py ..........                                     [100%]
+
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_valid_page_of_users_is_accepted
+PASSED tests/test_final_state.py::test_valid_page_of_posts_is_accepted
+PASSED tests/test_final_state.py::test_malformed_user_in_page_is_rejected
+PASSED tests/test_final_state.py::test_per_page_out_of_range_is_rejected
+PASSED tests/test_final_state.py::test_has_next_non_boolean_is_rejected
+PASSED tests/test_final_state.py::test_negative_total_is_rejected
+PASSED tests/test_final_state.py::test_validator_imports_arktype_and_uses_scope
+PASSED tests/test_final_state.py::test_validator_declares_generic_page_alias
+PASSED tests/test_final_state.py::test_validator_exports_validate_page
+PASSED tests/test_final_state.py::test_cli_entrypoint_exists
+============================== 10 passed in 9.38s ==============================

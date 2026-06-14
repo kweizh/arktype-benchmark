@@ -1,0 +1,117 @@
+Skipping image OS validation for hb__json_schema_export_roundtrip: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.14 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo zr-6wxdqdg > /logs/artifacts/run-id && echo json_schema_export_roundtrip__6wXDqdG > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest -s --log-cli-level=DEBUG /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: pochi --model google/gemini-3.1-pro --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# ArkType ↔ JSON Schema Export & Round-Trip
+
+## Background
+You are extending a TypeScript project that uses ArkType (`arktype@2.2.0`) to validate complex User documents. The team needs the same User schema to be (a) exportable as a JSON Schema draft-2020-12 document for OpenAPI consumers and (b) re-parsable back into an ArkType `Type` via `@ark/json-schema` so the API gateway can validate against either definition and prove they agree on the same documents.
+
+## Requirements
+Build a TypeScript module under `/home/user/myproject` that defines a complex User schema and provides three pieces of functionality:
+
+1. An **original ArkType schema** for a User document that includes:
+   - `id`: UUID
+   - `email`: email-formatted string
+   - `username`: an intersected string constraint combining the built-in alphanumeric keyword with a length bound of 3..20
+   - `score`: a morph that accepts a numeric string and produces a number
+   - `address`: nested object `{ street, city, zip }` where `zip` matches the pattern `^\d{5}(-\d{4})?$`
+   - `posts`: array of `Post`, where each Post has:
+     - `title`: string with length between 1 and 120 (inclusive)
+     - `tags`: array of strings with length between 1 and 10 (inclusive)
+     - `comments`: array of `Comment`
+   - `Comment` is a **recursive** type with:
+     - `id`: UUID
+     - `body`: non-empty string
+     - optional `replies`: array of `Comment`
+   The schema MUST be defined through a cyclic ArkType `scope({ ... }).export()` (not a single inline `type({...})`).
+
+2. A **JSON Schema export** that writes the User definition to `/home/user/myproject/out/user.schema.json`. The exported document MUST include `$schema` set to the JSON Schema draft-2020-12 dialect URL (`https://json-schema.org/draft/2020-12/schema`).
+
+3. A **round-tripped ArkType schema** rebuilt from that JSON Schema using `@ark/json-schema`. The round-tripped schema MUST behave identically to the original on all fixtures the CLI is asked to validate.
+
+4. A **CLI** that reads a single JSON User payload from stdin, runs it through both schemas, and prints exactly two lines to stdout (no other output on stdout, and exit code 0 in all cases):
+   - Line 1: `VALID` if the original ArkType schema accepts the payload, otherwise `INVALID`.
+   - Line 2: a JSON object of the exact shape `{"original":<bool>,"roundtrip":<bool>}` where each boolean reflects whether the respective schema accepts the payload.
+
+## Implementation Hints
+- The project skeleton already declares `arktype@2.2.0`, `@ark/json-schema@0.0.4`, `tsx`, and `typescript` in `package.json`, and pre-installs `node_modules`.
+- The CLI is invoked from the project root as `npx --no-install tsx cli.ts`. `cli.ts` should read all of stdin, parse it as JSON, then run both schemas.
+- `@ark/json-schema@0.0.4` does not implement `$ref`/`$defs`, so re-parsing a cyclic JSON Schema directly will fail. You will need to handle the cycle yourself before handing the document to `jsonSchemaToType`.
+- `toJsonSchema()` rejects unjsonifiable constructs (such as morphs) unless you configure a `fallback` entry for the offending code. Pick a fallback that keeps the validator behaviour aligned with the original schema's input shape.
+- The first line of stdout MUST be the literal token `VALID` or `INVALID`; no leading/trailing whitespace, no extra characters. The second line MUST parse with `JSON.parse` and contain exactly the keys `original` and `roundtrip`, each a boolean.
+- Both schemas MUST agree on accept/reject for every fixture exercised by the verifier; otherwise verification fails.
+
+## Test Criteria
+The verifier executes the following numbered assertions. The agent's solution MUST satisfy every one:
+
+1. A valid User payload with a depth-3 recursive `comments → replies → replies` chain MUST produce stdout line 1 `VALID` and line 2 `{"original": true, "roundtrip": true}`.
+2. A valid User payload with a single post and no comments MUST produce stdout line 1 `VALID` and line 2 `{"original": true, "roundtrip": true}`.
+3. A payload identical to (1) except with `email = "not-an-email"` MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`.
+4. A payload identical to (1) except with `address.zip = "abcde"` MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`.
+5. A payload identical to (1) except with `username = "ab"` (length < 3) MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`.
+6. A payload identical to (1) except with the first post's `title` replaced by `"x"` repeated 200 times MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`.
+7. A payload identical to (1) except with the first post's `tags` set to a length-11 string array MUST produce stdout line 1 `INVALID` and line 2 `{"original": false, "roundtrip": false}`.
+8. After the CLI has been invoked, `/home/user/myproject/out/user.schema.json` MUST exist, MUST be valid JSON, and its top-level `$schema` field MUST equal `https://json-schema.org/draft/2020-12/schema`.
+9. `/home/user/myproject/src/schema.ts` MUST contain `export` declarations (or re-exports) for `userSchema`, `roundTrippedUserSchema`, and `exportUserJsonSchema`; MUST construct the original schema via `scope({...}).export()`; MUST import from both `arktype` and `@ark/json-schema`; and `/home/user/myproject/cli.ts` MUST exist.
+10. For every fixture above, the CLI MUST exit with code 0.
+
+## Acceptance Criteria
+- Project path: /home/user/myproject
+- Command: `npx --no-install tsx cli.ts`
+- Input: a single JSON object describing one User payload, supplied via stdin.
+- Output (stdout):
+  - Line 1: exactly `VALID` (original schema accepted the payload) or exactly `INVALID` (original schema rejected the payload).
+  - Line 2: a JSON object of the form `{"original":<bool>,"roundtrip":<bool>}`.
+- Exit code: 0 in both accept and reject cases (the output on stdout decides the outcome).
+- Artifact: `/home/user/myproject/out/user.schema.json` MUST exist after the CLI has been invoked at least once. The file MUST be a JSON document whose `$schema` field equals `https://json-schema.org/draft/2020-12/schema`.
+- Implementation file `/home/user/myproject/src/schema.ts` MUST export at least: `userSchema` (the original ArkType `Type`), `roundTrippedUserSchema` (the ArkType `Type` rebuilt from the exported JSON Schema), and `exportUserJsonSchema(): object` (writes/returns the JSON Schema document used for the round trip).
+- The ArkType schema MUST be built through `scope({ ... }).export()` (a single inline `type({...})` definition is not acceptable).
+- `arktype@2.2.0`, `@ark/json-schema@0.0.4`, and `tsx` are preinstalled. `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.
+
+
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured

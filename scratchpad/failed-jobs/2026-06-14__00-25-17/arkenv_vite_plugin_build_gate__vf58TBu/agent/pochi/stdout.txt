@@ -1,0 +1,99 @@
+- Initializing MCP connections...
+You
+# ArkEnv Vite Plugin Build Gate ## Background Production Vite apps frequently boot with mis-typed or missing client environment variables, then crash deep inside React render. The `@arkenv/vite-plugin` package integrates the `arkenv` validator (built on top of `arktype@2.2.0`) directly into Vite's build pipeline so that an invalid environment halts the build immediately. Your task is to wire this plugin into a minimal Vite + React project so that builds are gated by a strict environment schema. ## Requirements * Initialize a minimal Vite + React + TypeScript project at `/home/user/myproject` (entry component, HTML, vite config, package.json, tsconfig). * Configure `vite.config.ts` to use `@arkenv/vite-plugin` with a schema that declares the following client-exposed environment variables: * `VITE_API_URL` — must be a syntactically valid URL string. * `VITE_FEATURE_FLAGS` — boolean (the plugin / arkenv must coerce the string `"true"`/`"false"`). * `VITE_MAX_UPLOAD_MB` — integer between 1 and 1024 inclusive (the plugin / arkenv must coerce the string into an integer). * The React entry source (`src/main.tsx`) must read `import.meta.env.VITE_API_URL` and use it at least once (for example, render it inside the React tree or store it in a constant that the bundler cannot trivially drop). * Provide two npm scripts in `package.json`: * `build` — runs `vite build`. * `validate-env` — a passthrough script that exits with the same status as `vite build` (it may simply invoke the build, or otherwise force the plugin to validate). Either way, it must rely on the Vite plugin doing the validation, not a separate hand-rolled prebuild script. * Commit a `.env.example` file at the project root with placeholder values for the three variables documenting their expected shape. Do **NOT** create or seed a `.env` file — the implementer/test will supply environment values via real environment variables at build time. * When the environment is invalid or any required variable is missing, `npm run build` MUST exit non-zero. When the environment is valid, `npm run build` MUST exit zero and produce a Vite build output under `dist/`. ## Implementation Hints * Use the `@arkenv/vite-plugin` package — do not write your own prebuild validation script and do not call `arkenv()` from application code instead of the plugin. * Consult the plugin's README / docs at https://arkenv.js.org/docs/vite-plugin for the correct import name and call signature. * Use `@vitejs/plugin-react` for React support. * Pick `arkenv` / `arktype` notation that yields a URL string, a coerced boolean, and a ranged integer. * The plugin reads values via Vite's `loadEnv` mechanism, which also includes `process.env` entries, so supplying values via real environment variables at test time is sufficient — no `.env` file required. ## Acceptance Criteria * Project path: /home/user/myproject * Command: `npm run build` (executed from the project root). * Behavior: * With all three variables set to valid values via the process environment, `npm run build` exits with status 0 and produces `/home/user/myproject/dist/index.html`. * With `VITE_API_URL` set to a non-URL value (other variables valid), `npm run build` exits non-zero and the combined stdout/stderr contains an arkenv/arktype-style validation error mentioning `VITE_API_URL`. * With `VITE_MAX_UPLOAD_MB` set to `0` (other variables valid), `npm run build` exits non-zero. * With `VITE_API_URL` and/or `VITE_FEATURE_FLAGS` and/or `VITE_MAX_UPLOAD_MB` unset, `npm run build` exits non-zero. * Source layout: * `/home/user/myproject/vite.config.ts` exists and imports from `@arkenv/vite-plugin`. * `/home/user/myproject/src/main.tsx` exists and references `import.meta.env.VITE_API_URL`. * `/home/user/myproject/.env.example` exists at the project root. * `/home/user/myproject/.env` is NOT committed. * `package.json` defines both `build` and `validate-env` npm scripts.   
+
+Pochi
+💭 Thinking for 503 characters   
+📋 Updating todo list (10 items) ✔ 
+💭 Thinking for 54 characters   
+🛠️ Tool webFetch ✔ 
+🛠️ Tool webSearch ✔ 
+💭 Thinking for 1204 characters   
+🛠️ Tool webFetch ✔ 
+🛠️ Tool webSearch ✔ 
+💭 Thinking for 6301 characters   
+🛠️ Tool webFetch ✔ 
+🛠️ Tool webFetch ✔ 
+💭 Thinking for 2769 characters   
+🛠️ Tool webFetch ✔ 
+💭 Thinking for 204 characters   
+🛠️ Tool webFetch ✔ 
+💭 Thinking for 464 characters   
+Now I have enough information to build the project. Let me start creating it.   
+💫 Executing mkdir -p /home/user/myproject/src ✔ 
+💭 Thinking for 45 characters   
+📋 Updating todo list (10 items) ✔ 
+✏️  Writing /home/user/myproject/package.json ✖ "File has not been read yet. Please read the file before writing it."
+💭 Thinking for 188 characters   
+📂 Listing files in /home/user/myproject ✔ 
+💭 Thinking for 119 characters   
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+📖 Reading /home/user/myproject/index.html ✔ 
+📂 Listing files in /home/user/myproject/src ✔ 
+💭 Thinking for 447 characters   
+💫 Executing ls /home/user/myproject/node_modules/.package-lock.json 2>/dev/null; ls /home/user/myproject/vite.config.ts 2>/dev/null; ls /home/user/myproject/.env.example 2>/dev/null; ls /home/user/myproject/.env 2>/dev/null ✖ "Command exited with code 2"
+💭 Thinking for 186 characters   
+💫 Executing ls /home/user/myproject/node_modules/@arkenv/vite-plugin/dist/index.js 2>/dev/null && echo "arkenv plugin found" || echo "arkenv plugin NOT found"; ls /home/user/myproject/node_modules/arkenv/dist/ 2>/dev/null | head -5; ls /home/user/myproject/node_modules/arktype/dist/ 2>/dev/null | head -5 ✔ 
+💭 Thinking for 114 characters   
+💫 Executing cat /home/user/myproject/node_modules/@arkenv/vite-plugin/dist/index.d.ts 2>/dev/null || cat /home/user/myproject/node_modules/@arkenv/vite-plugin/dist/index.d.mts 2>/dev/null ✔ 
+💭 Thinking for 1908 characters   
+💫 Executing cat /home/user/myproject/node_modules/arkenv/dist/core.d.ts 2>/dev/null | head -80 ✔ 
+💫 Executing cat /home/user/myproject/node_modules/@arkenv/vite-plugin/dist/index.js ✔ 
+💭 Thinking for 1364 characters   
+💫 Executing find /home/user/myproject/node_modules/arkenv/dist -name "*.d.ts" -exec ls -la {} \; 2>/dev/null ✔ 
+💫 Executing find /home/user/myproject/node_modules/arkenv/dist -type f 2>/dev/null | head -20 ✔ 
+💫 Executing cat /home/user/myproject/node_modules/arkenv/dist/core.d.mts ✔ 
+💫 Executing cat /home/user/myproject/node_modules/arkenv/dist/index.d.mts ✔ 
+💭 Thinking for 1659 characters   
+Now I have a complete understanding of the API. The plugin uses a default export `arkenv` from `@arkenv/vite-plugin`, and the schema uses ArkType DSL strings. Let me create all the project files.   
+✏️  Writing /home/user/myproject/vite.config.ts ✔ 
+✏️  Writing /home/user/myproject/src/main.tsx ✔ 
+✏️  Writing /home/user/myproject/src/App.tsx ✔ 
+✏️  Writing /home/user/myproject/.env.example ✔ 
+✏️  Writing /home/user/myproject/src/vite-env.d.ts ✔ 
+Now let me update the todo list and test the build.   
+📋 Updating todo list (10 items) ✔ 
+💫 Executing cd /home/user/myproject && VITE_API_URL=https://api.example.com VITE_FEATURE_FLAGS=true VITE_MAX_UPLOAD_MB=10 npm run build 2>&1; echo "EXIT_CODE=$?" ✔ 
+💭 Thinking for 87 characters   
+Build succeeds with valid env vars. Let me test the failurecases.   
+💫 Executing cd /home/user/myproject && VITE_API_URL=not-a-url VITE_FEATURE_FLAGS=true VITE_MAX_UPLOAD_MB=10 npm run build 2>&1; echo "EXIT_CODE=$?" ✔ 
+💫 Executing cd /home/user/myproject && VITE_API_URL=https://api.example.com VITE_FEATURE_FLAGS=true VITE_MAX_UPLOAD_MB=0 npm run build 2>&1; echo "EXIT_CODE=$?" ✔ 
+💫 Executing cd /home/user/myproject && npm run build 2>&1; echo "EXIT_CODE=$?" ✔ 
+💭 Thinking for 729 characters   
+All test cases pass. Let me verify the remaining acceptancecriteria.   
+💫 Executing cd /home/user/myproject && ls -la dist/index.html 2>&1 && echo "---" && ls -la .env 2>&1 && echo "---" && grep -E '"build"|"validate-env"' package.json ✖ "Command exited with code 2"
+💫 Executing cd /home/user/myproject && grep -E '"build"|"validate-env"' package.json ✔ 
+💫 Executing cd /home/user/myproject && grep "import.meta.env.VITE_API_URL" src/main.tsx ✔ 
+💫 Executing cd /home/user/myproject && grep "@arkenv/vite-plugin" vite.config.ts ✔ 
+💭 Thinking for 92 characters   
+Let me also verify `validate-env` works:   
+💫 Executing cd /home/user/myproject && VITE_API_URL=https://api.example.com VITE_FEATURE_FLAGS=true VITE_MAX_UPLOAD_MB=10 npm run validate-env 2>&1; echo "EXIT_CODE=$?" ✔ 
+All tests pass. Let me verify the complete file structure:   
+📂 Listing files in /home/user/myproject recursively ✔ 
+💭 Thinking for 804 characters   
+All acceptance criteria verified. Let me finalize thetodo list.   
+📋 Updating todo list (10 items) ✔ 
+🎉 Task Completed
+The ArkEnv Vite Plugin Build Gate project is fully configured at `/home/user/myproject`. Here's a summary of what was set up:
+
+**Project Structure:**
+- `vite.config.ts` — Configured with `@arkenv/vite-plugin` (default import) and `@vitejs/plugin-react`, defining a schema with three validated environment variables:
+  - `VITE_API_URL: "string.url"` — validates as a URL string
+  - `VITE_FEATURE_FLAGS: "boolean"` — coerces `"true"`/`"false"` strings to boolean
+  - `VITE_MAX_UPLOAD_MB: "1 <= number.integer <= 1024"` — coerces string to integer and validates range 1–1024
+- `src/main.tsx` — React entry point that reads `import.meta.env.VITE_API_URL` and passes it as a prop
+- `src/App.tsx` — Minimal React component rendering the API URL
+- `src/vite-env.d.ts` — Vite client type reference
+- `index.html` — HTML entry point
+- `tsconfig.json` — TypeScript config with JSX support
+- `package.json` — Contains `build` and `validate-env` scripts (both run `vite build`)
+- `.env.example` — Documents the three required variables with placeholder values
+
+**Verified Behavior:**
+- ✅ Valid env vars → `npm run build` exits 0, produces `dist/index.html`
+- ✅ Invalid `VITE_API_URL` (non-URL) → exits 1 with `ArkEnvError: VITE_API_URL must be a URL string`
+- ✅ `VITE_MAX_UPLOAD_MB=0` → exits 1 with `VITE_MAX_UPLOAD_MB must be at least 1`
+- ✅ Missing vars → exits 1 with errors for each missing variable
+- ✅ `.env` file is NOT committed   
+  

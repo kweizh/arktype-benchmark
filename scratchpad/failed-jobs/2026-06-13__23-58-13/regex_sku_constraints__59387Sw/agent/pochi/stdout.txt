@@ -1,0 +1,66 @@
+- Initializing MCP connections...
+You
+# SKU Catalog Validator (ArkType) ## Background A wholesale platform receives JSON catalog payloads from vendors and needs to enforce a strict SKU format and uniqueness invariant before persisting the catalog. Build a TypeScript validator under `/home/user/myproject` using `arktype@2.2.0` that combines a schema-level regex pattern for individual SKUs with a structural uniqueness check across the whole list. ## Requirements * Validate a catalog object with the following shape: * `vendorId`: a UUID string. * `skus`: an array of SKU strings, each matching the pattern `^[A-Z]{2}-\d{4}-[a-z]{3}$` (e.g. `AB-1234-xyz`). * The `skus` array MUST contain at least 1 and at most 200 elements. * All SKU values in `skus` MUST be unique (case-sensitive). * The SKU pattern MUST be expressed inside the ArkType schema definition. Do NOT post-filter the validated data with manual `.test()` or `.match()` calls. * Uniqueness MUST be enforced through an ArkType narrow predicate that yields a structured ArkError whose path includes `skus`. * Expose the result through a CLI that reads a single JSON catalog payload from stdin. ## Implementation Hints * The TypeScript project under `/home/user/myproject` is preconfigured with `arktype@2.2.0`, `tsx`, and a `tsconfig.json` using `module: NodeNext`. Consult the ArkType documentation for the exact syntax of regex-based string constraints and structured narrow predicates. * The implementation lives in `src/validator.ts` and a CLI entrypoint at `cli.ts`. ## Acceptance Criteria * Project path: /home/user/myproject * Command: `npx tsx cli.ts` * Input: a single JSON catalog payload supplied via stdin. * Output (stdout): * If the payload validates: print exactly the line `VALID` followed by a newline and the JSON-stringified validated catalog on the next line. * If the payload is rejected: print exactly one line starting with `INVALID:` followed by a space and any error description. * The CLI MUST exit with code 0 for both valid and invalid inputs (stdout decides the outcome). * The TypeScript validator module file `src/validator.ts` MUST encode the SKU regex constraint at the schema level. No manual `.test()` / `.match()` filtering of validated data is allowed. * The TypeScript validator module file `src/validator.ts` MUST express SKU uniqueness via an ArkType narrow predicate. * `arktype@2.2.0` and `tsx` are preinstalled in `/home/user/myproject` and `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.   
+
+Pochi
+💭 Thinking for 671 characters   
+💫 Executing cd /home/user/myproject && ls -la ✔ 
+💭 Thinking for 177 characters   
+💫 Executing cat /home/user/myproject/package.json ✔ 
+💭 Thinking for 551 characters   
+✏️  Writing /home/user/myproject/test.ts ✔ 
+💫 Executing cd /home/user/myproject && npx tsx test.ts ✔ 
+💭 Thinking for 733 characters   
+✏️  Writing /home/user/myproject/test.ts ✔ 
+💫 Executing cd /home/user/myproject && npx tsx test.ts ✔ 
+💭 Thinking for 226 characters   
+✏️  Writing /home/user/myproject/test.ts ✔ 
+💭 Thinking for 195 characters   
+💫 Executing cd /home/user/myproject && npx tsx test.ts ✔ 
+💭 Thinking for 497 characters   
+✏️  Writing /home/user/myproject/test.ts ✔ 
+💭 Thinking for 238 characters   
+💫 Executing cd /home/user/myproject && npx tsx test.ts ✔ 
+💭 Thinking for 560 characters   
+✏️  Writing /home/user/myproject/cli.ts ✔ 
+💭 Thinking for 176 characters   
+💫 Executing mkdir -p /home/user/myproject/src ✔ 
+✏️  Writing /home/user/myproject/src/validator.ts ✔ 
+💭 Thinking for 292 characters   
+💫 Executing cd /home/user/myproject && echo '{"vendorId": "123e4567-e89b-12d3-a456-426614174000", "skus": ["AB-1234-xyz", "CD-5678-abc"]}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"vendorId": "123e4567-e89b-12d3-a456-426614174000", "skus": ["AB-1234-xy", "CD-5678-abc"]}' | npx tsx cli.ts ✔ 
+💭 Thinking for 206 characters   
+💫 Executing cd /home/user/myproject && echo '{"vendorId": "123e4567-e89b-12d3-a456-426614174000", "skus": ["AB-1234-xyz", "AB-1234-xyz"]}' | npx tsx cli.ts ✔ 
+💭 Thinking for 199 characters   
+💫 Executing cd /home/user/myproject && echo '{"vendorId": "123e4567-e89b-12d3-a456-42661417400", "skus": ["AB-1234-xyz"]}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"vendorId": "123e4567-e89b-12d3-a456-426614174000", "skus": []}' | npx tsx cli.ts ✔ 
+💭 Thinking for 158 characters   
+💫 Executing cd /home/user/myproject && node -e 'console.log(JSON.stringify({vendorId: "123e4567-e89b-12d3-a456-426614174000", skus: Array(201).fill("AB-1234-xyz").map((v, i) => `AB-1000-xy${String.fromCharCode(97 + (i % 26))}`) }))' | npx tsx cli.ts ✔ 
+💭 Thinking for 530 characters   
+💫 Executing cd /home/user/myproject && echo '{}' | npx tsx cli.ts ✔ 
+💭 Thinking for 240 characters   
+💫 Executing cd /home/user/myproject && echo '{}' | npx tsx cli.ts; echo $? ✔ 
+💫 Executing cd /home/user/myproject && echo '"string"' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '' | npx tsx cli.ts ✔ 
+💭 Thinking for 834 characters   
+💫 Executing cd /home/user/myproject && echo '{"vendorId": "123e4567-e89b-12d3-a456-426614174000", "skus": ["AB-1234-xyz"]}' | npx tsx cli.ts ✔ 
+💭 Thinking for 444 characters   
+💫 Executing cd /home/user/myproject && echo '{}' | npx tsx cli.ts ✔ 
+💭 Thinking for 322 characters   
+✏️  Writing /home/user/myproject/cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{}' | npx tsx cli.ts ✔ 
+💭 Thinking for 748 characters   
+💫 Executing cd /home/user/myproject && echo '{"vendorId": "123e4567-e89b-12d3-a456-426614174000", "skus": ["AB-1234-xyz"], "extra": 1}' | npx tsx cli.ts ✔ 
+💭 Thinking for 545 characters   
+🎉 Task Completed
+I have implemented the ArkType validator and CLI according to your requirements.
+
+The schema definition is located in `src/validator.ts`. It leverages ArkType's string definition syntax to express both the regex constraint for the SKU elements and the array length bounds (`>=1<=200`) directly at the schema level. Additionally, it uses a `.narrow()` predicate to enforce uniqueness across the entire `skus` array, returning a structured `ctx.mustBe("unique array")` error if validation fails.
+
+The CLI entrypoint is in `cli.ts`. It reads the JSON payload from `stdin`, validates it against the schema, and prints `VALID` along with the JSON-stringified result, or `INVALID: ` followed by a single-line error description. It successfully handles all constraints and exits with code 0 in all cases.
+
+You can run the CLI with:
+```bash
+npx tsx cli.ts < payload.json
+```   
+  

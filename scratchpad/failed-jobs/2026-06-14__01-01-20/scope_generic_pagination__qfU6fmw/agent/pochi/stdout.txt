@@ -1,0 +1,146 @@
+- Initializing MCP connections...
+You
+# Generic Paginated Response Validator (ArkType Scope) ## Goal Build a TypeScript module under `/home/user/myproject` that validates paginated API responses for two resource kinds using `arktype@2.2.0`. The schema MUST be built with `scope(...).export()` and MUST declare a single generic page wrapper named `Page<T>` that is then instantiated for both `User` and `Post` payloads. ## Domain Schema The generic `Page<T>` wrapper describes a page envelope around any item kind `T`: - `items`: an array of `T` values. - `total`: integer, `>= 0` (total number of records across all pages). - `page`: integer, `>= 1` (current page, 1-indexed). - `perPage`: integer in the closed interval `[1, 100]`. - `hasNext`: boolean. The two underlying item kinds are: - `User`: - `id`: UUID string. - `name`: string, length in `[1, 50]`. - `Post`: - `id`: UUID string. - `title`: string, length in `[1, 120]`. - `authorId`: UUID string. The scope export MUST expose ready-to-use `Page<User>` and `Page<Post>` instantiations. ## Test Criteria 1. A well-formed `Page<User>` payload MUST validate successfully and the validated object MUST be echoed back as JSON. 2. A well-formed `Page<Post>` payload MUST validate successfully and the validated object MUST be echoed back as JSON. 3. A `Page<User>` payload whose first `items[0]` is malformed (e.g. `id` is not a UUID, or `name` is empty) MUST be rejected. 4. A `Page<User>` (or `Page<Post>`) payload whose `perPage` is outside the `[1, 100]` range MUST be rejected. 5. A payload whose `hasNext` is not a boolean (e.g. the string `"true"`) MUST be rejected. 6. A payload whose `total` is a negative integer MUST be rejected. 7. The validator source MUST construct the schema using ArkType's `scope` API and MUST declare a generic alias (i.e. an alias whose name contains an angle-bracketed type parameter such as `Page<T>` or `Page<t>`). ## Acceptance Criteria - Project path: `/home/user/myproject` - Command: `npx tsx cli.ts` - Input: a single JSON object delivered via stdin of shape `{"kind": "User" | "Post", "page": <PageObject>}`. - Output (stdout): - If validation succeeds: print exactly the line `VALID` followed by a newline and the JSON-stringified validated page object on the next line. - If validation fails (including unknown `kind`): print exactly one line starting with `INVALID:` followed by a space and an error description. - The CLI MUST exit with code 0 regardless of the validation outcome (stdout decides the outcome). - The TypeScript module file `src/validator.ts` MUST export a `validatePage(kind: "User" | "Post", page: unknown)` function that returns the validated page or throws via ArkType's assertion API. - The schema MUST be constructed via `scope({...}).export()`. Inline single `type({...})` definitions of the page envelope are NOT acceptable. - The scope MUST contain a generic declaration for the `Page` envelope (e.g. an alias key like `"Page<T>"`). Defining `Page<User>` and `Page<Post>` by duplicating the envelope per kind is NOT acceptable. - `arktype@2.2.0` and `tsx` are preinstalled. `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.   
+
+Pochi
+I'll start by exploring the existing project structure and understanding what's already in place.   
+📂 Listing files in /home/user/myproject recursively ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+Good, I have the project structure. Now let me check the ArkType 2.2.0 API to understand how `scope` with generics works.   
+📖 Reading /home/user/myproject/node_modules/arktype/out/scope.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/index.d.ts ✔ 
+Now let me look at the generic module to understand how generics work in scopes:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/generic.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/module.d.ts ✔ 
+Now let me look at how the `type` function works to understand the right syntax for defining schemas in a scope:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/type.d.ts ✔ 
+Now I have a good understanding of the ArkType 2.2.0 API. Let me create the todo list and start building the solution.   
+📋 Updating todo list (4 items) ✔ 
+💫 Executing mkdir -p /home/user/myproject/src ✔ 
+Now let me check the ArkType 2.2.0 `scope` API more carefully to understand the generic alias syntax:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/scope.js ✔ 
+Now I understand the mechanism. The `scope({...})` API parses keys like `"Page<T>"` into generic aliases. Let me also check how `export()` works with generics:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/module.js ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/scope.js ✔ 
+Now I have a thorough understanding of the API. Let me also check how `type` is invoked on a scope's exported module to see how to call `assert`:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts ✔ 
+Now I have a complete understanding of the API. Let me build the solution. The key insight is: 1. `scope({...})` creates a scope where keys like `"Page<T>"` are parsed as generic aliases 2. `.export()` returns a module with the exported types 3. From the module, we can access `Page` as a generic and instantiate it with `User` and `Post` Let me create the validator:   
+✏️  Writing /home/user/myproject/src/validator.ts ✔ 
+📋 Updating todo list (4 items) ✔ 
+✏️  Writing /home/user/myproject/cli.ts ✔ 
+Now let me test this with all the acceptance criteria:   
+📋 Updating todo list (4 items) ✔ 
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice"}],"total":1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✖ "Command exited with code 1"
+The `integer` keyword isn't available in ArkType 2.2.0. Let me check what number refinements are available:   
+🔍 Searching for integer|Integer in /home/user/myproject/node_modules/arktype/out/keywords ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/keywords/number.js ✔ 
+So `integer` is available as `number.integer` in the ambient scope. Let me check how to use it. Let me look at how the ambient scope works:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/config.js ✔ 
+📖 Reading /home/user/myproject/node_modules/arktype/out/keywords/keywords.js ✔ 
+So `integer` is accessible via `number.integer` in the ambient scope. Let me also check how the ambient scope is wired when a custom scope is created — it should be available in the scope. Let me verify by testing with `number.integer`:   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice"}],"total":1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✖ "Command exited with code 1"
+The issue is the `"integer >= 0"` syntax — ArkType may not support the `>=` operator in string definitions. Let me check the correct syntax. The `integer` keyword is a type, and bounds need to be applied differently. Let me check the ArkType 2.2.0 docs for number constraints:   
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/refinements/divisor.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/refinements/min.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/refinements/max.d.ts ✔ 
+📖 Reading /home/user/myproject/node_modules/@ark/schema/out/refinements/range.d.ts ✔ 
+Now I need to understand the correct ArkType 2.2.0 string syntax for expressing `integer >= 0`. Let me check how the parser handles these:   
+📖 Reading /home/user/myproject/node_modules/arktype/out/parser/shift/operand/unenclosed.js ✔ 
+So `integer` as a standalone token isn't in the ambient scope. But `number.integer` should be. Let me check what is in the ambient scope — looking at keywords.js again, the ambient is populated with `keywords` which has `number` as a submodule. So `number.integer` should work via dot-syntax resolution. Wait, let me re-read the error. The error is `'integer' is unresolvable`. This means the parser is trying to resolve `integer` as a standalone token. The issue is that `"integer >= 0"` is being parsed as a string expression, and `integer` is being treated as an operand. In ArkType 2.2.0, the way to express "an integer >= 0" in string syntax would be `"number.integer >= 0"` or more likely using the object syntax. Let me check what the correct string syntax is:   
+💫 Executing cd /home/user/myproject && npx tsx -e "
+import { type } from 'arktype';
+const t = type('number.integer');
+console.log('number.integer works:', t.expression);
+try {
+  const t2 = type('number.integer >= 0');
+  console.log('number.integer >= 0 works:', t2.expression);
+} catch(e) {
+  console.log('number.integer >= 0 failed:', e.message);
+}
+" ✔ 
+`number.integer` works. Now let me also check the correct syntax for `1 <= integer <= 100`:   
+💫 Executing cd /home/user/myproject && npx tsx -e "
+import { type } from 'arktype';
+try {
+  const t = type('1 <= number.integer <= 100');
+  console.log('1 <= number.integer <= 100 works:', t.expression);
+} catch(e) {
+  console.log('1 <= number.integer <= 100 failed:', e.message);
+}
+try {
+  const t2 = type('number.integer >= 1');
+  console.log('number.integer >= 1 works:', t2.expression);
+} catch(e) {
+  console.log('number.integer >= 1 failed:', e2.message);
+}
+" ✔ 
+Now let me also check if `string.uuid` works:   
+💫 Executing cd /home/user/myproject && npx tsx -e "
+import { type } from 'arktype';
+try {
+  const t = type('string.uuid');
+  console.log('string.uuid works:', t.expression);
+} catch(e) {
+  console.log('string.uuid failed:', e.message);
+}
+try {
+  const t2 = type('1 <= string <= 50');
+  console.log('1 <= string <= 50 works:', t2.expression);
+} catch(e) {
+  console.log('1 <= string <= 50 failed:', e2.message);
+}
+" ✔ 
+Now I know the correct syntax. Let me also check that `string.uuid` is available within a custom scope:   
+💫 Executing cd /home/user/myproject && npx tsx -e "
+import { scope } from 'arktype';
+try {
+  const \$ = scope({
+    User: {
+      id: 'string.uuid',
+      name: '1 <= string <= 50',
+    },
+  }).export();
+  console.log('User works:', \$.User.expression);
+} catch(e) {
+  console.log('Failed:', e.message);
+}
+" ✔ 
+Now let me test the full scope with the generic:   
+💫 Executing cd /home/user/myproject && npx tsx -e "
+import { scope } from 'arktype';
+try {
+  const \$ = scope({
+    User: {
+      id: 'string.uuid',
+      name: '1 <= string <= 50',
+    },
+    Post: {
+      id: 'string.uuid',
+      title: '1 <= string <= 120',
+      authorId: 'string.uuid',
+    },
+    'Page<T>': {
+      items: 'T[]',
+      total: 'number.integer >= 0',
+      page: 'number.integer >= 1',
+      perPage: '1 <= number.integer <= 100',
+      hasNext: 'boolean',
+    },
+  }).export();
+  console.log('Page generic:', \$.Page);
+  console.log('Page<User>:', \$.Page(\$.User).expression);
+} catch(e) {
+  console.log('Failed:', e.message);
+}
+" ✔ 
+It worked! The generic Page is created and can be instantiated. Now let me update the validator with the correct syntax:   
+🔧 Applying diff to /home/user/myproject/src/validator.ts ✔ 
+Now let me test all the acceptance criteria:   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice"}],"total":1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✔ 
+Test 1 passes. Now test 2 (Page<Post>):   
+💫 Executing cd /home/user/myproject && echo '{"kind":"Post","page":{"items":[{"id":"550e8400-e29b-41d4-a716-446655440000","title":"Hello World","authorId":"660e8400-e29b-41d4-a716-446655440001"}],"total":1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✔ 
+Test 2 passes. Now test 3 (malformed items[0] - non-UUID id):   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[{"id":"not-a-uuid","name":"Alice"}],"total":1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✔ 
+Wait, the spec says the output should start with `INVALID:` (with a colon) followed by a space. Let me check my output format - it says `INVALID: TraversalError: ...`. The spec says "print exactly one line starting with `INVALID:` followed by a space and an error description." The `TraversalError:` prefix is part of the error summary. Let me check the spec again... It says `INVALID:` followed by a space and an error description. The `TraversalError:` prefix is from ArkType's `summary`. Let me strip the prefix if present to keep it cleaner, or just leave it as is since the spec doesn't explicitly disallow it. Actually, looking at the spec more carefully: "print exactly one line starting with `INVALID:` followed by a space and an error description." My output `INVALID: TraversalError: items[0].id must be a UUID (was "not-a-uuid")` starts with `INVALID:` followed by a space and then the error description. This should be fine. Let me also test with an empty name:   
+💫 Executing cd /home/user/myproject && echo '{"kind":"User","page":{"items":[{"id":"550e8400-e29b-41d4-a716-446655440000","name":""}],"total":1,"page":1,"perPage":10,"hasNext":false}}' | npx tsx cli.ts ✔ 

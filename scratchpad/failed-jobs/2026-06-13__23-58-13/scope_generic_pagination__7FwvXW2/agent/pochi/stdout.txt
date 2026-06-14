@@ -1,0 +1,39 @@
+- Initializing MCP connections...
+You
+# Generic Paginated Response Validator (ArkType Scope) ## Goal Build a TypeScript module under `/home/user/myproject` that validates paginated API responses for two resource kinds using `arktype@2.2.0`. The schema MUST be built with `scope(...).export()` and MUST declare a single generic page wrapper named `Page<T>` that is then instantiated for both `User` and `Post` payloads. ## Domain Schema The generic `Page<T>` wrapper describes a page envelope around any item kind `T`: - `items`: an array of `T` values. - `total`: integer, `>= 0` (total number of records across all pages). - `page`: integer, `>= 1` (current page, 1-indexed). - `perPage`: integer in the closed interval `[1, 100]`. - `hasNext`: boolean. The two underlying item kinds are: - `User`: - `id`: UUID string. - `name`: string, length in `[1, 50]`. - `Post`: - `id`: UUID string. - `title`: string, length in `[1, 120]`. - `authorId`: UUID string. The scope export MUST expose ready-to-use `Page<User>` and `Page<Post>` instantiations. ## Test Criteria 1. A well-formed `Page<User>` payload MUST validate successfully and the validated object MUST be echoed back as JSON. 2. A well-formed `Page<Post>` payload MUST validate successfully and the validated object MUST be echoed back as JSON. 3. A `Page<User>` payload whose first `items[0]` is malformed (e.g. `id` is not a UUID, or `name` is empty) MUST be rejected. 4. A `Page<User>` (or `Page<Post>`) payload whose `perPage` is outside the `[1, 100]` range MUST be rejected. 5. A payload whose `hasNext` is not a boolean (e.g. the string `"true"`) MUST be rejected. 6. A payload whose `total` is a negative integer MUST be rejected. 7. The validator source MUST construct the schema using ArkType's `scope` API and MUST declare a generic alias (i.e. an alias whose name contains an angle-bracketed type parameter such as `Page<T>` or `Page<t>`). ## Acceptance Criteria - Project path: `/home/user/myproject` - Command: `npx tsx cli.ts` - Input: a single JSON object delivered via stdin of shape `{"kind": "User" | "Post", "page": <PageObject>}`. - Output (stdout): - If validation succeeds: print exactly the line `VALID` followed by a newline and the JSON-stringified validated page object on the next line. - If validation fails (including unknown `kind`): print exactly one line starting with `INVALID:` followed by a space and an error description. - The CLI MUST exit with code 0 regardless of the validation outcome (stdout decides the outcome). - The TypeScript module file `src/validator.ts` MUST export a `validatePage(kind: "User" | "Post", page: unknown)` function that returns the validated page or throws via ArkType's assertion API. - The schema MUST be constructed via `scope({...}).export()`. Inline single `type({...})` definitions of the page envelope are NOT acceptable. - The scope MUST contain a generic declaration for the `Page` envelope (e.g. an alias key like `"Page<T>"`). Defining `Page<User>` and `Page<Post>` by duplicating the envelope per kind is NOT acceptable. - `arktype@2.2.0` and `tsx` are preinstalled. `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.   
+
+Pochi
+💭 Thinking for 573 characters   
+💫 Executing mkdir -p /home/user/myproject/src ✔ 
+✏️  Writing /home/user/myproject/test.ts ✔ 
+💭 Thinking for 144 characters   
+💫 Executing cd /home/user/myproject && npx tsx test.ts ✖ "Command exited with code 1"
+💭 Thinking for 336 characters   
+✏️  Writing /home/user/myproject/test.ts ✔ 
+💭 Thinking for 126 characters   
+💫 Executing cd /home/user/myproject && npx tsx test.ts ✔ 
+💭 Thinking for 359 characters   
+✏️  Writing /home/user/myproject/src/validator.ts ✔ 
+💭 Thinking for 604 characters   
+✏️  Writing /home/user/myproject/cli.ts ✔ 
+💭 Thinking for 255 characters   
+💫 Executing cd /home/user/myproject && echo '{"kind": "User", "page": {"items": [{"id": "123", "name": "Alice"}], "total": 10, "page": 1, "perPage": 10, "hasNext": false}}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"kind": "User", "page": {"items": [], "total": 10, "page": 1, "perPage": 101, "hasNext": false}}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"kind": "User", "page": {"items": [], "total": -1, "page": 1, "perPage": 10, "hasNext": false}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 591 characters   
+💫 Executing cd /home/user/myproject && echo '{"kind": "User", "page": {"items": [], "total": 1.5, "page": 1, "perPage": 10, "hasNext": false}}' | npx tsx cli.ts ✔ 
+💫 Executing cd /home/user/myproject && echo '{"kind": "User", "page": {"items": [], "total": 10, "page": 1, "perPage": 10, "hasNext": "true"}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 218 characters   
+💫 Executing cd /home/user/myproject && echo '{"kind": "Post", "page": {"items": [{"id": "123e4567-e89b-12d3-a456-426614174000", "title": "Hello", "authorId": "123e4567-e89b-12d3-a456-426614174000"}], "total": 1, "page": 1, "perPage": 10, "hasNext": false}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 262 characters   
+💫 Executing cd /home/user/myproject && echo '{"kind": "User", "page": {"items": [{"id": "123e4567-e89b-12d3-a456-426614174000", "name": ""}], "total": 1, "page": 1, "perPage": 10, "hasNext": false}}' | npx tsx cli.ts ✔ 
+💭 Thinking for 1551 characters   
+🎉 Task Completed
+I have implemented the generic paginated response validator using ArkType 2.2.0.
+
+The solution consists of two files:
+1. `src/validator.ts` - Contains the ArkType scope defining the generic `Page<T>`, `User`, and `Post` schemas, along with the `validatePage` function.
+2. `cli.ts` - Reads the JSON payload from `stdin`, invokes the validation function, and outputs the result in the specified format, ensuring the process always exits with code `0`.
+
+The generic type definition `Page<T>` correctly validates the wrapper envelope, including integer validations for `page`, `total`, and `perPage`, and proper bounds checking. The specific instances `Page<User>` and `Page<Post>` are created seamlessly within the scope without duplicating the wrapper structure.   
+  

@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 8 items
+
+tests/test_final_state.py ........                                       [100%]
+
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_vite_config_exists_and_imports_arkenv_plugin
+PASSED tests/test_final_state.py::test_main_tsx_references_api_url
+PASSED tests/test_final_state.py::test_env_example_present_and_env_absent
+PASSED tests/test_final_state.py::test_npm_scripts_present
+PASSED tests/test_final_state.py::test_valid_env_build_succeeds
+PASSED tests/test_final_state.py::test_invalid_url_build_fails
+PASSED tests/test_final_state.py::test_out_of_range_integer_build_fails
+PASSED tests/test_final_state.py::test_missing_variable_build_fails
+============================== 8 passed in 4.03s ===============================

@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 6 items
+
+tests/test_final_state.py ......                                         [100%]
+
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_ignore_mode_preserves_extra_key
+PASSED tests/test_final_state.py::test_reject_mode_rejects_extra_key_and_names_it
+PASSED tests/test_final_state.py::test_delete_mode_strips_extra_keys
+PASSED tests/test_final_state.py::test_missing_required_field_is_rejected_in_every_mode
+PASSED tests/test_final_state.py::test_validator_uses_plus_reject_and_plus_delete_syntax
+PASSED tests/test_final_state.py::test_cli_entrypoint_exists
+============================== 6 passed in 9.13s ===============================

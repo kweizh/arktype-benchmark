@@ -1,0 +1,83 @@
+Skipping image OS validation for hb__strict_undeclared_keys_modes: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.14 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo zr-vnqetsx > /logs/artifacts/run-id && echo strict_undeclared_keys_modes__vnqETsx > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest -s --log-cli-level=DEBUG /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: pochi --model zai/glm-5.1 --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Strict Undeclared Keys Modes (ArkType)
+
+## Background
+By default, `arktype@2.2.0` mirrors TypeScript's structural typing and silently accepts extra (undeclared) properties on objects. For real-world inputs such as JSON request bodies, two stricter behaviors are often required: rejecting payloads that contain unknown keys, or stripping them from the validated output. ArkType exposes both via the `+` syntax inside object definitions.
+
+Your task is to build a TypeScript CLI under `/home/user/myproject` that demonstrates all three undeclared-key behaviors against the same logical schema.
+
+## Requirements
+- Define **one logical user shape**: `{ id: 'string.uuid', name: 'string', email: 'string.email' }`.
+- Build **three distinct ArkType `Type` instances** from this shape, each with a different undeclared-key strategy:
+  1. an `ignoreSchema` that uses ArkType's default behavior (extras are kept on output).
+  2. a `rejectSchema` that REJECTS objects containing any undeclared key.
+  3. a `deleteSchema` that DELETES undeclared keys from the validated output.
+- Implement a CLI that reads a single JSON document from stdin with shape `{"mode": "ignore" | "reject" | "delete", "payload": <object>}` and dispatches the payload to the matching schema.
+- The CLI must always exit with status code 0. Success or failure is reported through stdout.
+
+## Implementation Hints
+- Both per-schema syntax and a global configuration setting can control undeclared-key behavior — for this task, the per-schema control must be expressed inside the object definitions themselves so that the three schemas have different runtime behavior in a single process.
+- Read the relevant section of the ArkType objects documentation if you are unsure which value to pass.
+- A successful validation should print exactly two lines: the literal `VALID` on the first line, followed by `JSON.stringify(validated)` on the second line. The validated object is the value returned by the schema (which for the `delete` strategy will not contain the stripped keys).
+- A failed validation should print exactly one line starting with `INVALID:` followed by a human-readable error message. The error message must mention the offending undeclared key by name when that is the cause.
+- An unknown `mode` should also be reported via `INVALID:`.
+
+## Acceptance Criteria
+- Project path: /home/user/myproject
+- Command: `npx tsx cli.ts`
+- Input: a single JSON document on stdin of the form `{"mode": "ignore" | "reject" | "delete", "payload": <object>}`.
+- Output (stdout):
+  - On success: line 1 is exactly `VALID`; line 2 is the JSON-stringified validated payload returned by ArkType.
+  - On failure: a single line beginning with `INVALID:` followed by an error message.
+- The CLI MUST exit with code 0 in all cases (success and failure).
+- `arktype@2.2.0` and `tsx` are preinstalled. `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.
+
+
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured

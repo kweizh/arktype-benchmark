@@ -1,0 +1,219 @@
+- Initializing MCP connections...
+You
+# Strict Undeclared Keys Modes (ArkType) ## Background By default, `arktype@2.2.0` mirrors TypeScript's structural typing and silently accepts extra (undeclared) properties on objects. For real-world inputs such as JSON request bodies, two stricter behaviors are often required: rejecting payloads that contain unknown keys, or stripping them from the validated output. ArkType exposes both via the `+` syntax inside object definitions. Your task is to build a TypeScript CLI under `/home/user/myproject` that demonstrates all three undeclared-key behaviors against the same logical schema. ## Requirements * Define **one logical user shape**: `{ id: 'string.uuid', name: 'string', email: 'string.email' }`. * Build **three distinct ArkType `Type` instances** from this shape, each with a different undeclared-key strategy: 1. an `ignoreSchema` that uses ArkType's default behavior (extras are kept on output). 2. a `rejectSchema` that REJECTS objects containing any undeclared key. 3. a `deleteSchema` that DELETES undeclared keys from the validated output. * Implement a CLI that reads a single JSON document from stdin with shape `{"mode": "ignore" | "reject" | "delete", "payload": <object>}` and dispatches the payload to the matching schema. * The CLI must always exit with status code 0. Success or failure is reported through stdout. ## Implementation Hints * Both per-schema syntax and a global configuration setting can control undeclared-key behavior — for this task, the per-schema control must be expressed inside the object definitions themselves so that the three schemas have different runtime behavior in a single process. * Read the relevant section of the ArkType objects documentation if you are unsure which value to pass. * A successful validation should print exactly two lines: the literal `VALID` on the first line, followed by `JSON.stringify(validated)` on the second line. The validated object is the value returned by the schema (which for the `delete` strategy will not contain the stripped keys). * A failed validation should print exactly one line starting with `INVALID:` followed by a human-readable error message. The error message must mention the offending undeclared key by name when that is the cause. * An unknown `mode` should also be reported via `INVALID:`. ## Acceptance Criteria * Project path: /home/user/myproject * Command: `npx tsx cli.ts` * Input: a single JSON document on stdin of the form `{"mode": "ignore" | "reject" | "delete", "payload": <object>}`. * Output (stdout): * On success: line 1 is exactly `VALID`; line 2 is the JSON-stringified validated payload returned by ArkType. * On failure: a single line beginning with `INVALID:` followed by an error message. * The CLI MUST exit with code 0 in all cases (success and failure). * `arktype@2.2.0` and `tsx` are preinstalled. `tsconfig.json` is preconfigured with `module: NodeNext` and `moduleResolution: NodeNext`.   
+
+Pochi
+I'll start by understanding the project structure and then build the solution.   
+📂 Listing files in /home/user/myproject recursively ✔ 
+📖 Reading /home/user/myproject/package.json ✔ 
+📖 Reading /home/user/myproject/tsconfig.json ✔ 
+Now let me explore the ArkType API to understand how the `+` syntax works for undeclared keys. Let me check the relevant documentation/source.   
+❯ Explore ArkType undeclared keys (explore)
+| 📋 Updating todo list (0 items)
+| 📋 Updating todo list (6 items)
+| 📂 Listing files in .
+| 📂 Listing files in /home/user/myproject/node_modules/arktype
+| 🔍 Searching for * in .
+| 🔍 Searching for **/*.md in /home/user/myproject/node_modules/arktype
+| 🔍 Searching for * in .
+| 🔍 Searching for **/variants/object.* in /home/user/myproject/node_modules/arktype
+| 🔍 Searching for * in .
+| 🔍 Searching for **/config.* in /home/user/myproject/node_modules/arktype
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/README.md
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/variants/object.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/variants/object.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/config.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/config.d.ts
+| 🔍 Searching for * in .
+| 🔍 Searching for **/index.* in /home/user/myproject/node_modules/arktype/out
+| 🔍 Searching for * in .
+| 🔍 Searching for **/type.* in /home/user/myproject/node_modules/arktype/out
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/index.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/index.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/type.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/type.d.ts
+| 📋 Updating todo list (0 items)
+| 📋 Updating todo list (6 items)
+| 🔍 Searching for  in .
+| 🔍 Searching for undeclared in /home/user/myproject/node_modules/arktype
+| 🔍 Searching for  in .
+| 🔍 Searching for undeclared in /home/user/myproject/node_modules/@ark
+| 🔍 Searching for  in .
+| 🔍 Searching for "exact"|'exact'|exact in /home/user/myproject/node_modules/@ark/schema
+| 🔍 Searching for  in .
+| 🔍 Searching for delete|strip|ignore|reject in /home/user/myproject/node_modules/@ark/schema
+| 📂 Listing files in .
+| 📂 Listing files in /home/user/myproject/node_modules/@ark
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/structure/structure.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/structure/structure.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/parser/objectLiteral.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/parser/objectLiteral.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/parser/property.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/kinds.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/config.d.ts
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/config.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/arktype/out/variants/base.d.ts
+| 🔍 Searching for  in .
+| 🔍 Searching for onUndeclaredKey|onDeepUndeclaredKey in /home/user/myproject/node_modules/@ark/schema
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/root.js
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/root.d.ts
+| 🔍 Searching for  in .
+| 🔍 Searching for UndeclaredKeyConfig in /home/user/myproject/node_modules/@ark/schema
+| 📖 Reading unknown
+| 📖 Reading /home/user/myproject/node_modules/@ark/schema/out/roots/root.d.ts
+| 📋 Updating todo list (0 items)
+| 📋 Updating todo list (6 items)
+✔ Explore ArkType undeclared keys (explore)
+Now I have all the information needed. Let me create the CLI.   
+📋 Updating todo list (2 items) ✔ 
+✏️  Writing /home/user/myproject/cli.ts ✔ 
+📋 Updating todo list (2 items) ✔ 
+Now let me test the CLI with various scenarios:   
+💫 Executing cd /home/user/myproject && echo '{"mode":"ignore","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra":"foo"}}' | npx tsx cli.ts; echo "exit code: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra":"foo"}}' | npx tsx cli.ts; echo "exit code: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"delete","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra":"foo"}}' | npx tsx cli.ts; echo "exit code: $?" ✔ 
+The ignore and delete modes work correctly. The reject mode produces an empty error message — the `summary` field is empty. Let me check what the error object looks like to get a proper message.   
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra":"foo"}}' | npx tsx -e '
+import { type } from "arktype";
+import { readFileSync } from "node:fs";
+
+const raw = readFileSync(0, "utf-8").trim();
+const input = JSON.parse(raw);
+
+const rejectSchema = type({
+  "+": "reject",
+  id: "string.uuid",
+  name: "string",
+  email: "string.email",
+});
+
+const result = rejectSchema(input.payload);
+if (result instanceof type.errors) {
+  console.log("Error count:", result.count);
+  for (const err of result) {
+    console.log("---");
+    console.log("summary:", JSON.stringify(err.summary));
+    console.log("message:", JSON.stringify(err.message));
+    console.log("path:", JSON.stringify(err.path));
+    console.log("data:", JSON.stringify(err.data));
+    console.log("keys:", Object.keys(err));
+    console.log("raw:", err);
+  }
+}
+' ✔ 
+I can see `message` is `"extra must be removed"` which mentions the key name. The `summary` is `undefined`. Let me also check the `code` field and the `path`. I'll use `err.message` instead of `err.summary` for better output. Let me also check what validation errors look like (e.g., invalid email):   
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"not-a-uuid","name":"Alice","email":"not-an-email"}}' | npx tsx -e '
+import { type } from "arktype";
+import { readFileSync } from "node:fs";
+
+const raw = readFileSync(0, "utf-8").trim();
+const input = JSON.parse(raw);
+
+const rejectSchema = type({
+  "+": "reject",
+  id: "string.uuid",
+  name: "string",
+  email: "string.email",
+});
+
+const result = rejectSchema(input.payload);
+if (result instanceof type.errors) {
+  for (const err of result) {
+    console.log("message:", JSON.stringify(err.message));
+    console.log("path:", JSON.stringify(err.path));
+    console.log("code:", err.code);
+  }
+}
+' ✔ 
+`err.message` gives good human-readable messages. Now let me also check the `toString()` behavior:   
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra":"foo"}}' | npx tsx -e '
+import { type } from "arktype";
+import { readFileSync } from "node:fs";
+
+const raw = readFileSync(0, "utf-8").trim();
+const input = JSON.parse(raw);
+
+const rejectSchema = type({
+  "+": "reject",
+  id: "string.uuid",
+  name: "string",
+  email: "string.email",
+});
+
+const result = rejectSchema(input.payload);
+if (result instanceof type.errors) {
+  console.log("toString:", result.toString());
+  console.log("summary:", result.summary);
+}
+' ✔ 
+`result.summary` gives us exactly what we need: `"extra must be removed"` which mentions the undeclared key by name. Let me also test with the `type.errors.summary` approach and check what happens with multiple errors:   
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"not-uuid","name":"Alice","email":"not-email","extra":"foo"}}' | npx tsx -e '
+import { type } from "arktype";
+import { readFileSync } from "node:fs";
+
+const raw = readFileSync(0, "utf-8").trim();
+const input = JSON.parse(raw);
+
+const rejectSchema = type({
+  "+": "reject",
+  id: "string.uuid",
+  name: "string",
+  email: "string.email",
+});
+
+const result = rejectSchema(input.payload);
+if (result instanceof type.errors) {
+  console.log("summary:", result.summary);
+}
+' ✔ 
+`result.summary` gives a multi-line summary with all errors. The requirements say a failure should print exactly one line starting with `INVALID:` followed by a human-readable error message. Let me use the first error's message or the summary. Let me re-read the requirements carefully: > A failed validation should print exactly one line starting with `INVALID:` followed by a human-readable error message. The error message must mention the offending undeclared key by name when that is the cause. So I should use `result.summary` but replace newlines to keep it on one line. Let me update the code:   
+🔧 Applying diff to /home/user/myproject/cli.ts ✔ 
+Now let me run all the tests:   
+💫 Executing cd /home/user/myproject && echo '{"mode":"ignore","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra":"foo"}}' | npx tsx cli.ts; echo "exit: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra":"foo"}}' | npx tsx cli.ts; echo "exit: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"delete","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra":"foo"}}' | npx tsx cli.ts; echo "exit: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com"}}' | npx tsx cli.ts; echo "exit: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"unknown","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com"}}' | npx tsx cli.ts; echo "exit: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo 'not json' | npx tsx cli.ts; echo "exit: $?" ✔ 
+All tests pass. Let me also test a few additional edge cases:   
+💫 Executing cd /home/user/myproject && echo '{"mode":"ignore","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com"}}' | npx tsx cli.ts; echo "exit: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"delete","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra1":"a","extra2":"b"}}' | npx tsx cli.ts; echo "exit: $?" ✔ 
+💫 Executing cd /home/user/myproject && echo '{"mode":"reject","payload":{"id":"550e8400-e29b-41d4-a716-446655440000","name":"Alice","email":"alice@example.com","extra1":"a","extra2":"b"}}' | npx tsx cli.ts; echo "exit: $?" ✔ 
+All edge cases work correctly. Let me verify the final file:   
+📖 Reading /home/user/myproject/cli.ts ✔ 
+📋 Updating todo list (2 items) ✔ 
+🎉 Task Completed
+The CLI has been implemented at `/home/user/myproject/cli.ts`. It defines three ArkType schemas using the `+` syntax for undeclared key control:
+
+- **`ignoreSchema`** — default behavior (no `+` key), extras are kept in output
+- **`rejectSchema`** — uses `"+": "reject"`, rejects objects with any undeclared key
+- **`deleteSchema`** — uses `"+": "delete"`, strips undeclared keys from the validated output
+
+The CLI reads a JSON document from stdin with shape `{"mode": "ignore"|"reject"|"delete", "payload": <object>}`, dispatches to the matching schema, and:
+
+- On success: prints `VALID` followed by the JSON-stringified validated payload
+- On failure: prints `INVALID:` followed by the error message (mentioning undeclared keys by name when relevant)
+- Always exits with code 0
+
+Run with: `echo '{"mode":"reject","payload":{...}}' | npx tsx cli.ts`   
+  

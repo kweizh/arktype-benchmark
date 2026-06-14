@@ -1,0 +1,51 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 13 items
+
+tests/test_final_state.py .........F...                                  [100%]
+
+=================================== FAILURES ===================================
+_________________ test_schema_module_exports_required_symbols __________________
+
+    def test_schema_module_exports_required_symbols():
+        """Criterion 9 (part 1): src/schema.ts exports the three required symbols."""
+        source = _read_schema_source()
+        for symbol in ("userSchema", "roundTrippedUserSchema", "exportUserJsonSchema"):
+            named_declaration = re.search(
+                r"export\s+(?:async\s+)?(?:function|const|let|var)\s+"
+                + re.escape(symbol)
+                + r"\b",
+                source,
+            )
+            named_re_export = re.search(
+                r"export\s*(?:type\s*)?\{[^}]*\b"
+                + re.escape(symbol)
+                + r"\b[^}]*\}",
+                source,
+            )
+>           assert named_declaration or named_re_export, (
+                f"src/schema.ts must export `{symbol}` (as a named declaration "
+                f"or re-export)."
+            )
+E           AssertionError: src/schema.ts must export `userSchema` (as a named declaration or re-export).
+E           assert (None or None)
+
+tests/test_final_state.py:327: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_valid_user_depth3_accepted_by_both_schemas
+PASSED tests/test_final_state.py::test_valid_user_minimal_accepted_by_both_schemas
+PASSED tests/test_final_state.py::test_invalid_email_rejected_by_both_schemas
+PASSED tests/test_final_state.py::test_invalid_zip_pattern_rejected_by_both_schemas
+PASSED tests/test_final_state.py::test_invalid_username_too_short_rejected_by_both_schemas
+PASSED tests/test_final_state.py::test_invalid_post_title_too_long_rejected_by_both_schemas
+PASSED tests/test_final_state.py::test_invalid_post_tags_too_many_rejected_by_both_schemas
+PASSED tests/test_final_state.py::test_exported_json_schema_file_exists
+PASSED tests/test_final_state.py::test_exported_json_schema_dialect_is_draft_2020_12
+PASSED tests/test_final_state.py::test_schema_module_uses_scope_export
+PASSED tests/test_final_state.py::test_schema_module_imports_ark_json_schema
+PASSED tests/test_final_state.py::test_cli_entrypoint_exists
+FAILED tests/test_final_state.py::test_schema_module_exports_required_symbols
+======================== 1 failed, 12 passed in 17.47s =========================

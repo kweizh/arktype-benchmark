@@ -1,0 +1,97 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 8,
+            "passed": 8,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781395062734,
+            "stop": 1781395072206
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_vite_config_exists_and_imports_arkenv_plugin",
+                "status": "passed",
+                "duration": 3,
+                "start": 1781395062807,
+                "stop": 1781395062810,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_main_tsx_references_api_url",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781395062811,
+                "stop": 1781395062813,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_env_example_present_and_env_absent",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781395062814,
+                "stop": 1781395062815,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_npm_scripts_present",
+                "status": "passed",
+                "duration": 3,
+                "start": 1781395062817,
+                "stop": 1781395062820,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_env_build_succeeds",
+                "status": "passed",
+                "duration": 4788,
+                "start": 1781395062821,
+                "stop": 1781395067609,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_url_build_fails",
+                "status": "passed",
+                "duration": 1422,
+                "start": 1781395067609,
+                "stop": 1781395069031,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_out_of_range_integer_build_fails",
+                "status": "passed",
+                "duration": 1657,
+                "start": 1781395069031,
+                "stop": 1781395070688,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_missing_variable_build_fails",
+                "status": "passed",
+                "duration": 1517,
+                "start": 1781395070689,
+                "stop": 1781395072206,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

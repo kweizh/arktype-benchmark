@@ -1,0 +1,145 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 13,
+            "passed": 12,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781396687448,
+            "stop": 1781396703374
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_valid_user_depth3_accepted_by_both_schemas",
+                "status": "passed",
+                "duration": 2273,
+                "start": 1781396687483,
+                "stop": 1781396689756,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_user_minimal_accepted_by_both_schemas",
+                "status": "passed",
+                "duration": 2267,
+                "start": 1781396689756,
+                "stop": 1781396692023,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_email_rejected_by_both_schemas",
+                "status": "passed",
+                "duration": 2312,
+                "start": 1781396692023,
+                "stop": 1781396694335,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_zip_pattern_rejected_by_both_schemas",
+                "status": "passed",
+                "duration": 2270,
+                "start": 1781396694336,
+                "stop": 1781396696606,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_username_too_short_rejected_by_both_schemas",
+                "status": "passed",
+                "duration": 2201,
+                "start": 1781396696607,
+                "stop": 1781396698808,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_post_title_too_long_rejected_by_both_schemas",
+                "status": "passed",
+                "duration": 2201,
+                "start": 1781396698808,
+                "stop": 1781396701009,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_invalid_post_tags_too_many_rejected_by_both_schemas",
+                "status": "passed",
+                "duration": 2335,
+                "start": 1781396701010,
+                "stop": 1781396703345,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_exported_json_schema_file_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781396703345,
+                "stop": 1781396703346,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_exported_json_schema_dialect_is_draft_2020_12",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781396703346,
+                "stop": 1781396703347,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_schema_module_exports_required_symbols",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781396703348,
+                "stop": 1781396703350,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_schema_module_uses_scope_export",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 21,
+                "start": 1781396703350,
+                "stop": 1781396703371,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_schema_module_uses_scope_export():\n        \"\"\"Criterion 9 (part 2): schema is built via `scope({...}).export()`.\"\"\"\n        source = _read_schema_source()\n        assert re.search(r\"from\\s+['\\\"]arktype['\\\"]\", source), (\n            \"src/schema.ts must import from 'arktype'.\"\n        )\n        assert re.search(r\"\\bscope\\s*\\(\", source), (\n            \"src/schema.ts must use ArkType's `scope` to build the schema.\"\n        )\n>       assert re.search(r\"scope\\s*\\([\\s\\S]+?\\)\\s*\\.\\s*export\\s*\\(\\s*\\)\", source), (\n            \"src/schema.ts must build the schema via `scope({...}).export()`.\"\n        )\nE       AssertionError: src/schema.ts must build the schema via `scope({...}).export()`.\nE       assert None\nE        +  where None = <function search at 0x7f8be856fba0>('scope\\\\s*\\\\([\\\\s\\\\S]+?\\\\)\\\\s*\\\\.\\\\s*export\\\\s*\\\\(\\\\s*\\\\)', 'import * as ark from \"arktype\";\\nimport * as js from \"@ark/json-schema\";\\nimport * as fs from \"fs\";\\n\\nexport const m...te unrolled.$defs;\\ndelete unrolled.$schema;\\n\\nexport const roundTrippedUserSchema = js.jsonSchemaToType(unrolled);\\n')\nE        +    where <function search at 0x7f8be856fba0> = re.search\n\ntests/test_final_state.py:342: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_schema_module_imports_ark_json_schema",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781396703371,
+                "stop": 1781396703373,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cli_entrypoint_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781396703373,
+                "stop": 1781396703374,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

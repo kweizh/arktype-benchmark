@@ -1,0 +1,115 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 10,
+            "passed": 10,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781393118378,
+            "stop": 1781393127758
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_valid_page_of_users_is_accepted",
+                "status": "passed",
+                "duration": 1573,
+                "start": 1781393118427,
+                "stop": 1781393120000,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_valid_page_of_posts_is_accepted",
+                "status": "passed",
+                "duration": 1534,
+                "start": 1781393120000,
+                "stop": 1781393121534,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_malformed_user_in_page_is_rejected",
+                "status": "passed",
+                "duration": 1639,
+                "start": 1781393121534,
+                "stop": 1781393123173,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_per_page_out_of_range_is_rejected",
+                "status": "passed",
+                "duration": 1512,
+                "start": 1781393123174,
+                "stop": 1781393124686,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_has_next_non_boolean_is_rejected",
+                "status": "passed",
+                "duration": 1529,
+                "start": 1781393124686,
+                "stop": 1781393126215,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_negative_total_is_rejected",
+                "status": "passed",
+                "duration": 1537,
+                "start": 1781393126215,
+                "stop": 1781393127752,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validator_imports_arktype_and_uses_scope",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781393127753,
+                "stop": 1781393127754,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validator_declares_generic_page_alias",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781393127754,
+                "stop": 1781393127756,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validator_exports_validate_page",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781393127756,
+                "stop": 1781393127757,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cli_entrypoint_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781393127757,
+                "stop": 1781393127758,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

@@ -1,0 +1,106 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 9,
+            "passed": 9,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781393581729,
+            "stop": 1781393584883
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_cli_exits_successfully",
+                "status": "passed",
+                "duration": 3077,
+                "start": 1781393581785,
+                "stop": 1781393584862,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cli_prints_wrote_line",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781393584863,
+                "stop": 1781393584865,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_schema_file_written",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781393584866,
+                "stop": 1781393584867,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_schema_uses_draft_07_dialect",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781393584867,
+                "stop": 1781393584868,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_morph_fallback_marker_present",
+                "status": "passed",
+                "duration": 3,
+                "start": 1781393584868,
+                "stop": 1781393584871,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_predicate_fallback_marker_present",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781393584872,
+                "stop": 1781393584873,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_recursive_friends_use_ref",
+                "status": "passed",
+                "duration": 2,
+                "start": 1781393584873,
+                "stop": 1781393584875,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validator_source_uses_tojsonschema_and_fallback",
+                "status": "passed",
+                "duration": 4,
+                "start": 1781393584876,
+                "stop": 1781393584880,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cli_entrypoint_exists",
+                "status": "passed",
+                "duration": 3,
+                "start": 1781393584880,
+                "stop": 1781393584883,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

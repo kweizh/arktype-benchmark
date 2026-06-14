@@ -1,0 +1,90 @@
+Skipping image OS validation for hb__arkenv_vite_plugin_build_gate: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.14 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo zr-vf58tbu > /logs/artifacts/run-id && echo arkenv_vite_plugin_build_gate__vf58TBu > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest -s --log-cli-level=DEBUG /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: pochi --model zai/glm-5.1 --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# ArkEnv Vite Plugin Build Gate
+
+## Background
+Production Vite apps frequently boot with mis-typed or missing client environment variables, then crash deep inside React render. The `@arkenv/vite-plugin` package integrates the `arkenv` validator (built on top of `arktype@2.2.0`) directly into Vite's build pipeline so that an invalid environment halts the build immediately. Your task is to wire this plugin into a minimal Vite + React project so that builds are gated by a strict environment schema.
+
+## Requirements
+- Initialize a minimal Vite + React + TypeScript project at `/home/user/myproject` (entry component, HTML, vite config, package.json, tsconfig).
+- Configure `vite.config.ts` to use `@arkenv/vite-plugin` with a schema that declares the following client-exposed environment variables:
+  - `VITE_API_URL` — must be a syntactically valid URL string.
+  - `VITE_FEATURE_FLAGS` — boolean (the plugin / arkenv must coerce the string `"true"`/`"false"`).
+  - `VITE_MAX_UPLOAD_MB` — integer between 1 and 1024 inclusive (the plugin / arkenv must coerce the string into an integer).
+- The React entry source (`src/main.tsx`) must read `import.meta.env.VITE_API_URL` and use it at least once (for example, render it inside the React tree or store it in a constant that the bundler cannot trivially drop).
+- Provide two npm scripts in `package.json`:
+  - `build` — runs `vite build`.
+  - `validate-env` — a passthrough script that exits with the same status as `vite build` (it may simply invoke the build, or otherwise force the plugin to validate). Either way, it must rely on the Vite plugin doing the validation, not a separate hand-rolled prebuild script.
+- Commit a `.env.example` file at the project root with placeholder values for the three variables documenting their expected shape. Do **NOT** create or seed a `.env` file — the implementer/test will supply environment values via real environment variables at build time.
+- When the environment is invalid or any required variable is missing, `npm run build` MUST exit non-zero. When the environment is valid, `npm run build` MUST exit zero and produce a Vite build output under `dist/`.
+
+## Implementation Hints
+- Use the `@arkenv/vite-plugin` package — do not write your own prebuild validation script and do not call `arkenv()` from application code instead of the plugin.
+- Consult the plugin's README / docs at https://arkenv.js.org/docs/vite-plugin for the correct import name and call signature.
+- Use `@vitejs/plugin-react` for React support.
+- Pick `arkenv` / `arktype` notation that yields a URL string, a coerced boolean, and a ranged integer.
+- The plugin reads values via Vite's `loadEnv` mechanism, which also includes `process.env` entries, so supplying values via real environment variables at test time is sufficient — no `.env` file required.
+
+## Acceptance Criteria
+- Project path: /home/user/myproject
+- Command: `npm run build` (executed from the project root).
+- Behavior:
+  - With all three variables set to valid values via the process environment, `npm run build` exits with status 0 and produces `/home/user/myproject/dist/index.html`.
+  - With `VITE_API_URL` set to a non-URL value (other variables valid), `npm run build` exits non-zero and the combined stdout/stderr contains an arkenv/arktype-style validation error mentioning `VITE_API_URL`.
+  - With `VITE_MAX_UPLOAD_MB` set to `0` (other variables valid), `npm run build` exits non-zero.
+  - With `VITE_API_URL` and/or `VITE_FEATURE_FLAGS` and/or `VITE_MAX_UPLOAD_MB` unset, `npm run build` exits non-zero.
+- Source layout:
+  - `/home/user/myproject/vite.config.ts` exists and imports from `@arkenv/vite-plugin`.
+  - `/home/user/myproject/src/main.tsx` exists and references `import.meta.env.VITE_API_URL`.
+  - `/home/user/myproject/.env.example` exists at the project root.
+  - `/home/user/myproject/.env` is NOT committed.
+- `package.json` defines both `build` and `validate-env` npm scripts.
+
+
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured

@@ -1,0 +1,106 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "7.4.4"
+        },
+        "summary": {
+            "tests": 9,
+            "passed": 9,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1781399518903,
+            "stop": 1781399531448
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_valid_catalog_with_three_distinct_skus_is_accepted",
+                "status": "passed",
+                "duration": 2278,
+                "start": 1781399518967,
+                "stop": 1781399521245,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_lowercase_first_segment_is_rejected",
+                "status": "passed",
+                "duration": 2388,
+                "start": 1781399521246,
+                "stop": 1781399523634,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_duplicated_sku_is_rejected_with_skus_path",
+                "status": "passed",
+                "duration": 1936,
+                "start": 1781399523635,
+                "stop": 1781399525571,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_more_than_200_skus_is_rejected",
+                "status": "passed",
+                "duration": 1894,
+                "start": 1781399525571,
+                "stop": 1781399527465,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_missing_vendor_id_is_rejected",
+                "status": "passed",
+                "duration": 1989,
+                "start": 1781399527466,
+                "stop": 1781399529455,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_empty_sku_list_is_rejected",
+                "status": "passed",
+                "duration": 1989,
+                "start": 1781399529455,
+                "stop": 1781399531444,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validator_uses_schema_level_regex",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781399531445,
+                "stop": 1781399531446,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_validator_uses_narrow_predicate_for_uniqueness",
+                "status": "passed",
+                "duration": 1,
+                "start": 1781399531446,
+                "stop": 1781399531447,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cli_entrypoint_exists",
+                "status": "passed",
+                "duration": 0,
+                "start": 1781399531448,
+                "stop": 1781399531448,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

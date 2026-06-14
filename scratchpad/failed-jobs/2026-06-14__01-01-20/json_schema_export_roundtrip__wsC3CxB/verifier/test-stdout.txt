@@ -1,0 +1,348 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /tests
+plugins: json-ctrf-0.5.0
+collected 13 items
+
+tests/test_final_state.py FFFFFFFFF.F..                                  [100%]
+
+=================================== FAILURES ===================================
+_______________ test_valid_user_depth3_accepted_by_both_schemas ________________
+
+    def test_valid_user_depth3_accepted_by_both_schemas():
+        """Criterion 1: depth-3 recursive comment chain validates in both schemas."""
+        result = _run_cli(_valid_user_depth3())
+>       _assert_cli_output(
+            result,
+            expected_first_line="VALID",
+            expected_original=True,
+            expected_roundtrip=True,
+            label="valid depth-3 user",
+        )
+
+tests/test_final_state.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n')
+expected_first_line = 'VALID', expected_original = True
+expected_roundtrip = True, label = 'valid depth-3 user'
+
+    def _assert_cli_output(
+        result: subprocess.CompletedProcess,
+        expected_first_line: str,
+        expected_original: bool,
+        expected_roundtrip: bool,
+        label: str,
+    ) -> None:
+>       assert result.returncode == 0, (
+            f"[{label}] CLI exited non-zero: "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: [valid depth-3 user] CLI exited non-zero: stdout='', stderr='file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5\n    throw new ctor(message);\n          ^\n\nParseError: Provided JSON Schema must have at least one of the keys \'type\', \'enum\', \'const\', \'allOf\', \'anyOf\', \'oneOf\' and \'not\' (was {"$ref":"#/$defs/intersection253"})\n    at throwError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5:11)\n    at throwParseError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:10:43)\n    at file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:57:9\n    at Traversal.applyMorphsAtPath (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:184:28)\n    at Traversal.applyQueuedMorphs (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:166:22)\n    at Traversal.finalize (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:109:18)\n    at MorphNode.contextFreeMorph [as rootApply] (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:124:32)\n    at BaseNode.attach (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:33:25)\n    at MorphNode.assert (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:166:42)\n    at jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n').returncode
+
+tests/test_final_state.py:100: AssertionError
+_______________ test_valid_user_minimal_accepted_by_both_schemas _______________
+
+    def test_valid_user_minimal_accepted_by_both_schemas():
+        """Criterion 2: minimal payload validates in both schemas."""
+        result = _run_cli(_valid_user_minimal())
+>       _assert_cli_output(
+            result,
+            expected_first_line="VALID",
+            expected_original=True,
+            expected_roundtrip=True,
+            label="valid minimal user",
+        )
+
+tests/test_final_state.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n')
+expected_first_line = 'VALID', expected_original = True
+expected_roundtrip = True, label = 'valid minimal user'
+
+    def _assert_cli_output(
+        result: subprocess.CompletedProcess,
+        expected_first_line: str,
+        expected_original: bool,
+        expected_roundtrip: bool,
+        label: str,
+    ) -> None:
+>       assert result.returncode == 0, (
+            f"[{label}] CLI exited non-zero: "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: [valid minimal user] CLI exited non-zero: stdout='', stderr='file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5\n    throw new ctor(message);\n          ^\n\nParseError: Provided JSON Schema must have at least one of the keys \'type\', \'enum\', \'const\', \'allOf\', \'anyOf\', \'oneOf\' and \'not\' (was {"$ref":"#/$defs/intersection253"})\n    at throwError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5:11)\n    at throwParseError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:10:43)\n    at file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:57:9\n    at Traversal.applyMorphsAtPath (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:184:28)\n    at Traversal.applyQueuedMorphs (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:166:22)\n    at Traversal.finalize (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:109:18)\n    at MorphNode.contextFreeMorph [as rootApply] (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:124:32)\n    at BaseNode.attach (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:33:25)\n    at MorphNode.assert (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:166:42)\n    at jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n').returncode
+
+tests/test_final_state.py:100: AssertionError
+_________________ test_invalid_email_rejected_by_both_schemas __________________
+
+    def test_invalid_email_rejected_by_both_schemas():
+        """Criterion 3: bad email rejected by both schemas."""
+        payload = _valid_user_depth3()
+        payload["email"] = "not-an-email"
+        result = _run_cli(payload)
+>       _assert_cli_output(
+            result,
+            expected_first_line="INVALID",
+            expected_original=False,
+            expected_roundtrip=False,
+            label="invalid email",
+        )
+
+tests/test_final_state.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n')
+expected_first_line = 'INVALID', expected_original = False
+expected_roundtrip = False, label = 'invalid email'
+
+    def _assert_cli_output(
+        result: subprocess.CompletedProcess,
+        expected_first_line: str,
+        expected_original: bool,
+        expected_roundtrip: bool,
+        label: str,
+    ) -> None:
+>       assert result.returncode == 0, (
+            f"[{label}] CLI exited non-zero: "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: [invalid email] CLI exited non-zero: stdout='', stderr='file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5\n    throw new ctor(message);\n          ^\n\nParseError: Provided JSON Schema must have at least one of the keys \'type\', \'enum\', \'const\', \'allOf\', \'anyOf\', \'oneOf\' and \'not\' (was {"$ref":"#/$defs/intersection253"})\n    at throwError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5:11)\n    at throwParseError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:10:43)\n    at file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:57:9\n    at Traversal.applyMorphsAtPath (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:184:28)\n    at Traversal.applyQueuedMorphs (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:166:22)\n    at Traversal.finalize (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:109:18)\n    at MorphNode.contextFreeMorph [as rootApply] (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:124:32)\n    at BaseNode.attach (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:33:25)\n    at MorphNode.assert (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:166:42)\n    at jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n').returncode
+
+tests/test_final_state.py:100: AssertionError
+______________ test_invalid_zip_pattern_rejected_by_both_schemas _______________
+
+    def test_invalid_zip_pattern_rejected_by_both_schemas():
+        """Criterion 4: bad zip pattern rejected by both schemas."""
+        payload = _valid_user_depth3()
+        payload["address"]["zip"] = "abcde"
+        result = _run_cli(payload)
+>       _assert_cli_output(
+            result,
+            expected_first_line="INVALID",
+            expected_original=False,
+            expected_roundtrip=False,
+            label="invalid zip pattern",
+        )
+
+tests/test_final_state.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n')
+expected_first_line = 'INVALID', expected_original = False
+expected_roundtrip = False, label = 'invalid zip pattern'
+
+    def _assert_cli_output(
+        result: subprocess.CompletedProcess,
+        expected_first_line: str,
+        expected_original: bool,
+        expected_roundtrip: bool,
+        label: str,
+    ) -> None:
+>       assert result.returncode == 0, (
+            f"[{label}] CLI exited non-zero: "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: [invalid zip pattern] CLI exited non-zero: stdout='', stderr='file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5\n    throw new ctor(message);\n          ^\n\nParseError: Provided JSON Schema must have at least one of the keys \'type\', \'enum\', \'const\', \'allOf\', \'anyOf\', \'oneOf\' and \'not\' (was {"$ref":"#/$defs/intersection253"})\n    at throwError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5:11)\n    at throwParseError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:10:43)\n    at file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:57:9\n    at Traversal.applyMorphsAtPath (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:184:28)\n    at Traversal.applyQueuedMorphs (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:166:22)\n    at Traversal.finalize (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:109:18)\n    at MorphNode.contextFreeMorph [as rootApply] (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:124:32)\n    at BaseNode.attach (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:33:25)\n    at MorphNode.assert (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:166:42)\n    at jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n').returncode
+
+tests/test_final_state.py:100: AssertionError
+___________ test_invalid_username_too_short_rejected_by_both_schemas ___________
+
+    def test_invalid_username_too_short_rejected_by_both_schemas():
+        """Criterion 5: username shorter than 3 rejected by both schemas."""
+        payload = _valid_user_depth3()
+        payload["username"] = "ab"
+        result = _run_cli(payload)
+>       _assert_cli_output(
+            result,
+            expected_first_line="INVALID",
+            expected_original=False,
+            expected_roundtrip=False,
+            label="invalid username (too short)",
+        )
+
+tests/test_final_state.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n')
+expected_first_line = 'INVALID', expected_original = False
+expected_roundtrip = False, label = 'invalid username (too short)'
+
+    def _assert_cli_output(
+        result: subprocess.CompletedProcess,
+        expected_first_line: str,
+        expected_original: bool,
+        expected_roundtrip: bool,
+        label: str,
+    ) -> None:
+>       assert result.returncode == 0, (
+            f"[{label}] CLI exited non-zero: "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: [invalid username (too short)] CLI exited non-zero: stdout='', stderr='file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5\n    throw new ctor(message);\n          ^\n\nParseError: Provided JSON Schema must have at least one of the keys \'type\', \'enum\', \'const\', \'allOf\', \'anyOf\', \'oneOf\' and \'not\' (was {"$ref":"#/$defs/intersection253"})\n    at throwError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5:11)\n    at throwParseError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:10:43)\n    at file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:57:9\n    at Traversal.applyMorphsAtPath (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:184:28)\n    at Traversal.applyQueuedMorphs (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:166:22)\n    at Traversal.finalize (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:109:18)\n    at MorphNode.contextFreeMorph [as rootApply] (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:124:32)\n    at BaseNode.attach (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:33:25)\n    at MorphNode.assert (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:166:42)\n    at jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n').returncode
+
+tests/test_final_state.py:100: AssertionError
+__________ test_invalid_post_title_too_long_rejected_by_both_schemas ___________
+
+    def test_invalid_post_title_too_long_rejected_by_both_schemas():
+        """Criterion 6: post title length > 120 rejected by both schemas."""
+        payload = _valid_user_depth3()
+        payload["posts"][0]["title"] = "x" * 200
+        result = _run_cli(payload)
+>       _assert_cli_output(
+            result,
+            expected_first_line="INVALID",
+            expected_original=False,
+            expected_roundtrip=False,
+            label="invalid post title length",
+        )
+
+tests/test_final_state.py:228: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n')
+expected_first_line = 'INVALID', expected_original = False
+expected_roundtrip = False, label = 'invalid post title length'
+
+    def _assert_cli_output(
+        result: subprocess.CompletedProcess,
+        expected_first_line: str,
+        expected_original: bool,
+        expected_roundtrip: bool,
+        label: str,
+    ) -> None:
+>       assert result.returncode == 0, (
+            f"[{label}] CLI exited non-zero: "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: [invalid post title length] CLI exited non-zero: stdout='', stderr='file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5\n    throw new ctor(message);\n          ^\n\nParseError: Provided JSON Schema must have at least one of the keys \'type\', \'enum\', \'const\', \'allOf\', \'anyOf\', \'oneOf\' and \'not\' (was {"$ref":"#/$defs/intersection253"})\n    at throwError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5:11)\n    at throwParseError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:10:43)\n    at file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:57:9\n    at Traversal.applyMorphsAtPath (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:184:28)\n    at Traversal.applyQueuedMorphs (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:166:22)\n    at Traversal.finalize (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:109:18)\n    at MorphNode.contextFreeMorph [as rootApply] (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:124:32)\n    at BaseNode.attach (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:33:25)\n    at MorphNode.assert (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:166:42)\n    at jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n').returncode
+
+tests/test_final_state.py:100: AssertionError
+___________ test_invalid_post_tags_too_many_rejected_by_both_schemas ___________
+
+    def test_invalid_post_tags_too_many_rejected_by_both_schemas():
+        """Criterion 7: post tags array exceeding 10 entries rejected by both schemas."""
+        payload = _valid_user_depth3()
+        payload["posts"][0]["tags"] = [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+        ]
+        result = _run_cli(payload)
+>       _assert_cli_output(
+            result,
+            expected_first_line="INVALID",
+            expected_original=False,
+            expected_roundtrip=False,
+            label="invalid post tags count",
+        )
+
+tests/test_final_state.py:254: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n')
+expected_first_line = 'INVALID', expected_original = False
+expected_roundtrip = False, label = 'invalid post tags count'
+
+    def _assert_cli_output(
+        result: subprocess.CompletedProcess,
+        expected_first_line: str,
+        expected_original: bool,
+        expected_roundtrip: bool,
+        label: str,
+    ) -> None:
+>       assert result.returncode == 0, (
+            f"[{label}] CLI exited non-zero: "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: [invalid post tags count] CLI exited non-zero: stdout='', stderr='file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5\n    throw new ctor(message);\n          ^\n\nParseError: Provided JSON Schema must have at least one of the keys \'type\', \'enum\', \'const\', \'allOf\', \'anyOf\', \'oneOf\' and \'not\' (was {"$ref":"#/$defs/intersection253"})\n    at throwError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:5:11)\n    at throwParseError (file:///home/user/myproject/node_modules/@ark/util/out/errors.js:10:43)\n    at file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:57:9\n    at Traversal.applyMorphsAtPath (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:184:28)\n    at Traversal.applyQueuedMorphs (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:166:22)\n    at Traversal.finalize (file:///home/user/myproject/node_modules/@ark/schema/out/shared/traversal.js:109:18)\n    at MorphNode.contextFreeMorph [as rootApply] (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:124:32)\n    at BaseNode.attach (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:33:25)\n    at MorphNode.assert (file:///home/user/myproject/node_modules/@ark/schema/out/node.js:166:42)\n    at jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', '--no-install', 'tsx', 'cli.ts'], returncode=1, stdout='', stderr='file:///home/user/myp... jsonSchemaToType (file:///home/user/myproject/node_modules/@ark/json-schema/out/json.js:61:70)\n\nNode.js v24.16.0\n').returncode
+
+tests/test_final_state.py:100: AssertionError
+____________________ test_exported_json_schema_file_exists _____________________
+
+    def test_exported_json_schema_file_exists():
+        """Criterion 8 (part 1): out/user.schema.json must exist after CLI ran."""
+>       assert os.path.isfile(EXPORTED_JSON_PATH), (
+            f"Expected exported JSON Schema at {EXPORTED_JSON_PATH} after the "
+            f"CLI has been invoked, but the file is missing."
+        )
+E       AssertionError: Expected exported JSON Schema at /home/user/myproject/out/user.schema.json after the CLI has been invoked, but the file is missing.
+E       assert False
+E        +  where False = <function isfile at 0x7ff9e99b4220>('/home/user/myproject/out/user.schema.json')
+E        +    where <function isfile at 0x7ff9e99b4220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:270: AssertionError
+______________ test_exported_json_schema_dialect_is_draft_2020_12 ______________
+
+    def test_exported_json_schema_dialect_is_draft_2020_12():
+        """Criterion 8 (part 2): exported JSON Schema must declare draft-2020-12."""
+>       assert os.path.isfile(EXPORTED_JSON_PATH), (
+            f"Cannot read JSON Schema at {EXPORTED_JSON_PATH}; file missing."
+        )
+E       AssertionError: Cannot read JSON Schema at /home/user/myproject/out/user.schema.json; file missing.
+E       assert False
+E        +  where False = <function isfile at 0x7ff9e99b4220>('/home/user/myproject/out/user.schema.json')
+E        +    where <function isfile at 0x7ff9e99b4220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:278: AssertionError
+_____________________ test_schema_module_uses_scope_export _____________________
+
+    def test_schema_module_uses_scope_export():
+        """Criterion 9 (part 2): schema is built via `scope({...}).export()`."""
+        source = _read_schema_source()
+        assert re.search(r"from\s+['\"]arktype['\"]", source), (
+            "src/schema.ts must import from 'arktype'."
+        )
+        assert re.search(r"\bscope\s*\(", source), (
+            "src/schema.ts must use ArkType's `scope` to build the schema."
+        )
+>       assert re.search(r"scope\s*\([\s\S]+?\)\s*\.\s*export\s*\(\s*\)", source), (
+            "src/schema.ts must build the schema via `scope({...}).export()`."
+        )
+E       AssertionError: src/schema.ts must build the schema via `scope({...}).export()`.
+E       assert None
+E        +  where None = <function search at 0x7ff9e9a3fba0>('scope\\s*\\([\\s\\S]+?\\)\\s*\\.\\s*export\\s*\\(\\s*\\)', 'import { scope, type Type } from "arktype";\nimport { jsonSchemaToType } from "@ark/json-schema";\nimport type { Json...ToType(resolved);\n  return rt as Type;\n}\n\nexport const roundTrippedUserSchema: Type = buildRoundTrippedSchema();\n')
+E        +    where <function search at 0x7ff9e9a3fba0> = re.search
+
+tests/test_final_state.py:342: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_schema_module_exports_required_symbols
+PASSED tests/test_final_state.py::test_schema_module_imports_ark_json_schema
+PASSED tests/test_final_state.py::test_cli_entrypoint_exists
+FAILED tests/test_final_state.py::test_valid_user_depth3_accepted_by_both_schemas
+FAILED tests/test_final_state.py::test_valid_user_minimal_accepted_by_both_schemas
+FAILED tests/test_final_state.py::test_invalid_email_rejected_by_both_schemas
+FAILED tests/test_final_state.py::test_invalid_zip_pattern_rejected_by_both_schemas
+FAILED tests/test_final_state.py::test_invalid_username_too_short_rejected_by_both_schemas
+FAILED tests/test_final_state.py::test_invalid_post_title_too_long_rejected_by_both_schemas
+FAILED tests/test_final_state.py::test_invalid_post_tags_too_many_rejected_by_both_schemas
+FAILED tests/test_final_state.py::test_exported_json_schema_file_exists - Ass...
+FAILED tests/test_final_state.py::test_exported_json_schema_dialect_is_draft_2020_12
+FAILED tests/test_final_state.py::test_schema_module_uses_scope_export - Asse...
+======================== 10 failed, 3 passed in 15.06s =========================
